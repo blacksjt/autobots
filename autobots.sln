@@ -75,6 +75,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_ithome_fatie", "auto_i
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_dirvers_fatie", "auto_dirvers_fatie\auto_dirvers_fatie.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redial_diag", "redial_diag\redial_diag.vcxproj", "{343B72D4-8DC9-4725-A215-5DA23F75D774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -303,6 +305,14 @@ Global
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|Win32.Build.0 = Release|Win32
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x86.ActiveCfg = Release|Win32
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x86.Build.0 = Release|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Debug|Win32.ActiveCfg = Debug|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Debug|Win32.Build.0 = Debug|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Debug|x86.ActiveCfg = Debug|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Debug|x86.Build.0 = Debug|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|Win32.ActiveCfg = Release|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|Win32.Build.0 = Release|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|x86.ActiveCfg = Release|Win32
+		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
