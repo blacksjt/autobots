@@ -335,13 +335,13 @@ bool auto_dirvers_fatie::GetContent()
 	QUrl url_1(str_url_1);
 	url_1.setUrl(str_url_1);
 	HttpParamList header_list1;
-	header_list1.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
+	header_list1.push_back(HttpParamItem("Accept", "text/html, application/xhtml+xml, */*"));
 	header_list1.push_back(HttpParamItem("Connection", "Keep-Alive"));
-//	header_list1.push_back(HttpParamItem("Accept-Encoding", "deflate"));
+	header_list1.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
 	header_list1.push_back(HttpParamItem("Accept-Language", "zh-cn"));
 	header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
-
-	header_list1.push_back(HttpParamItem("Cache-Control", "max-age=0"));
+	header_list1.push_back(HttpParamItem("DNT", "1"));
+	//header_list1.push_back(HttpParamItem("Cache-Control", "max-age=0"));
 	header_list1.push_back(HttpParamItem("Host", m_host)); // mhost
 	header_list1.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 

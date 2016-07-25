@@ -77,6 +77,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_dirvers_fatie", "auto_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redial_diag", "redial_diag\redial_diag.vcxproj", "{343B72D4-8DC9-4725-A215-5DA23F75D774}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_wenda", "autobots_toutiao_wenda\autobots_toutiao_wenda.vcxproj", "{3829AF75-C23E-4549-9E9C-41A3FB7B9472}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_wenda_fatie", "autobots_toutiao_wenda_fatie\autobots_toutiao_wenda_fatie.vcxproj", "{B26BE32D-7C34-474C-A5C7-B68F33805B44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -313,6 +317,22 @@ Global
 		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|Win32.Build.0 = Release|Win32
 		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|x86.ActiveCfg = Release|Win32
 		{343B72D4-8DC9-4725-A215-5DA23F75D774}.Release|x86.Build.0 = Release|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Debug|Win32.Build.0 = Debug|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Debug|x86.ActiveCfg = Debug|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Debug|x86.Build.0 = Debug|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Release|Win32.ActiveCfg = Release|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Release|Win32.Build.0 = Release|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Release|x86.ActiveCfg = Release|Win32
+		{3829AF75-C23E-4549-9E9C-41A3FB7B9472}.Release|x86.Build.0 = Release|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Debug|Win32.Build.0 = Debug|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Debug|x86.ActiveCfg = Debug|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Debug|x86.Build.0 = Debug|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Release|Win32.ActiveCfg = Release|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Release|Win32.Build.0 = Release|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Release|x86.ActiveCfg = Release|Win32
+		{B26BE32D-7C34-474C-A5C7-B68F33805B44}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
