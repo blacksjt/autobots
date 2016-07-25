@@ -256,6 +256,7 @@ void auto_smzdm::workRun()
     req.setRawHeader("Cache-Control","no-cache");
     req.setRawHeader("Connection","Keep-Alive");
     //req.setRawHeader("Accept-Encoding","gzip, deflate");
+	req.setRawHeader("X-Requested-With", "XMLHttpRequest");
     req.setRawHeader("Accept-Language","zh-CN,zh;q=0.8");
     req.setRawHeader("Connection", "keep-alive");
     req.setRawHeader("Host", str_host.toLatin1());
