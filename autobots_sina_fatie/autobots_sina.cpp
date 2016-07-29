@@ -1574,7 +1574,7 @@ void autobots_toutiao::AutoFatie()
     QString dial_msg;
     while(!connector.ReConnect(dial_msg))
     {
-      EmitMsgStatusBar(QStringLiteral("≤¶∫≈÷– ß∞‹£∫")+ dial_msg );
+      EmitMsgStatusBar(QStringLiteral("≤¶∫≈ ß∞‹£∫")+ dial_msg );
       WaitforSeconds(3);
       EmitMsgStatusBar(QStringLiteral("≤¶∫≈÷–..."));
     }

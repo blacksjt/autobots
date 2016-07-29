@@ -1,6 +1,6 @@
 #ifndef AUTOBOTS_TOUTIAO_H
 #define AUTOBOTS_TOUTIAO_H
-
+#define WINVER 0x0501
 #include <QtWidgets/QMainWindow>
 #include <QtNetwork>
 #include "ui_autobots_toutiao.h"
