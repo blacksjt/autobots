@@ -5,7 +5,7 @@
 #include <QtNetwork>
 #include "ui_autobots_toutiao.h"
 #include "toutiao_network.h"
-#define WINVER 0x0501
+
 struct AccountParam
 {
 public:

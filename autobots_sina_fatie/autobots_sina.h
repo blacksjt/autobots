@@ -1,6 +1,5 @@
-#ifndef AUTOBOTS_TOUTIAO_H
-#define AUTOBOTS_TOUTIAO_H
-#define WINVER 0x0501
+#ifndef AUTOBOTS_SINA_FATIE_H
+
 #include <QtWidgets/QMainWindow>
 #include <QtNetwork>
 #include "ui_autobots_toutiao.h"
@@ -121,4 +120,4 @@ private:
     int m_comment_order;
 };
 
-#endif // AUTOBOTS_TOUTIAO_H
+#endif // AUTOBOTS_SINA_FATIE_H

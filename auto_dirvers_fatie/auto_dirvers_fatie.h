@@ -4,7 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_auto_dirvers_fatie.h"
 #include "network.h"
-#define WINVER 0x0501
+
 class DriverWork
 {
 public:

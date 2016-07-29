@@ -3,7 +3,7 @@
 
 #include "dailconnector_global.h"
 #include <QString>
-
+#define WINVER 0x0501
 class DAILCONNECTOR_EXPORT DailConnector
 {
 public:
