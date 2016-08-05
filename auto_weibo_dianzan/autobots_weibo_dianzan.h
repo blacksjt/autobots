@@ -95,6 +95,8 @@ private:
   bool GetAuthorResult(const QByteArray& data);
 
   void AddToTree(const QString& text);
+  void EmitMsgStatusBar(const QString& msg);
+  void WaitforSeconds(int nseconds);
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
@@ -109,6 +111,11 @@ private:
 
     bool m_code_online;
     bool m_auto_switch_ip;
+
+	//ADSL≤¶∫≈–≈œ¢
+	QString m_adsl_name;
+	QString	m_adsl_account;
+	QString	m_adsl_pwd;
 private:
     QString m_host;
     QString m_url;

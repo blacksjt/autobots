@@ -10,7 +10,7 @@
 #include "code_dlg.h"
 #include "sina_encrypt.h"
 #include "vlidatecodeonline.h"
-#include <windows.h>
+#include "dailconnector.h"
 
 const int TIMEOUT = 20*1000;
 
@@ -247,7 +247,7 @@ bool autobots_weibo_dianzan::GetContent()
   }
 
   QVariant statusCodeV =  rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
-  bool res = statusCodeV.toInt() == 200 ? true : false;
+  bool res = (statusCodeV.toInt() == 200 || statusCodeV.toInt() == 302) ? true : false;
 
   if (rp!=NULL)
     rp->deleteLater();
@@ -377,6 +377,10 @@ void autobots_weibo_dianzan::UpdateData()
 
   m_code_online = (ui.checkBox_code_online->checkState() == Qt::Checked) ;
   m_auto_switch_ip = (ui.checkBox_switch_ip->checkState() == Qt::Checked);
+
+  m_adsl_name = ui.lineEdit_adsl_name->text();
+  m_adsl_account = ui.lineEdit_adsl_account->text();
+  m_adsl_pwd = ui.lineEdit_adsl_pwd->text();
 
   int n = ui.tableWidget_account_id->rowCount();
 
@@ -519,6 +523,18 @@ bool autobots_weibo_dianzan::CheckInput()
   {
     QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("请导入账号")); 
     return false;
+  }
+
+
+  if (ui.checkBox_switch_ip->checkState() == Qt::Checked )
+  {
+ 	  if (ui.lineEdit_adsl_name->text().isEmpty()
+		  || ui.lineEdit_adsl_account->text().isEmpty()
+		  || ui.lineEdit_adsl_pwd->text().isEmpty())
+ 	  {
+		  QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("自动拨号的信息输入不全"));
+		  return false;
+ 	  }
   }
 
   return true;
@@ -1393,32 +1409,18 @@ bool autobots_weibo_dianzan::GetAuthorResult(const QByteArray& data)
 
 void autobots_weibo_dianzan::switchIP()
 {
-  //执行完即返回0  
-  //int res = system("Rasdial ADSL /DISCONNECT"); 
-  QString cmd1 = "cmd /c Rasdial ADSL /DISCONNECT";
-  int res = WinExec(cmd1.toUtf8().data(), SW_HIDE);
-  //qDebug() << "Disconnect -" << (res == 0 ? "succeed" : "failed"  );
-  QString msg = (res > 31 ? QStringLiteral("成功断开") : QStringLiteral("断开失败"));
-  ui.lineEdit_msg->setText(msg);
+	DailConnector connector(m_adsl_name, m_adsl_account, m_adsl_pwd);
 
-  QElapsedTimer t;
-  t.start();
-  while(t.elapsed()<2000)  
-    QCoreApplication::processEvents();
+	EmitMsgStatusBar(QStringLiteral("拨号中..."));
+	QString dial_msg;
+	while (!connector.ReConnect(dial_msg))
+	{
+		EmitMsgStatusBar(QStringLiteral("拨号中失败：") + dial_msg);
+		WaitforSeconds(3);
+		EmitMsgStatusBar(QStringLiteral("拨号中..."));
+	}
 
-  QString cmd2 = "cmd /c Rasdial ADSL 18120077177 852086"; 
-
-  //成功连接返回0 其他为<span style="color:#ff0000">错误码</span>  
-  //res = system(cmd.toLatin1().data());
-
-  res = WinExec(cmd2.toUtf8().data(), SW_HIDE);
-
-  msg = (res > 31 ? QStringLiteral("更换成功") : QStringLiteral("更换失败"));
-  ui.lineEdit_msg->setText(msg);
-  QElapsedTimer t2;
-  t2.start();
-  while(t2.elapsed()<2000)  
-    QCoreApplication::processEvents();
+	EmitMsgStatusBar(QStringLiteral("拨号成功..."));
 }
 
 
@@ -1477,4 +1479,17 @@ void autobots_weibo_dianzan::onActClearComments()
   ui.treeWidget_comment_id->clear();
   m_comment_list.clear();
   m_comment_item_list.clear();
+}
+
+void autobots_weibo_dianzan::EmitMsgStatusBar(const QString& msg)
+{
+	ui.statusBar->showMessage(msg);
+}
+
+void autobots_weibo_dianzan::WaitforSeconds(int nseconds)
+{
+	QTime t2;
+	t2.restart();
+	while (t2.elapsed() < nseconds * 1000)
+		QCoreApplication::processEvents();
 }
