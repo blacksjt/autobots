@@ -83,6 +83,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_wenda_fati
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DailConnector", "DailConnector\DailConnector.vcxproj", "{DF9AD818-93B8-4A34-9040-936FDE62E900}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetComments", "GetComments\GetComments.vcxproj", "{0EFACF72-1D85-4425-9875-D1C0B53C3805}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -343,6 +345,14 @@ Global
 		{DF9AD818-93B8-4A34-9040-936FDE62E900}.Release|Win32.Build.0 = Release|Win32
 		{DF9AD818-93B8-4A34-9040-936FDE62E900}.Release|x86.ActiveCfg = Release|Win32
 		{DF9AD818-93B8-4A34-9040-936FDE62E900}.Release|x86.Build.0 = Release|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Debug|Win32.Build.0 = Debug|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Debug|x86.ActiveCfg = Debug|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Debug|x86.Build.0 = Debug|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Release|Win32.ActiveCfg = Release|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Release|Win32.Build.0 = Release|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Release|x86.ActiveCfg = Release|Win32
+		{0EFACF72-1D85-4425-9875-D1C0B53C3805}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
