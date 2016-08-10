@@ -274,6 +274,14 @@ bool auto_ithome_fatie::GetContent()
     }
   }
 
+  if (rp == NULL || (rp->error() != QNetworkReply::NoError) || _timeout)
+  {
+      QString msg = rp->errorString();
+      ui.lineEdit_msg->setText(msg);
+
+      return false;
+  }
+
   QVariant statusCodeV =  rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
   bool res = statusCodeV.toInt() == 200 ? true : false;
 
@@ -316,6 +324,8 @@ bool auto_ithome_fatie::RequestForLogin()
 
 	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
 	{
+        QString msg = reply->errorString();
+        ui.lineEdit_msg->setText(msg);
 		return false;
 	}
 
@@ -707,6 +717,10 @@ void auto_ithome_fatie::AutoFatie()
     while (!GetContent() && ncount < 15)
     {
       connector.ReConnect(dial_msg);
+      cookie->deleteLater();
+      cookie = new QNetworkCookieJar(this);
+      network.GetManager().setCookieJar(cookie);
+
       WaitforSeconds(3);
       ncount++;
     }
@@ -725,6 +739,9 @@ void auto_ithome_fatie::AutoFatie()
       if (!RequestForLogin())
       {
         ui.lineEdit_msg->setText(QStringLiteral("ÇëÇóÊ§°Ü..."));
+        cookie->deleteLater();
+        cookie = new QNetworkCookieJar(this);
+        network.GetManager().setCookieJar(cookie);
         continue;
       }
 
