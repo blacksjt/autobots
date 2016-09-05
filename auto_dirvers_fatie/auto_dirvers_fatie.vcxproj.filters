@@ -59,6 +59,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_network.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="driver_work.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="auto_dirvers_fatie.h">
@@ -77,6 +80,9 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_auto_dirvers_fatie.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver_work.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
