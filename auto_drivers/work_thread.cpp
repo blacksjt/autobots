@@ -98,7 +98,8 @@ void WorkThread::run()
      req.setHeader(QNetworkRequest::ContentLengthHeader, QString::number(len).toUtf8());
      req.setRawHeader("Referer", m_referer.toUtf8());
      req.setRawHeader("Cache-Control","no-cache");
-     req.setRawHeader("Connection","close");
+     req.setRawHeader("Connection","Keep-Alive");
+//     req.setRawHeader("X-Requested-With", "XMLHttpRequest");
      req.setRawHeader("Accept-Encoding","gzip, deflate");
      req.setRawHeader("Accept-Language","zh-CN");
      req.setRawHeader("Host", "comment8.mydrivers.com");

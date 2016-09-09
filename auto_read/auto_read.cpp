@@ -241,9 +241,10 @@ void auto_smzdm::onMsg(const QString& msg)
 
 void auto_smzdm::workRun()
 {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar();
+  //QNetworkCookieJar* cookie = new QNetworkCookieJar();
 
-  m_manager.setCookieJar(cookie);
+  //m_manager.setCookieJar(cookie);
+  QNetworkAccessManager mana;
 
   foreach(QString str, m_url_list)
   {
@@ -255,15 +256,16 @@ void auto_smzdm::workRun()
     req.setRawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
     req.setRawHeader("Cache-Control","no-cache");
     req.setRawHeader("Connection","Keep-Alive");
-    //req.setRawHeader("Accept-Encoding","gzip, deflate");
-	req.setRawHeader("X-Requested-With", "XMLHttpRequest");
+    req.setRawHeader("Accept-Encoding","gzip, deflate");
+	//req.setRawHeader("X-Requested-With", "XMLHttpRequest");
+    req.setRawHeader("DNT", "1");
     req.setRawHeader("Accept-Language","zh-CN,zh;q=0.8");
     req.setRawHeader("Connection", "keep-alive");
-    req.setRawHeader("Host", str_host.toLatin1());
-    req.setRawHeader("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+    req.setRawHeader("Host", str_host.toUtf8().data());
+    req.setRawHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36");
 
 
-    QNetworkReply* reply = m_manager.get(req);
+    QNetworkReply* reply = mana.get(req);
 
     #ifdef _DEBUG
     QTime _t;
@@ -296,6 +298,6 @@ void auto_smzdm::workRun()
     reply->deleteLater();
   }
 
-  cookie->deleteLater();
+  //cookie->deleteLater();
 
 }
