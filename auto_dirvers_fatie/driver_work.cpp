@@ -6,7 +6,6 @@
 
 const int TIMEOUT = 20 * 1000;
 
-
 DriverWork::DriverWork()
 {
 	m_current_index = 0;
@@ -85,7 +84,7 @@ bool DriverWork::doWork()
 	header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
 	header_list.push_back(HttpParamItem("Host", m_host));
 	header_list.push_back(HttpParamItem("Referer", m_url));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+	header_list.push_back(HttpParamItem("User-Agent", S_UA));
 
 	HttpParamList post_data;
 	post_data.push_back(HttpParamItem("ausername", ""));
@@ -156,7 +155,7 @@ bool DriverWork::OpenNews()
 	header_list1.push_back(HttpParamItem("DNT", "1"));
 	//header_list1.push_back(HttpParamItem("Cache-Control", "max-age=0"));
 	header_list1.push_back(HttpParamItem("Host", m_host)); // mhost
-	header_list1.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+	header_list1.push_back(HttpParamItem("User-Agent", S_UA));
 
 	QNetworkReply* rp = network->GetRequest(url_1, header_list1);
 
