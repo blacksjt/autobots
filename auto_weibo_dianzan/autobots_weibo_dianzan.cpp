@@ -90,6 +90,11 @@ void autobots_weibo_dianzan::onStart()
         {
           break;
         }
+
+		cookie->deleteLater();
+		cookie = new QNetworkCookieJar();
+		network.GetManager().setCookieJar(cookie);
+
         switchIP();
         QElapsedTimer t2;
         t2.start();

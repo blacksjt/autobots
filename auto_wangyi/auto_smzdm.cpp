@@ -68,7 +68,7 @@ void auto_smzdm::onStart()
   // 开启线程进行工作
   mthread = new WorkThread(this);
   connect(mthread, SIGNAL(emitMsg(const QString&)), this, SLOT(onMsg(const QString&)),Qt::QueuedConnection);
-  mthread->SetParameters(m_referer,m_host,m_comment_list);
+  mthread->SetParameters(m_token_url,m_referer,m_host,m_comment_list);
   mthread->start();
 
 }
@@ -234,7 +234,7 @@ void auto_smzdm::onActImportComment()
 
 void auto_smzdm::UpdateData()
 {
-  m_url = ui.lineEdit_URL1->text();
+  m_token_url = ui.lineEdit_token->text();
   m_referer = ui.lineEdit_REFERER1->text();
   m_host = ui.lineEdit_HOST1->text();
   m_comment_list.clear();

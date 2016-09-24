@@ -26,14 +26,14 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>网址(抓包URL)</string>
+            <string>token网址</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_URL1">
+          <widget class="QLineEdit" name="lineEdit_token">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>

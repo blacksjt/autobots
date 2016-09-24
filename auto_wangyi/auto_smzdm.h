@@ -32,7 +32,7 @@ private:
     Ui::auto_smzdmClass ui;
     QNetworkAccessManager m_manager;
     WorkThread* mthread;
-    QString m_url;  // URL
+    QString m_token_url;  // URL
     QString m_referer; // referer
     QString m_host;  // host
     QStringList m_comment_list;  // ÆÀÂÛID

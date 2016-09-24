@@ -30,10 +30,10 @@ public:
   WorkThread(QObject *parent = 0);
   ~WorkThread();
 
-  inline void SetParameters(const QString& referer, const QString& host, 
+  inline void SetParameters(const QString& token,const QString& referer, const QString& host,
     /*const QString& id,*/ const QStringList& commentlist)
   {
-    //m_url = url;
+    m_token_url = token;
     m_referer = referer;
     m_host =host;
     //m_news_id = id;
@@ -48,7 +48,10 @@ protected:
   void run();
 
 private:
-  void WorkThread::work_run();
+  void work_run();
+  QString GetToken();
+  QString ParseToken(const QByteArray& data);
+  QString GetMatchedText(const QString& text);
 
 private:
   QNetworkAccessManager m_manager;
@@ -56,6 +59,7 @@ private:
   QString m_referer; // referer
   QString m_host;  // host
   QStringList m_comment_list;  // ÆÀÂÛID
+  QString m_token_url;
 };
 
 
