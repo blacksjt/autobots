@@ -94,7 +94,8 @@ private:
   void WaitforSeconds(int nseconds);
   bool NeedValidate();
   bool NeedReply();
-
+  QString ParseToken(const QByteArray & data);
+  QString GetToken();
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
@@ -114,6 +115,8 @@ private:
     QString m_url;
     QString m_news_id;
     QString m_chanel;
+	QString m_token_url;
+
     int m_interval;
     QStringList m_comment_list;
     QList<QListWidgetItem*> m_comment_item_list;

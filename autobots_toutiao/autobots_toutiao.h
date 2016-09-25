@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtNetwork>
+#include <QMap>
 #include "ui_autobots_toutiao.h"
 #include "toutiao_network.h"
 
@@ -77,7 +78,10 @@ private:
   int ProcessRedirectLoginGetTemp(const QString& str);
   int ProcessRedirectLoginGetTemp2(const QString& str);
   void WaitforSeconds(int nseconds);
-  
+  bool GetDongtaiIDMap();
+
+  bool ExactComments(const QByteArray & rp_data, bool& has_more);
+  void GetIDList(bool& has_more, int offset);
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
@@ -88,12 +92,11 @@ private:
     //bool m_bDoAction;
     bool m_code_online;
 private:
-    //int m_base_count; // 最低点赞数量
-    //int m_step_interval; // 步骤间隔
-    //int m_current_count; // 当前点赞数量
+	QMap<QString, QString> m_id_dongtaiid;
 private:
     QString m_url;
     QString m_group_id;
+	QString m_item_id;
     QList<QTreeWidgetItem*> m_comment_list;
     AccountList m_account_list;
     //QList<int> m_account_row_list;

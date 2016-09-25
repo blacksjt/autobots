@@ -169,7 +169,12 @@ bool autobots_toutiao::DoWork()
 bool autobots_toutiao::DoPostFatie(const QString& content)
 {
   //NeedValidate();
+  QString token = GetToken();
 
+  if (token.isEmpty())
+  {
+	  token = GetToken();
+  }
 
   //http://comment.news.163.com/api/v1/products/a2869674571f77b5a0867c3d71db5856/threads/BQLRJGAA00014SEH/comments?ibc=newspc
   QString str_url = QString("http://%1/api/v1/products/a2869674571f77b5a0867c3d71db5856/threads/%2/comments?ibc=newspc").arg(m_host,m_news_id);
@@ -193,6 +198,7 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   post_data.push_back(HttpParamItem("board", m_chanel));
   post_data.push_back(HttpParamItem("content", content));
   post_data.push_back(HttpParamItem("parentId", ""));
+  post_data.push_back(HttpParamItem("ntoken", token));
 
   QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
 
@@ -351,6 +357,7 @@ void autobots_toutiao::UpdateData()
   m_url = ui.lineEdit_url->text();
   m_news_id = ui.lineEdit_news_id->text();
   m_chanel = ui.lineEdit_news_chanel->text();
+  m_token_url = ui.lineEdit_token_url->text();
   m_host = ui.lineEdit_host->text();
   m_interval = ui.spinBox_interval->value();
   m_code_online = ui.checkBox_CodeOnline->checkState() == Qt::Checked;
@@ -546,6 +553,12 @@ bool autobots_toutiao::CheckInput()
   {
     QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("URL没有输入")); 
     return false;
+  }
+
+  if (ui.lineEdit_token_url->text().isEmpty())
+  {
+	  QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("Token URL没有输入"));
+	  return false;
   }
 
   if (ui.lineEdit_news_id->text().isEmpty())
@@ -851,4 +864,79 @@ bool autobots_toutiao::NeedReply()
   QString t = rp_data;
   
   return true;
+}
+
+QString autobots_toutiao::GetToken()
+{
+	QUrl url1;
+	url1.setUrl(m_token_url);
+
+	//QNetworkRequest req;
+	HttpParamList header_list;
+	QString origin = "http://" + m_host;
+
+	header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
+	header_list.push_back(HttpParamItem("Accept", "*/*"));
+	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	//header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
+	header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded"));
+	header_list.push_back(HttpParamItem("Content-Length", "0"));
+	header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
+	header_list.push_back(HttpParamItem("Host", m_host));
+	header_list.push_back(HttpParamItem("Origin", origin));
+	header_list.push_back(HttpParamItem("Referer", m_url));
+	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+	HttpParamList post_data;
+	QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
+
+	while (!reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+	}
+
+	QString msg;
+	if (reply->error() != QNetworkReply::NoError)
+	{
+		msg = reply->errorString();
+		EmitMsgStatusBar(msg);
+		return QString();
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	QByteArray data = reply->readAll();
+
+	QString ret = ParseToken(data);
+
+	reply->deleteLater();
+
+	return ret;
+}
+
+QString autobots_toutiao::ParseToken(const QByteArray & data)
+{
+	QString ret;
+	QJsonParseError json_error;
+	QJsonDocument parse_doucment = QJsonDocument::fromJson(data, &json_error);
+	if (json_error.error == QJsonParseError::NoError)
+	{
+		if (parse_doucment.isObject())
+		{
+			QJsonObject obj = parse_doucment.object();
+			if (obj.contains("gentoken"))
+			{
+				QJsonValue name_value = obj.take("gentoken");
+				if (name_value.isString())
+				{
+					ret = name_value.toString();
+				}
+			}
+		}
+	}
+
+	return ret;
 }

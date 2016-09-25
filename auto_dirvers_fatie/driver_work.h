@@ -7,7 +7,7 @@
 
 const QString S_UA = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)";
 //const QString S_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69";
-const QString S_UA = "Mozilla / 5.0 (Linux; U; Android 4.4.4; zh - cn; MI 3 Build / KTU84P) AppleWebKit / 533.1 (KHTML, like Gecko) Version / 4.0 Mobile Safari / 533.1";
+//const QString S_UA = "Mozilla / 5.0 (Linux; U; Android 4.4.4; zh - cn; MI 3 Build / KTU84P) AppleWebKit / 533.1 (KHTML, like Gecko) Version / 4.0 Mobile Safari / 533.1";
 
 class QListWidgetItem;
 

@@ -52,7 +52,7 @@ void GetComments::updataData()
 void GetComments::startWork()
 {
     QString temp_count = QString::number(m_count);
-    QString url = QString("http://toutiao.com/group/%1/comments/?count=%2&page=0&offset=0&item_id=0&format=json")
+    QString url = QString("http://www.toutiao.com/group/%1/comments/?count=%2&page=0&offset=0&item_id=0&format=json")
         .arg(m_id, temp_count);
 
     QNetworkAccessManager manager;
@@ -63,7 +63,7 @@ void GetComments::startWork()
     req.setRawHeader("Connection", "Keep-Alive");
 //    req.setRawHeader("Accept-Encoding", "gzip, deflate");
     req.setRawHeader("Accept-Language", "zh-CN");
-    req.setRawHeader("Host", "toutiao.com");
+    req.setRawHeader("Host", "www.toutiao.com");
     req.setRawHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
 
     QNetworkReply* reply = manager.get(req);

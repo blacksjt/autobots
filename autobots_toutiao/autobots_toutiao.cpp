@@ -51,6 +51,9 @@ void autobots_toutiao::onStart()
 
   // 更新界面输入
   UpdateData();
+
+  bool res = GetDongtaiIDMap();
+  ui.lineEdit_msg->setText(QStringLiteral("获取动态ID"));
   
   control_status = true;
 
@@ -137,7 +140,7 @@ void autobots_toutiao::Logout()
 
   //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   ////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -164,17 +167,26 @@ void autobots_toutiao::onPause()
 
 bool autobots_toutiao::DoAction()
 {
-  QString str_url1 = "http://toutiao.com/comment/action/";
+  //http://www.toutiao.com/api/comment/digg/
+  QString str_url1 = "http://www.toutiao.com/api/comment/digg/";
 
   QUrl url1;
   url1.setUrl(str_url1);
 
   QList<int> remove_list;
 
-
   for(int i = 0; i <m_comment_list.size(); ++i)
   {
-    QString str = m_comment_list[i]->text(0);
+    QString str_id = m_comment_list[i]->text(0);
+	QString str_d_id;
+	if (m_id_dongtaiid.find(str_id) != m_id_dongtaiid.end())
+	{
+		str_d_id = m_id_dongtaiid[str_id];
+	}
+	else
+	{
+		continue;
+	}
 
     HttpParamList header_list;
     header_list.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
@@ -184,14 +196,16 @@ bool autobots_toutiao::DoAction()
     header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
     header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
     header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
-    header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+    header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
     header_list.push_back(HttpParamItem("Referer", m_url));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
     HttpParamList post_data;
     post_data.push_back(HttpParamItem("action", "digg"));
-    post_data.push_back(HttpParamItem("comment_id", str));
+    post_data.push_back(HttpParamItem("comment_id", str_id));
+	post_data.push_back(HttpParamItem("dongtai_id", str_d_id));
     post_data.push_back(HttpParamItem("group_id", m_group_id));
+	post_data.push_back(HttpParamItem("item_id", m_item_id));
 
     QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
 
@@ -257,8 +271,8 @@ bool autobots_toutiao::GetContent()
 
   header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
-  header_list1.push_back(HttpParamItem("Referer", "http://toutiao.com/"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
+  header_list1.push_back(HttpParamItem("Referer", "http://www.toutiao.com/"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
   QNetworkReply* rp = network.GetRequest(url_1, header_list1);
@@ -297,7 +311,7 @@ bool autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network.GetRequest(url1, header_list);
@@ -469,6 +483,7 @@ void autobots_toutiao::UpdateData()
 {
   m_url = ui.lineEdit_url->text();
   m_group_id = ui.lineEdit_page_id->text();
+  m_item_id = ui.lineEdit_item_id->text();
 //  m_base_count = ui.spinBox_min_count->value();
   m_comment_list.clear();
   m_account_list.clear();
@@ -646,6 +661,7 @@ void autobots_toutiao::AddToTree(const QString& text)
 
 bool autobots_toutiao::UpdateDiggCount(const QByteArray& data, int& count_)
 {
+	bool ret = false;
   QJsonParseError json_error;
   QJsonDocument parse_doucment = QJsonDocument::fromJson(data, &json_error); 
   if(json_error.error == QJsonParseError::NoError) 
@@ -662,21 +678,29 @@ bool autobots_toutiao::UpdateDiggCount(const QByteArray& data, int& count_)
 
           if (msg == "success" )
           {
-            double comment_id = 0;
-            if(obj.contains("digg_count"))  
-            {
-              QJsonValue count_value = obj.take("digg_count");
-              count_ = count_value.toDouble();
-              return true;
-            }
-
+			ret = true;
           }
         }
+
       }
+
+	  if (obj.contains("data"))
+	  {
+		  QJsonValue data_value = obj.take("data");
+
+		  QJsonObject data_ojb = data_value.toObject();
+
+		  double comment_id = 0;
+		  if (data_ojb.contains("digg_count"))
+		  {
+			  QJsonValue count_value = data_ojb.take("digg_count");
+			  count_ = count_value.toDouble();	  
+		  }
+	  }
     }
   }
 
-  return false;
+  return ret;
 }
 
 bool autobots_toutiao::GetCsrfToken(const QByteArray& rp_data)
@@ -1303,6 +1327,7 @@ void autobots_toutiao::WaitforSeconds(int nseconds)
     QCoreApplication::processEvents();
 }
 
+
 void autobots_toutiao::onCountAll()
 {
   int count = ui.treeWidget_comment_id->topLevelItemCount();
@@ -1332,4 +1357,118 @@ void autobots_toutiao::onCountAll()
 
   ui.lineEdit_countall->setText(QString::number(all));
 
+}
+
+bool autobots_toutiao::GetDongtaiIDMap()
+{
+	m_id_dongtaiid.clear();
+
+	bool has_more = true;
+	int offset = 0;
+	while (has_more)
+	{
+		has_more = false;
+		GetIDList(has_more, offset);
+		offset += 500;
+	}
+
+	return m_id_dongtaiid.isEmpty() ? false : true;
+}
+
+bool autobots_toutiao::ExactComments(const QByteArray& rp_data, bool& has_more)
+{
+	bool res = false;
+	QJsonParseError json_error;
+	QJsonDocument parse_doucment = QJsonDocument::fromJson(rp_data, &json_error);
+	if (json_error.error == QJsonParseError::NoError)
+	{
+		if (parse_doucment.isObject())
+		{
+			QJsonObject obj = parse_doucment.object();
+
+			// 查找data节点
+			if (obj.contains("data"))
+			{
+				QJsonObject data_obj = obj.take("data").toObject();
+
+				// 查找comments节点
+				if (data_obj.contains("comments"))
+				{
+					QJsonArray comments_arry = data_obj.take("comments").toArray();
+					for (int i = 1; i < comments_arry.size(); ++i)
+					{
+						QJsonObject comment_obj = comments_arry.at(i).toObject();
+						if (comment_obj.contains("id") && comment_obj.contains("dongtai_id"))
+						{
+							double d1 = comment_obj.take("id").toDouble();
+							QString id = QString::number(d1, 'f', 0);
+							QString d_id = QString::number(comment_obj.take("dongtai_id").toDouble(), 'f', 0);
+							m_id_dongtaiid.insert(id, d_id);
+						}
+					}
+
+				}
+
+				if (data_obj.contains("has_more"))
+				{
+					has_more = data_obj.take("has_more").toBool();
+				}				
+			}
+		}
+	}
+
+	return res;
+}
+
+void autobots_toutiao::GetIDList(bool& has_more, int offset)
+{
+	//http://www.toutiao.com/api/comment/list/?group_id=6333409505736392961&item_id=6333409505912553985&offset=5&count=10
+	QString str_url = QString("http://www.toutiao.com/api/comment/list/?group_id=%1&item_id=%2&offset=%3&count=500").arg(
+		m_group_id, m_item_id, QString::number(offset));
+
+	QNetworkAccessManager manager;
+	QNetworkRequest req;
+	req.setUrl(str_url);
+	req.setRawHeader("Cache-Control", "no-cache");
+	req.setRawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+	req.setRawHeader("Connection", "Keep-Alive");
+	req.setRawHeader("Referer", m_url.toUtf8().data());
+	req.setRawHeader("Accept-Language", "zh-CN");
+	req.setRawHeader("Host", "www.toutiao.com");
+	req.setRawHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+
+	QNetworkReply* reply = manager.get(req);
+
+	while (!reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+	}
+
+	QString msg;
+	if (reply->error() != QNetworkReply::NoError)
+	{
+		msg = reply->errorString();
+		ui.lineEdit_msg->setText(msg);
+		reply->deleteLater();
+		return;
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	if (n != 200)
+	{
+		ui.lineEdit_msg->setText(QStringLiteral("获取动态ID失败"));
+		reply->deleteLater();
+		return;
+	}
+
+	QByteArray rp_data = reply->readAll();
+
+	bool res = ExactComments(rp_data, has_more);
+
+	reply->deleteLater();
+
+	//return res;
 }
