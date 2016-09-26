@@ -99,6 +99,7 @@ void autobots_toutiao::onStart()
       if (m_csrf_token.isEmpty())
       {
         ui.lineEdit_msg->setText(QStringLiteral("Á¬½ÓÍøÕ¾ÖÐ..."));
+        cookie->deleteLater();
         continue;
       }
 
@@ -179,8 +180,8 @@ void autobots_toutiao::onPause()
 bool autobots_toutiao::DoPostFatie(const QString& content)
 {
   // http://toutiao.com/group/6222456302762934530/post_comment/
-     http://toutiao.com/group/6226929286129942786/post_comment/
-  QString str_url1 = "http://toutiao.com/group/" + m_group_id + "/post_comment/";
+  // http://www.toutiao.com/group/6226929286129942786/post_comment/
+  QString str_url1 = "http://www.toutiao.com/group/" + m_group_id + "/post_comment/";
 
   QUrl url1;
   url1.setUrl(str_url1);
@@ -193,8 +194,8 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
   header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
   header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
-  header_list.push_back(HttpParamItem("Origin", "http://toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
+  header_list.push_back(HttpParamItem("Origin", "http://www.toutiao.com"));
   header_list.push_back(HttpParamItem("Referer", m_url));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
@@ -203,6 +204,9 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   post_data.push_back(HttpParamItem("group_id", m_group_id));
   post_data.push_back(HttpParamItem("item_id", m_news_id));
   post_data.push_back(HttpParamItem("status", content));
+  post_data.push_back(HttpParamItem("content", content));
+  post_data.push_back(HttpParamItem("id", "0"));
+  post_data.push_back(HttpParamItem("aid", "24"));
 
   QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
 
@@ -222,7 +226,12 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
-    return false;
+      QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+      int n = statusCodeV.toInt();
+      QString ss = reply->errorString();
+      ui.lineEdit_msg->setText(ss);
+      reply->deleteLater();
+      return false;
   }
 
   QByteArray rp_data = reply->readAll();
@@ -260,12 +269,12 @@ bool autobots_toutiao::GetContent()
   header_list1.push_back(HttpParamItem("Connection","Keep-Alive"));
 //  header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
   header_list1.push_back(HttpParamItem("Accept-Language","zh-cn"));
-//  header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
+  header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
 
   header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
-//  header_list1.push_back(HttpParamItem("Referer", "http://toutiao.com/"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
+//  header_list1.push_back(HttpParamItem("Referer", "http://www.toutiao.com/"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
   QNetworkReply* rp = network.GetRequest(url_1, header_list1);
@@ -284,6 +293,20 @@ bool autobots_toutiao::GetContent()
     }
   }
 
+  QVariant statusCodeV = rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+  int n = statusCodeV.toInt();
+
+  if (rp == NULL || (rp->error() != QNetworkReply::NoError) || _timeout)
+  {
+      QVariant statusCodeV = rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+      int n = statusCodeV.toInt();
+      
+      QString ss = rp->errorString();
+      ui.lineEdit_msg->setText(ss);
+      rp->deleteLater();
+      return false;
+  }
+
   bool res = GetCsrfToken(rp->readAll());
 
   if (rp!=NULL)
@@ -294,7 +317,7 @@ bool autobots_toutiao::GetContent()
 
 bool autobots_toutiao::RequestForRenren()
 {
-  QString str_url1 = "http://toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
+  QString str_url1 = "http://www.toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
 
   QUrl url1(str_url1);
 
@@ -303,7 +326,7 @@ bool autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
 //  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network.GetRequest(url1, header_list);
@@ -577,7 +600,7 @@ void autobots_toutiao::Logout()
 
   //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   ////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -1068,7 +1091,7 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp2(const QString& str)
 
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-  header_list.push_back(HttpParamItem("Host","toutiao.com"));
+  header_list.push_back(HttpParamItem("Host","www.toutiao.com"));
   //header_list.push_back(HttpParamItem("Referer","http://graph.renren.com/oauth/grant?client_id=394e2173327e4ead8302dc27f4ae8879&redirect_uri=http%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success%2F&response_type=code&display=page&scope=status_update+photo_upload+create_album&state=renren_sns__0____toutiao____2__0__24&secure=true&origin=00000"));
   //header_list.push_back(HttpParamItem("",""));
   header_list.push_back(HttpParamItem("Connection","keep-alive"));
