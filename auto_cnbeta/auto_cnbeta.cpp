@@ -102,7 +102,7 @@ int auto_cnbeta::smzdm_run()
     header_list.push_back(HttpParamItem("Referer", m_news_url));
     header_list.push_back(HttpParamItem("Cache-Control","no-cache"));
     header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-    //header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
+    header_list.push_back(HttpParamItem("X-Requested-With","XMLHttpRequest"));
     header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
     header_list.push_back(HttpParamItem("Host", m_host));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));

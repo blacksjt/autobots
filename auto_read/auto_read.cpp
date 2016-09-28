@@ -74,7 +74,7 @@ void auto_smzdm::onStart()
   UpdateData();
 
   control_status = true;
-  ui.statusBar->showMessage("运行开始"); 
+  ui.statusBar->showMessage(QStringLiteral("运行开始")); 
   
   int n = 1;
 
@@ -83,7 +83,7 @@ void auto_smzdm::onStart()
     workRun();
     QTime _t;
     _t.start();
-    while (_t.elapsed() < 5000)
+    while (_t.elapsed() < m_interval*1000)
     {
       QCoreApplication::processEvents();
     }
@@ -163,6 +163,7 @@ void auto_smzdm::onActImportComment()
 void auto_smzdm::UpdateData()
 {
    m_thread_count = ui.spinBox_thread_count->value();
+   m_interval = ui.spinBox_interval->value();
  
   int n = ui.comboBox_url_list->count();
 
@@ -264,10 +265,18 @@ void auto_smzdm::workRun()
     req.setRawHeader("Host", str_host.toUtf8().data());
     req.setRawHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36");
 
+	
+	if (str.startsWith("https://",Qt::CaseInsensitive))
+	{
+		QSslConfiguration conf = req.sslConfiguration();
+		conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+		conf.setProtocol(QSsl::TlsV1SslV3);
+		req.setSslConfiguration(conf);
+	}
 
-    QNetworkReply* reply = mana.get(req);
+	QNetworkReply* reply = mana.get(req);
 
-    #ifdef _DEBUG
+    //#ifdef _DEBUG
     QTime _t;
     _t.start();
 
@@ -293,8 +302,8 @@ void auto_smzdm::workRun()
     int n = statusCodeV.toInt();
 
     msg = reply->readAll();
-    #endif
-    waitForSeconds(1);
+    //#endif
+    //waitForSeconds(1);
     reply->deleteLater();
   }
 

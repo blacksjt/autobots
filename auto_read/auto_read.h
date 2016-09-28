@@ -35,6 +35,7 @@ private:
     //QList<WorkThread*> m_thread_list;
     //QList<MyWork*> m_work_list;
     int m_thread_count;
+	int m_interval;
 
     //QString m_url;  // URL
     //QString m_referer; // referer

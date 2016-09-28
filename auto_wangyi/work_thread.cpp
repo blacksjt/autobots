@@ -147,7 +147,7 @@ QString WorkThread::ParseToken(const QByteArray & data)
 
 void WorkThread::work_run()
 {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
+  QNetworkCookieJar* cookie = new QNetworkCookieJar();
   m_manager.setCookieJar(cookie);
 
   QString token = GetToken();
@@ -200,6 +200,9 @@ void WorkThread::work_run()
      if (reply->error() != QNetworkReply::NoError)
      {
        msg = reply->errorString();
+	   emitMsg(msg);
+	   reply->deleteLater();
+	   continue;
      }
  
      QVariant statusCodeV =  reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
