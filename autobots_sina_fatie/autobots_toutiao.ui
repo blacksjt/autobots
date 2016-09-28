@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
+    <width>546</width>
     <height>510</height>
    </rect>
   </property>
@@ -122,7 +122,7 @@
          <string>自动换IP</string>
         </property>
         <property name="checked">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -156,6 +156,70 @@
      </layout>
     </item>
     <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_19">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_20">
+        <item>
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>宽带名称</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_adsl">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <item>
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>宽带账号</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_account">
+          <property name="text">
+           <string extracomment="输入拨号账号"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_22">
+        <item>
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>宽带密码</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_password">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <widget class="QGroupBox" name="groupBox">
@@ -183,6 +247,13 @@
            </item>
           </layout>
          </item>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="pushButton_develiver">
+           <property name="text">
+            <string>发送评论</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="0">
           <widget class="QListWidget" name="listWidget_comment_id">
            <property name="sizePolicy">
@@ -190,13 +261,6 @@
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_develiver">
-           <property name="text">
-            <string>发送评论</string>
            </property>
           </widget>
          </item>
@@ -237,7 +301,7 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
+    <item row="5" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <layout class="QGridLayout" name="gridLayout_3">
@@ -284,7 +348,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
+     <width>546</width>
      <height>23</height>
     </rect>
    </property>

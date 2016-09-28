@@ -41,6 +41,7 @@ private slots:
 	void onInputUrl1(const QString & text);
 	void onInputUrl2(const QString & text);
 	void onInputUrl3(const QString & text);
+	void onChanged(const QString& text);
 private:
 	void emitMsgBar(const QString& msg); // 输出信息到状态栏
 	bool updateData(); // 提取界面数据到
@@ -56,6 +57,8 @@ private:
 	void logout();
 	bool isAllFinished();
 	QString GetMatchedText(const QString& text);
+	void intialVPN();
+	void SaveIniSettings();
 private:
 	QList<DriverWork> m_work_list;
 

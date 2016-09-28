@@ -55,6 +55,7 @@ private slots:
   void onActClearComments();
   void onActClearAccounts();
   void onDeveliver();
+  void onChanged(const QString& text);
   //void onClientIdReday(QString _id);
   //void onFatieSucceed(QString comment, double id);
 private:
@@ -91,7 +92,8 @@ private:
   void AutoFatie();
   void EmitMsgStatusBar(const QString& msg);
   void WaitforSeconds(int nseconds);
-
+  void intialVPN();
+  void SaveIniSettings();
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;

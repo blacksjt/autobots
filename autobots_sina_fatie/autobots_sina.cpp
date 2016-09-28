@@ -43,6 +43,8 @@ autobots_toutiao::autobots_toutiao(QWidget *parent)
     connect(ui.action_clear_comments, SIGNAL(triggered()), this, SLOT(onActClearComments()));
 
     connect(ui.action_clear_accounts, SIGNAL(triggered()), this, SLOT(onActClearAccounts()));
+
+	connect(ui.comboBox_adsl, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onChanged(const QString&)));
 }
 
 autobots_toutiao::~autobots_toutiao()
@@ -473,6 +475,7 @@ void autobots_toutiao::initialize()
   m_client_id = "2504490989";
   m_appkey= "42iQjj";
   m_state = "f4b2dd6diaFhGKFwqnNpbmFfd2VpYm-hc6ChcgKhdgKhaQChaKt0b3V0aWFvLmNvbaFtAKFuwA%3D%3D";
+  intialVPN();
 }
 
 void autobots_toutiao::onActFromTxt()
@@ -638,6 +641,27 @@ bool autobots_toutiao::CheckInput()
   {
     QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("请导入账号")); 
     return false;
+  }
+
+  if (ui.comboBox_adsl->currentText().isEmpty())
+  {
+	  //ui.lineEdit_msg->setText(QStringLiteral("请输入宽带名称"));
+	  QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带名称"));
+	  return false;
+  }
+
+  if (ui.lineEdit_account->text().isEmpty())
+  {
+	  //ui.lineEdit_msg->setText(QStringLiteral("请输入宽带账号"));
+	  QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带账号"));
+	  return false;
+  }
+
+  if (ui.lineEdit_password->text().isEmpty())
+  {
+	  //ui.lineEdit_msg->setText(QStringLiteral("请输入宽带密码"));
+	  QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带密码"));
+	  return false;
   }
 
   return true;
@@ -1562,7 +1586,11 @@ void autobots_toutiao::onDeveliver()
 
 void autobots_toutiao::AutoFatie()
 {
-  DailConnector connector("VPN","ycc1","111");
+	QString adsl = ui.comboBox_adsl->currentText();
+	QString account = ui.lineEdit_account->text();
+	QString pwd = ui.lineEdit_password->text();
+
+	DailConnector connector(adsl, account, pwd);
 
   for (int i = 0; i < m_comment_list.size(); ++i)
   {
@@ -1677,109 +1705,79 @@ void autobots_toutiao::WaitforSeconds(int nseconds)
     QCoreApplication::processEvents();
 }
 
-// void autobots_toutiao::AutoFatie()
-// {
-//   VpnConnector vpn;
-// 
-//   QString msg;
-//   bool b = vpn.initVpnApi(msg);
-// 
-//   if (!b)
-//   {
-//     ui.lineEdit_msg->setText(msg);
-//     return;
-//   }
-// 
-//   for (int i = 0; i < m_comment_list.size(); ++i)
-//   {
-//     QNetworkCookieJar* cookie = new QNetworkCookieJar();
-// 
-//     network.GetManager().setCookieJar(cookie);
-// 
-//     b = vpn.ConnectToVpn(msg);
-// 
-//     int ncount = 0;
-//     while (!GetContent() && ncount < 15)
-//     {
-//       vpn.ConnectToVpn(msg);
-//       //ui.lineEdit_msg->setText(QStringLiteral("网站连接失败...,请检查网络连接"));
-//       //break;
-//       ncount++;
-//     }
-// 
-//     if (ncount >= 15)
-//     {
-//       ui.lineEdit_msg->setText(QStringLiteral("网站连接失败...,请检查网络连接"));
-//       break;
-//     }
-// 
-//     // 尝试登陆
-//     bool login_status = false;
-//     while (m_account_order < m_account_list.size())
-//     {
-//       if (!RequestForLogin())
-//       {
-//         ui.lineEdit_msg->setText(QStringLiteral("请求失败..."));
-//         continue;
-//       }
-// 
-//       AccountParam ac = m_account_list.at(m_account_order);
-// 
-//       if (!AuthorBySina(ac._id, ac._password))
-//       {
-//         ui.lineEdit_msg->setText(QStringLiteral("登陆失败..."));
-//         //m_account_row_list.at(m_account_order)->setCheckState(Qt::Checked);
-//         ui.tableWidget_account_id->item(m_account_order, 0)->setBackgroundColor(QColor(255,0,0, 180));
-//         m_account_order++;
-//         continue;
-//       }
-//       else
-//       {
-//         ui.lineEdit_msg->setText(QStringLiteral("登陆成功"));
-//         m_account_row_list.at(m_account_order)->setCheckState(Qt::Checked);
-//         ui.tableWidget_account_id->item(m_account_order, 0)->setBackgroundColor(QColor(0,255,0, 180));
-//         m_account_order++;
-//         login_status = true;
-//         break;
-//       }
-//     }
-// 
-//     if (!login_status)
-//     {
-//       ui.lineEdit_msg->setText(QStringLiteral("1、网络无连接 \n 2、号登陆不成功，无法继续"));
-//       return;
-//     }
-// 
-//     QString msg;
-//     msg.setNum(m_comment_order+1);
-// 
-//     QElapsedTimer t2;
-//     t2.start();
-//     while(t2.elapsed()<1000 )  
-//       QCoreApplication::processEvents();
-// 
-//     if (DoPostFatie(m_comment_list[m_comment_order]))
-//     {
-//       m_comment_item_list[m_comment_order]->setCheckState(Qt::Checked);
-//       ui.lineEdit_msg->setText(QStringLiteral("第") + msg + QStringLiteral("条,已完成"));
-//       m_comment_order++;
-//     }
-//     else
-//     {
-//       ui.lineEdit_msg->setText(QStringLiteral("第") + msg + QStringLiteral("条,失败"));
-//       m_comment_order++;
-//     }
-// 
-//     t2.restart();
-//     while(t2.elapsed()<1000 )  
-//       QCoreApplication::processEvents();
-// 
-//     Logout();
-//   }
-// 
-// 
-// 
-// 
-//   //cookie->deleteLater();
-// }
+void autobots_toutiao::intialVPN()
+{
+	// 读取配置文件
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
 
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+	QStringList groups = setting.childGroups();
+	ui.comboBox_adsl->addItems(groups);
+
+	// 设置默认值
+	if (groups.isEmpty())
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("配置文件中没有有效值"));
+		return;
+	}
+
+	int ndefault = setting.value("default").toInt();
+
+	if (ndefault >= groups.size() || ndefault < 0)
+	{
+		ndefault = 0;
+	}
+
+	QString first = groups.at(ndefault);
+	ui.comboBox_adsl->setCurrentText(first);
+	setting.beginGroup(first);
+	QString account = setting.value("name").toString();
+	QString pwd = setting.value("password").toString();
+	ui.lineEdit_account->setText(account);
+	ui.lineEdit_password->setText(pwd);
+	setting.endGroup();
+}
+
+void autobots_toutiao::SaveIniSettings()
+{
+	// 读取配置文件
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
+
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+	setting.setValue("default", ui.comboBox_adsl->currentIndex());
+}
+
+void autobots_toutiao::onChanged(const QString& text)
+{
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
+
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+
+	setting.beginGroup(text);
+	QString account = setting.value("name").toString();
+	QString pwd = setting.value("password").toString();
+	ui.lineEdit_account->setText(account);
+	ui.lineEdit_password->setText(pwd);
+	setting.endGroup();
+}

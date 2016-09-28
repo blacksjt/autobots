@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>619</height>
+    <width>471</width>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>驱动之家发帖</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_9">
+   <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
@@ -68,6 +68,70 @@
      </layout>
     </item>
     <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_17">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_15">
+        <item>
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>宽带名称</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_adsl">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_16">
+        <item>
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>宽带账号</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_account">
+          <property name="text">
+           <string extracomment="输入拨号账号"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_18">
+        <item>
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>宽带密码</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_password">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -96,7 +160,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="3" column="0">
      <widget class="QTabWidget" name="tabWidget_comments">
       <property name="currentIndex">
        <number>0</number>
@@ -324,7 +388,7 @@
       </widget>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="4" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QPushButton" name="pushButton_start">
@@ -349,7 +413,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>374</width>
+     <width>471</width>
      <height>23</height>
     </rect>
    </property>

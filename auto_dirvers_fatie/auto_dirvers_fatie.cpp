@@ -43,9 +43,13 @@ void auto_dirvers_fatie::initializeConncetions()
 
 	connect(ui.action_clear_comments, SIGNAL(triggered()), this, SLOT(onActClearComments()));
 
+	connect(ui.comboBox_adsl, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onChanged(const QString&)));
+
 	connect(ui.lineEdit_url1, SIGNAL(textChanged(const QString &)), this, SLOT(onInputUrl1(const QString &)));
 	connect(ui.lineEdit_url2, SIGNAL(textChanged(const QString &)), this, SLOT(onInputUrl2(const QString &)));
 	connect(ui.lineEdit_url3, SIGNAL(textChanged(const QString &)), this, SLOT(onInputUrl3(const QString &)));
+
+	intialVPN();
 }
 
 void auto_dirvers_fatie::onStart()
@@ -84,6 +88,27 @@ bool auto_dirvers_fatie::updateData()
 	m_account_list.clear();
 	m_account_row_list.clear(); 
 	m_account_order = 0;
+
+	if (ui.comboBox_adsl->currentText().isEmpty())
+	{
+		//ui.lineEdit_msg->setText(QStringLiteral("请输入宽带名称"));
+		QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带名称"));
+		return false;
+	}
+
+	if (ui.lineEdit_account->text().isEmpty())
+	{
+		//ui.lineEdit_msg->setText(QStringLiteral("请输入宽带账号"));
+		QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带账号"));
+		return false;
+	}
+
+	if (ui.lineEdit_password->text().isEmpty())
+	{
+		//ui.lineEdit_msg->setText(QStringLiteral("请输入宽带密码"));
+		QMessageBox::critical(this, "warning", QStringLiteral("请输入宽带密码"));
+		return false;
+	}
 
 	//1. 添加第1篇
 	//1-1 tab1
@@ -221,7 +246,13 @@ void auto_dirvers_fatie::initializeControls()
 
 void auto_dirvers_fatie::AutoFatie()
 {
-	DailConnector connector("VPN", "ycc1", "111");
+	//DailConnector connector("VPN", "ycc1", "111");
+
+	QString adsl = ui.comboBox_adsl->currentText();
+	QString account = ui.lineEdit_account->text();
+	QString pwd = ui.lineEdit_password->text();
+
+	DailConnector connector(adsl, account, pwd);
 
 	while (!m_control_stop)
 	{
@@ -297,13 +328,13 @@ void auto_dirvers_fatie::AutoFatie()
 				if (m_work_list[k].doWork())
 				{
 					int current_id = m_work_list.at(k).getCurrentIndex();
-					QString msg = QString(QStringLiteral("第%1篇，第%2条，已完成")).arg(k+1,current_id);
+					QString msg = QStringLiteral("第%1篇，第%2条，已完成").arg(k+1,current_id);
 					emitMsgBar(msg);
 				}
 				else
 				{
 					int current_id = m_work_list.at(k).getCurrentIndex();
-					QString msg = QString(QStringLiteral("第%1篇，第%2条，失败")).arg(k+1,current_id);
+					QString msg = QStringLiteral("第%1篇，第%2条，失败").arg(k+1,current_id);
 					emitMsgBar(msg);
 				}
 
@@ -797,3 +828,80 @@ void auto_dirvers_fatie::onInputUrl3(const QString & text)
 	ui.lineEdit_news_id3->setText(news_id);
 }
 
+
+void auto_dirvers_fatie::intialVPN()
+{
+	// 读取配置文件
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
+
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+	QStringList groups = setting.childGroups();
+	ui.comboBox_adsl->addItems(groups);
+
+	// 设置默认值
+	if (groups.isEmpty())
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("配置文件中没有有效值"));
+		return;
+	}
+
+	int ndefault = setting.value("default").toInt();
+
+	if (ndefault >= groups.size() || ndefault < 0)
+	{
+		ndefault = 0;
+	}
+
+	QString first = groups.at(ndefault);
+	ui.comboBox_adsl->setCurrentText(first);
+	setting.beginGroup(first);
+	QString account = setting.value("name").toString();
+	QString pwd = setting.value("password").toString();
+	ui.lineEdit_account->setText(account);
+	ui.lineEdit_password->setText(pwd);
+	setting.endGroup();
+}
+
+void auto_dirvers_fatie::SaveIniSettings()
+{
+	// 读取配置文件
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
+
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+	setting.setValue("default", ui.comboBox_adsl->currentIndex());
+}
+
+void auto_dirvers_fatie::onChanged(const QString& text)
+{
+	QString path = QCoreApplication::applicationDirPath();
+	QString inipath = path + "/redial_setting.ini";
+
+	if (!QFile::exists(inipath))
+	{
+		QMessageBox::critical(this, "warning", QStringLiteral("缺少ini配置文件"));
+		return;
+	}
+
+	QSettings setting(inipath, QSettings::IniFormat);
+
+	setting.beginGroup(text);
+	QString account = setting.value("name").toString();
+	QString pwd = setting.value("password").toString();
+	ui.lineEdit_account->setText(account);
+	ui.lineEdit_password->setText(pwd);
+	setting.endGroup();
+}
