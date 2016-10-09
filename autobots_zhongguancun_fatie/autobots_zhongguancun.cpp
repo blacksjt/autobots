@@ -173,7 +173,7 @@ bool autobots_zhongguancun::DoSupport(const QString& comment)
   post_data.push_back(HttpParamItem("content", comment));
   post_data.push_back(HttpParamItem("docId", m_news_id));
   post_data.push_back(HttpParamItem("from", ""));
-  post_data.push_back(HttpParamItem("isAt", "0"));
+  //post_data.push_back(HttpParamItem("isAt", "0"));
   post_data.push_back(HttpParamItem("isFast", "0"));
   post_data.push_back(HttpParamItem("kindId", m_kind_id));
   post_data.push_back(HttpParamItem("replyId", "0"));
@@ -1608,6 +1608,7 @@ bool autobots_zhongguancun::ParseLoginInfo(const QByteArray& rp_data, const QStr
 
 bool autobots_zhongguancun::ParseFatieResult(const QByteArray& rp_data)
 {
+  //{"flag":"1008","flag1":"1","flag2":"1","msg":"\u91d1\u8c46\u8fbe\u5230\u4e0a\u9650","data":...}
   QJsonParseError json_error;
   QJsonDocument parse_doucment = QJsonDocument::fromJson(rp_data, &json_error); 
   if(json_error.error == QJsonParseError::NoError) 
@@ -1616,26 +1617,26 @@ bool autobots_zhongguancun::ParseFatieResult(const QByteArray& rp_data)
     {  
       QJsonObject obj = parse_doucment.object(); 
 
-      if(obj.contains("msg"))  
+      if(obj.contains("flag"))  
       {  
-        QJsonValue name_value = obj.take("msg");
+        QJsonValue name_value = obj.take("flag");
         if(name_value.isString())
         {
           QString str_value = name_value.toString(); // success
-          if (str_value == "success")
+          if (str_value == "1008")
           {
             return true;
           }
         }
       }
 
-      if(obj.contains("flag"))  
+      if(obj.contains("flag1"))  
       {  
          QJsonValue name_value = obj.take("flag");
          if(name_value.isString())
          {
            QString str_value = name_value.toString(); // success
-           if (str_value == "1000")
+           if (str_value == "1")
            {
              return true;
            }
