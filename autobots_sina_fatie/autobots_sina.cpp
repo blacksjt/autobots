@@ -211,7 +211,7 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   post_data.push_back(HttpParamItem("ie", "utf-8"));
   post_data.push_back(HttpParamItem("iframe", "1"));
   post_data.push_back(HttpParamItem("img_url", ""));
-  post_data.push_back(HttpParamItem("ispost", "null"));
+  post_data.push_back(HttpParamItem("ispost", ""));
   post_data.push_back(HttpParamItem("newsid", m_news_id));
   post_data.push_back(HttpParamItem("oe", "utf-8"));
   post_data.push_back(HttpParamItem("parent", ""));
@@ -1088,10 +1088,10 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data, QString
     return false;
   }
 
-  if (!data._showpin) // 不需要验证码
-  {
-    return true;
-  }
+//   if (!data._showpin) // 不需要验证码
+//   {
+//     return true;
+//   }
   
   int n_rand = rand()%9;
   double d = 0.987654321235647/n_rand;
@@ -1364,28 +1364,22 @@ int autobots_toutiao::LoginSina(SinaData& sina_data,const
 
 int autobots_toutiao::GetLoginResult(const QByteArray& str, SinaData& data)
   {
-    //sinaSSOController.loginCallBack({"
-    //retcode":"0","ticket":"ST-MjE4MTM3NTY1MQ==-1451291428-gz-EA95CC25100A66DC457C19BC5DA43316",
-    //"uid":"2181375651","nick":"\u7528\u62372181375651",
-    //"crossDomainUrlList":["https:\/\/crosdom.weicaifu.com\/sso\/crosdom?action=login&savestate=1451291428",
-    //"https:\/\/passport.weibo.cn\/sso\/crossdomain?action=login&savestate=1"]});
+    //  {"retcode":"0", "uid" : "5870439111", 
+    //"nick" : "\u738b\u7d2b\u742a-\u7684\u7f8e\u4e3d\u5bb6\u56ed", 
+    //"crossDomainUrlList" : ["http:\/\/passport.weibo.com\/wbsso\/login?ticket=ST-NTg3MDQzOTExMQ%3D%3D-1476102417-gz-8EFCEE7C7F8C1DC9E552493AF645B878&ssosavestate=1507638417",
+    //"http:\/\/passport.weibo.cn\/sso\/crossdomain?action=login&savestate=1"]}
 
-    QString temp = str;
-
-    //   if (temp.contains("\"retcode\":\"0\""))
-    //   {
-    //     return true;
-    //   }
-
-    int first = temp.indexOf("(");
-    QString temp2= temp.right(temp.length() - first -1);
-    int last = temp2.lastIndexOf(")");
-    temp2 = temp2.left(last);
+//     QString temp = str;
+// 
+//     int first = temp.indexOf("(");
+//     QString temp2= temp.right(temp.length() - first -1);
+//     int last = temp2.lastIndexOf(")");
+//     temp2 = temp2.left(last);
 
     int res = -2;
 
     QJsonParseError json_error;
-    QJsonDocument parse_doucment = QJsonDocument::fromJson(temp2.toLocal8Bit(), &json_error); 
+    QJsonDocument parse_doucment = QJsonDocument::fromJson(str, &json_error);
     if(json_error.error == QJsonParseError::NoError) 
     {  
       if(parse_doucment.isObject())  
@@ -1394,25 +1388,32 @@ int autobots_toutiao::GetLoginResult(const QByteArray& str, SinaData& data)
         if(obj.contains("retcode"))  
         {  
           QJsonValue name_value = obj.take("retcode");
-          int d = name_value.toDouble();
-          if (d == 0)
+          if (name_value.isString())
           {
-            res = 0;
-          }
-          else if ( d == 2070)
-          {
-            res = -1;
-          }
-        }
-        if(obj.contains("ticket"))  
-        {  
-          QJsonValue name_value = obj.take("ticket");
-          data._ticket = name_value.toString();
-          if (data._ticket.isEmpty())
-          {
-            res = -2;
+              int d = name_value.toString().toInt();
+              if (d == 0)
+              {
+                  res = 0;
+              }
+              else if (d == 2070)
+              {
+                  res = -1;
+              }
+              else
+              {
+                  res = -2;
+              }
           }
         }
+//         if(obj.contains("ticket"))  
+//         {  
+//           QJsonValue name_value = obj.take("ticket");
+//           data._ticket = name_value.toString();
+//           if (data._ticket.isEmpty())
+//           {
+//             res = -2;
+//           }
+//         }
       }
     }
 
@@ -1600,11 +1601,11 @@ void autobots_toutiao::AutoFatie()
 
     EmitMsgStatusBar(QStringLiteral("拨号中..."));
     QString dial_msg;
-    while(!connector.ReConnect(dial_msg))
+    while (!connector.ReConnect(dial_msg))
     {
-      EmitMsgStatusBar(QStringLiteral("拨号失败：")+ dial_msg );
-      WaitforSeconds(3);
-      EmitMsgStatusBar(QStringLiteral("拨号中..."));
+        EmitMsgStatusBar(QStringLiteral("拨号失败：") + dial_msg);
+        WaitforSeconds(3);
+        EmitMsgStatusBar(QStringLiteral("拨号中..."));
     }
 
     EmitMsgStatusBar(QStringLiteral("拨号成功..."));
@@ -1612,16 +1613,16 @@ void autobots_toutiao::AutoFatie()
     int ncount = 0;
     while (!GetContent() && ncount < 15)
     {
-      connector.ReConnect(dial_msg);
-      WaitforSeconds(3);
-      ncount++;
+        connector.ReConnect(dial_msg);
+        WaitforSeconds(3);
+        ncount++;
     }
 
     if (ncount >= 15)
     {
-      ui.lineEdit_msg->setText(QStringLiteral("网站连接失败...,请检查网络连接"));
-      EmitMsgStatusBar(QStringLiteral("网站连接失败...,请检查网络连接"));
-      continue;;
+        ui.lineEdit_msg->setText(QStringLiteral("网站连接失败...,请检查网络连接"));
+        EmitMsgStatusBar(QStringLiteral("网站连接失败...,请检查网络连接"));
+        continue;;
     }
 
     // 尝试登陆
