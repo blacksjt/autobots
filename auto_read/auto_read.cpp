@@ -57,6 +57,8 @@ auto_smzdm::auto_smzdm(QWidget *parent)
     connect(ui.action_import_URLs, SIGNAL(triggered()), this, SLOT(onActImportComment()));
 
     connect(ui.action_clear_URLs, SIGNAL(triggered()), this, SLOT(onActClearComments()));
+
+	connect(&m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinshed(QNetworkReply*)));
 }
 
 auto_smzdm::~auto_smzdm()
@@ -228,6 +230,15 @@ void auto_smzdm::onAddUrl()
   ui.comboBox_url_list->clearEditText();
 }
 
+void auto_smzdm::onReplyFinshed(QNetworkReply* rp)
+{
+	if (rp != NULL)
+	{
+		rp->readAll();
+		rp->deleteLater();
+	}
+}
+
 void auto_smzdm::onRemoveUrl()
 {
   int index = ui.comboBox_url_list->findText(ui.comboBox_url_list->currentText());
@@ -242,10 +253,10 @@ void auto_smzdm::onMsg(const QString& msg)
 
 void auto_smzdm::workRun()
 {
-  //QNetworkCookieJar* cookie = new QNetworkCookieJar();
+  QNetworkCookieJar* cookie = new QNetworkCookieJar();
 
-  //m_manager.setCookieJar(cookie);
-  QNetworkAccessManager mana;
+  m_manager.setCookieJar(cookie);
+  //QNetworkAccessManager mana;
 
   foreach(QString str, m_url_list)
   {
@@ -258,7 +269,7 @@ void auto_smzdm::workRun()
     req.setRawHeader("Cache-Control","no-cache");
     req.setRawHeader("Connection","Keep-Alive");
     req.setRawHeader("Accept-Encoding","gzip, deflate");
-	//req.setRawHeader("X-Requested-With", "XMLHttpRequest");
+	req.setRawHeader("X-Requested-With", "XMLHttpRequest");
     req.setRawHeader("DNT", "1");
     req.setRawHeader("Accept-Language","zh-CN,zh;q=0.8");
     req.setRawHeader("Connection", "keep-alive");
@@ -274,9 +285,9 @@ void auto_smzdm::workRun()
 		req.setSslConfiguration(conf);
 	}
 
-	QNetworkReply* reply = mana.get(req);
+	QNetworkReply* reply = m_manager.get(req);
 
-    //#ifdef _DEBUG
+    #ifdef _DEBUG
     QTime _t;
     _t.start();
 
@@ -302,7 +313,7 @@ void auto_smzdm::workRun()
     int n = statusCodeV.toInt();
 
     msg = reply->readAll();
-    //#endif
+    #endif
     //waitForSeconds(1);
     reply->deleteLater();
   }

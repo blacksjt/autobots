@@ -97,10 +97,15 @@ QString WorkThread::GetToken()
     //request_params.append("undefined");
     QNetworkReply* reply = m_manager.post(req, request_params);
 
-    while (!reply->isFinished())
-    {
-        QCoreApplication::processEvents();
-    }
+	QTime t;
+	t.start();
+	while (!reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+		if (t.elapsed() >= 10 * 1000) {
+			break;
+		}
+	}
 
     QString msg;
     if (reply->error() != QNetworkReply::NoError)
@@ -150,12 +155,13 @@ void WorkThread::work_run()
   QNetworkCookieJar* cookie = new QNetworkCookieJar();
   m_manager.setCookieJar(cookie);
 
-  QString token = GetToken();
+  //QString token = GetToken();
 
-  QString path = GetMatchedText(m_token_url);
+  //QString path = GetMatchedText(m_token_url);
 
   foreach(QString str, m_comment_list)
   {
+	QString token = GetToken();
     if (token.isEmpty())
     {
         token = GetToken();
@@ -164,6 +170,7 @@ void WorkThread::work_run()
             continue;
         }
     }
+	QString path = GetMatchedText(m_token_url);
 
     QNetworkRequest req;
 
@@ -191,16 +198,21 @@ void WorkThread::work_run()
     //request_params.append("undefined");
     QNetworkReply* reply = m_manager.post(req,request_params);
 
+	QTime t;
+	t.start();
     while(!reply->isFinished())
     {
       QCoreApplication::processEvents();
+	  if (t.elapsed() >= 10*1000) {
+		  break;
+	  }
     }
 // 
      QString msg;
      if (reply->error() != QNetworkReply::NoError)
      {
        msg = reply->errorString();
-	   emitMsg(msg);
+	   //emitMsg(msg);
 	   reply->deleteLater();
 	   continue;
      }

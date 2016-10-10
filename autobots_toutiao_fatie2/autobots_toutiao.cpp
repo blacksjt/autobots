@@ -90,6 +90,8 @@ void autobots_toutiao::onStart()
     bool login_status = false;
     while (m_account_order < m_account_list.size())
     {
+	  network.GetManager().clearAccessCache();
+
       QNetworkCookieJar* cookie = new QNetworkCookieJar();
 
       network.GetManager().setCookieJar(cookie);
@@ -106,6 +108,7 @@ void autobots_toutiao::onStart()
       if (!RequestForRenren())
       {
         ui.lineEdit_msg->setText(QStringLiteral("ÇëÇóÊ§°Ü..."));
+		cookie->deleteLater();
         continue;
       }
 

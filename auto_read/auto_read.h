@@ -22,6 +22,9 @@ public:
       void onActClearComments();
       void onActImportComment();
       void onAddUrl();
+
+private slots:
+	void onReplyFinshed(QNetworkReply*);
 private:
   bool CheckInput();
   void UpdateData();
@@ -42,7 +45,7 @@ private:
     //QString m_news_id;  // ÐÂÎÅID
     //QStringList m_comment_list;  // ÆÀÂÛID
     QStringList m_url_list;
-    //QNetworkAccessManager m_manager;
+    QNetworkAccessManager m_manager;
     
 };
 
