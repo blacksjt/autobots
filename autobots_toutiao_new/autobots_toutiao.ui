@@ -6,17 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
-    <height>510</height>
+    <width>620</width>
+    <height>477</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>今日头条发帖</string>
+   <string>今日头条点赞</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_4">
+   <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -31,51 +31,32 @@
         </property>
        </widget>
       </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QCheckBox" name="checkBox_code_online">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>自动识别验证码</string>
+         <string>Item ID</string>
         </property>
-        <property name="checked">
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_item_id">
+        <property name="enabled">
          <bool>true</bool>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="0" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_8">
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>间隔（秒）</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBox_interval">
-        <property name="minimum">
-         <number>5</number>
-        </property>
-        <property name="maximum">
-         <number>600</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="value">
-         <number>45</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item row="1" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>文章ID(data-itemid)</string>
+         <string>Group ID(文章ID)</string>
         </property>
        </widget>
       </item>
@@ -84,46 +65,49 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="text">
-         <string>0</string>
-        </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="1" column="1" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Group ID(data-groupid)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_comment_group">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="0" colspan="3">
+    <item row="2" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>6</horstretch>
+          <horstretch>5</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="title">
-         <string>评论内容</string>
+         <string>评论ID列表</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>最小点赞数</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_min_count">
+             <property name="minimum">
+              <number>5</number>
+             </property>
+             <property name="maximum">
+              <number>3000</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0" colspan="2">
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
             <widget class="QLineEdit" name="lineEdit_comment_id"/>
@@ -137,13 +121,35 @@
            </item>
           </layout>
          </item>
-         <item row="1" column="0">
-          <widget class="QListWidget" name="listWidget_comment_id">
+         <item row="2" column="0" colspan="2">
+          <widget class="QTreeWidget" name="treeWidget_comment_id">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <column>
+            <property name="text">
+             <string>ID</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>点赞数</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>目标数量</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_compute_num">
+           <property name="text">
+            <string>生成点赞数</string>
            </property>
           </widget>
          </item>
@@ -154,7 +160,7 @@
        <widget class="QGroupBox" name="groupBox_2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>4</horstretch>
+          <horstretch>5</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
@@ -176,34 +182,13 @@
            </column>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QTextBrowser" name="textBrowser_commentid"/>
-         </item>
         </layout>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="3" column="0" colspan="3">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_1">
-          <property name="text">
-           <string>当前状态</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_msg">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
+    <item row="3" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
@@ -222,6 +207,55 @@
         </item>
        </layout>
       </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QPushButton" name="pushButton_count">
+          <property name="text">
+           <string>统计点赞数</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_countall">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_1">
+        <property name="text">
+         <string>当前状态</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_msg">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -231,7 +265,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>711</width>
+     <width>620</width>
      <height>23</height>
     </rect>
    </property>
@@ -240,9 +274,7 @@
      <string>导入</string>
     </property>
     <addaction name="action_from_txt"/>
-    <addaction name="action_clear_accounts"/>
     <addaction name="action_import_commentid"/>
-    <addaction name="action_clear_comments"/>
    </widget>
    <addaction name="menu"/>
   </widget>

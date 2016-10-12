@@ -1,8 +1,9 @@
-#ifndef AUTOBOTS_TOUTIAO_H
+﻿#ifndef AUTOBOTS_TOUTIAO_H
 #define AUTOBOTS_TOUTIAO_H
 
 #include <QtWidgets/QMainWindow>
 #include <QtNetwork>
+#include <QMap>
 #include "ui_autobots_toutiao.h"
 #include "toutiao_network.h"
 
@@ -41,38 +42,46 @@ private slots:
   //void onLoginsucceed(QString id);
   void onActFromTxt();
   void onActImportComment();
+
   void onActClearComments();
   void onActClearAccounts();
   //void onClientIdReday(QString _id);
-  //void onFatieSucceed(QString comment, double id);
+  //void onDiggsucceed(double, int);
+  void onComputeNumber();
+  void onCountAll();//计算总点赞数量
 private:
   int LogInbySina();
-  //QNetworkReply* LogInbyRenren(const QString& name, const QString& password);
-  bool DoPostFatie(const QString& content);
+  bool DoAction();
   void GetUerInfo();
   bool GetContent();
   void GetConnection();
-  void LoginRequest();
+  //void LoginRequest();
   bool RequestForRenren();
-  void CodeCheckForRenren();
+  //void CodeCheckForRenren();
   bool AuthorByRenren(const QString& name, const QString& password);
   void UpdateData();
   void initialize();
   void Logout();
   bool CheckInput();
+  void AddToTree(const QString& text);
+  bool UpdateDiggCount(const QByteArray& data, int&);
+
   bool GetCsrfToken(const QByteArray& arr);
   bool ProcessRedirectSSL(const QString& str);
   bool ProcessRedirectGet(const QString& str);
   bool GetPostId(const QByteArray& arr);
   int ProcessRedirectLoginGet(const QString& str);
   bool ProcessRedirectLoginGet2(const QString& str);
+  bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
+  int GetRandom();
+  
   int ProcessRedirectLoginGetTemp(const QString& str);
   int ProcessRedirectLoginGetTemp2(const QString& str);
-  bool GetFatieStatus(const QByteArray& byte_arr);
-  void FatieSucceed(const QString& comment,const QString& id);
-  bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
-
   void WaitforSeconds(int nseconds);
+  bool GetDongtaiIDMap();
+
+  bool ExactComments(const QByteArray & rp_data, bool& has_more);
+  void GetIDList(bool& has_more, int offset);
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
@@ -80,17 +89,17 @@ private:
     QString m_client_id;
     QString m_post_id;
     QString m_csrf_token;
+    //bool m_bDoAction;
     bool m_code_online;
 private:
+	QMap<QString, QString> m_id_dongtaiid;
+private:
     QString m_url;
-    QString m_news_id;
     QString m_group_id;
-    int m_interval;
-    QStringList m_comment_list;
-    QList<QListWidgetItem*> m_comment_item_list;
+	QString m_item_id;
+    QList<QTreeWidgetItem*> m_comment_list;
     AccountList m_account_list;
-    QList<int> m_account_row_list;
-    int m_account_order;
+    //QList<int> m_account_row_list;
 };
 
 #endif // AUTOBOTS_TOUTIAO_H

@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{48798D9B-6DE5-472D-9961-70B84DCE6EBA}</ProjectGuid>
+    <ProjectGuid>{6B7C87B9-29DA-4AC2-B180-2F95224F1880}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
