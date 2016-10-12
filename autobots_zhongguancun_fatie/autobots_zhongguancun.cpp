@@ -282,6 +282,7 @@ bool autobots_zhongguancun::RequestForSina()
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+     QString msg = reply->errorString();
     return false;
   }
 
@@ -977,10 +978,10 @@ bool autobots_zhongguancun::PreLoginSina(const QString& name, SinaData& data,
     return false;
   }
 
-  if (!data._showpin) // 不需要验证码
-  {
-    return true;
-  }
+//   if (!data._showpin) // 不需要验证码
+//   {
+//     return true;
+//   }
 
   int n_rand = rand()%9;
   double d = 0.987654321235647/n_rand;
