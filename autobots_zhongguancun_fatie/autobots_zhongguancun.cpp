@@ -77,11 +77,11 @@ void autobots_zhongguancun::onStart()
 
       GetContent();
 
-      if (!RequestForSina())
-      {
-        ui.lineEdit_msg->setText(QStringLiteral("«Î«Û ß∞‹..."));
-        continue;
-      }
+//       if (!RequestForSina())
+//       {
+//         ui.lineEdit_msg->setText(QStringLiteral("«Î«Û ß∞‹..."));
+//         continue;
+//       }
 
       AccountParam ac = m_account_list.at(m_account_order);
 

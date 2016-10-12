@@ -86,11 +86,12 @@ void autobots_zhongguancun::onStart()
 //       continue;
 //     }
 
-    if (!RequestForSina())
-    {
-      ui.lineEdit_msg->setText(QStringLiteral("ÇëÇóÊ§°Ü..."));
-      continue;
-    }
+//     if (!RequestForSina())
+//     {
+// 	  //cookie->deleteLater();
+//       ui.lineEdit_msg->setText(QStringLiteral("ÇëÇóÊ§°Ü..."));
+//       continue;
+//     }
 
     AccountParam ac = m_account_list.at(i);
 
@@ -291,6 +292,8 @@ bool autobots_zhongguancun::RequestForSina()
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+	QString msg =  reply->errorString();
+	ui.lineEdit_msg->setText(msg);
     return false;
   }
 

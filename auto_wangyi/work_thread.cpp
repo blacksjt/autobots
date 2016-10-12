@@ -62,8 +62,6 @@ void WorkThread::run()
 
     work_run();
 
-    count ++; 
-
     sleep(8);
 
   }
