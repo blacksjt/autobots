@@ -201,7 +201,7 @@ int autobots_toutiao::DoAction()
    header_list.push_back(HttpParamItem("Content-Type", "application/json"));
    header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
    header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
-   header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+   header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
    header_list.push_back(HttpParamItem("Referer", m_url));
    header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
@@ -254,7 +254,7 @@ QNetworkReply* autobots_toutiao::GetContent()
 
   header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", "http://toutiao.com/"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -273,7 +273,7 @@ QNetworkReply* autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   return network.GetRequest(url1, header_list);
@@ -447,7 +447,7 @@ void autobots_toutiao::Logout()
 
   //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   ////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -562,7 +562,7 @@ void autobots_toutiao::GetVoteStatus()
    header_list.push_back(HttpParamItem("Content-Type", "application/json"));
    header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
    header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
-   header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+   header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
    header_list.push_back(HttpParamItem("Referer", m_url));
    header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
