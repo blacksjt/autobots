@@ -27,11 +27,15 @@ private:
   int smzdm_run();
   bool CheckInput();
   void UpdateData();
+  QString GetMatchedText(const QString& text);
+  QString GetToken();
+  QString ParseToken(const QByteArray& data);
 
 private:
+	bool control_status;
     Ui::auto_smzdmClass ui;
     QNetworkAccessManager m_manager;
-    WorkThread* mthread;
+    //WorkThread* mthread;
     QString m_token_url;  // URL
     QString m_referer; // referer
     QString m_host;  // host

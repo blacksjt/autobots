@@ -7,6 +7,17 @@
 
 const int TIMEOUT = 5*1000;
 
+void waitForSeconds(int n)
+{
+	QTime time;
+	time.start();
+
+	while (time.elapsed() < n * 1000)
+	{
+		QCoreApplication::processEvents();
+	}
+}
+
 auto_smzdm::auto_smzdm(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -31,13 +42,13 @@ auto_smzdm::auto_smzdm(QWidget *parent)
 
 auto_smzdm::~auto_smzdm()
 {
-  if (mthread != NULL)
-  {
-    mthread->disconnect();
-    mthread->terminate();
-    mthread->deleteLater();
-    mthread = NULL;
-  }
+//   if (mthread != NULL)
+//   {
+//     mthread->disconnect();
+//     mthread->terminate();
+//     mthread->deleteLater();
+//     mthread = NULL;
+//   }
 }
 
 void auto_smzdm::onStart()
@@ -49,147 +60,141 @@ void auto_smzdm::onStart()
 
   UpdateData();
 
-  //control_status = true;
+  control_status = true;
   ui.lineEdit_msg->setText(QStringLiteral("运行中"));
-  //QString msg = QStringLiteral("运行中");
+  ui.pushButton_start->setEnabled(false);
 
-//   while (true)
-//   {
-//     smzdm_run();
-// 
-//     QTime t;
-//     t.start();
-//     while(t.elapsed() < 5000)
-//     {
-//       QCoreApplication::processEvents();
-//     }
-//   }
+  int ncount = 1;
+
+  while (control_status)
+  {
+    smzdm_run();
+
+	onMsg(QString::number(ncount++));
+
+    QTime t;
+    t.start();
+    while(t.elapsed() < 1000)
+    {
+      QCoreApplication::processEvents();
+    }
+  }
 
   // 开启线程进行工作
-  mthread = new WorkThread(this);
-  connect(mthread, SIGNAL(emitMsg(const QString&)), this, SLOT(onMsg(const QString&)),Qt::QueuedConnection);
-  mthread->SetParameters(m_token_url,m_referer,m_host,m_comment_list);
-  mthread->start();
+//   mthread = new WorkThread(this);
+//   connect(mthread, SIGNAL(emitMsg(const QString&)), this, SLOT(onMsg(const QString&)),Qt::QueuedConnection);
+//   mthread->SetParameters(m_token_url,m_referer,m_host,m_comment_list);
+//   mthread->start();
 
 }
 
 void auto_smzdm::onPause()
 {
-  //control_status = false;
-  if (mthread != NULL)
-  {
-    mthread->disconnect();
-    mthread->terminate();
-    mthread->deleteLater();
-    mthread = NULL;
-  }
+  control_status = false;
+//   if (mthread != NULL)
+//   {
+//     mthread->disconnect();
+//     mthread->terminate();
+//     mthread->deleteLater();
+//     mthread = NULL;
+//   }
   ui.lineEdit_msg->setText(QStringLiteral("已停止"));
+  ui.pushButton_start->setEnabled(true);
 }
 
  int auto_smzdm::smzdm_run()
  {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
-  m_manager.setCookieJar(cookie);
+	 QNetworkCookieJar* cookie = new QNetworkCookieJar();
+	 m_manager.setCookieJar(cookie);
 
-  foreach(QString str, m_comment_list)
-  {
-    QNetworkRequest req;
+	 //QString token = GetToken();
 
-    QString str_url1 = str;//"http://comment.tech.163.com/reply/upvote/tech_bbs/B98L34L200094P0U_" + str;
+	 //QString path = GetMatchedText(m_token_url);
 
-    //QUrl url1(str_url1);
-    req.setUrl(QUrl(str_url1));
+	 foreach(QString str, m_comment_list)
+	 {
+		 QString token = GetToken();
+		 if (token.isEmpty())
+		 {
+			 token = GetToken();
+			 if (token.isEmpty())
+			 {
+				 continue;
+			 }
+		 }
+		 QString path = GetMatchedText(m_token_url);
 
-    QString origin = "http://" + m_host;
+		 QNetworkRequest req;
 
-    req.setRawHeader("Cache-Control","no-cache");
-    req.setRawHeader("Accept","*/*");
-    req.setRawHeader("Connection","Keep-Alive");
-    req.setRawHeader("Accept-Encoding","gzip, deflate");
-    req.setRawHeader("Accept-Language","zh-CN");
-    req.setRawHeader("Content-Type","application/x-www-form-urlencoded");
-//    req.setRawHeader("Content-Length","9");
-    req.setRawHeader("Host", m_host.toUtf8().data());
-    req.setRawHeader("Origin", origin.toUtf8().data());
-    req.setRawHeader("Referer", m_referer.toUtf8().data());
-    req.setRawHeader("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+		 QString str_url1 = path + str + "/action/upvote?ntoken=" + token + "&ibc=newspc";
 
-    /*req.setAttribute()*/
-    QByteArray request_params;
-//    request_params.append("undefined");
-    QNetworkReply* reply = m_manager.post(req,request_params);
+		 //QUrl url1(str_url1);
+		 req.setUrl(QUrl(str_url1));
 
-    while(!reply->isFinished())
-    {
-      QCoreApplication::processEvents();
-    }
+		 QString origin = "http://" + m_host;
 
-    QString msg;
-    if (reply->error() != QNetworkReply::NoError)
-    {
-      msg = reply->errorString();
-    }
+		 req.setRawHeader("Cache-Control", "no-cache");
+		 req.setRawHeader("Accept", "*/*");
+		 req.setRawHeader("Connection", "Keep-Alive");
+		 req.setRawHeader("Accept-Encoding", "gzip, deflate");
+		 req.setRawHeader("Accept-Language", "zh-CN");
+		 req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+		 req.setRawHeader("X-Requested-With", "XMLHttpRequest");
+		 req.setRawHeader("Host", m_host.toUtf8().data());
+		 req.setRawHeader("Origin", origin.toUtf8().data());
+		 req.setRawHeader("Referer", m_referer.toUtf8().data());
+		 req.setRawHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
 
-    QVariant statusCodeV =  reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
+		 /*req.setAttribute()*/
+		 QByteArray request_params;
+		 //request_params.append("undefined");
+		 QNetworkReply* reply = m_manager.post(req, request_params);
 
-    int n = statusCodeV.toInt();
-    //QNetworkReply* reply = m_manager.get(req);
-    //msleep(100);
+		 QTime t;
+		 t.start();
+		 while (!reply->isFinished())
+		 {
+			 QCoreApplication::processEvents();
+			 if (t.elapsed() >= 10 * 1000) {
+				 break;
+			 }
+		 }
+		 // 
+		 QString msg;
+		 if (reply->error() != QNetworkReply::NoError)
+		 {
+			 msg = reply->errorString();
+			 //emitMsg(msg);
+			 reply->deleteLater();
+			 ui.statusBar->showMessage(msg);
+			 continue;
+		 }
 
-    reply->deleteLater();
-  }
+		 QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-  cookie->deleteLater();
+		 int n = statusCodeV.toInt();
 
-  return 0;
 
-//    QStringList strlist;
-//    strlist = m_comment_list;
-//  
-//    QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
-//  
-//    network.GetManager().setCookieJar(cookie);
-//  
-//    foreach(QString str, strlist)
-//    {
-//      QString str_url1 = str;//"http://comment.tech.163.com/reply/upvote/tech_bbs/B98L34L200094P0U_" + str;
-//  
-//      QUrl url1(str_url1);
-//  
-//      HttpParamList header_list;
-//      QString origin = "http://" + m_host;
-//      
-//      header_list.push_back(HttpParamItem("Cache-Control","no-cache"));
-//      header_list.push_back(HttpParamItem("Accept","*/*"));
-//      header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-//      header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
-//      header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-//      header_list.push_back(HttpParamItem("Content-Type","application/x-www-form-urlencoded"));
-//      header_list.push_back(HttpParamItem("Host", m_host));
-//      header_list.push_back(HttpParamItem("Origin", origin));
-//      header_list.push_back(HttpParamItem("Referer", m_referer));
-//      header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
-//      
-//      HttpParamList post_data;
-//      QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
-//  
-//      QTime _t;
-//      _t.start();
-//  
-//      while (reply && !reply->isFinished())
-//      {
-//        QCoreApplication::processEvents();
-//        if (_t.elapsed() >= TIMEOUT) {
-//          break;
-//        }
-//      }
-//  
-//      reply->deleteLater();
-//    }
-//  
-//      cookie->deleteLater();
-//  
-//    return 0;
+		 if (n == 200)
+		 {
+			 //onMsg(QStringLiteral("点赞成功"));
+			 ui.statusBar->showMessage(QStringLiteral("点赞成功"));
+		 }
+		 else if (n == 429)
+		 {
+			 //onMsg(QStringLiteral("频率太高"));
+			 ui.statusBar->showMessage(QStringLiteral("频率太高"));
+		 }
+
+		 msg = reply->readAll();
+
+		 reply->deleteLater();
+
+		 waitForSeconds(1);
+	 }
+
+	 cookie->deleteLater();
+	 return 0;
  }
 
 void auto_smzdm::onOneClick()
@@ -300,4 +305,103 @@ void auto_smzdm::onAddCommentID()
 void auto_smzdm::onMsg(const QString& msg)
 {
   ui.lineEdit_msg->setText(msg);
+}
+
+QString auto_smzdm::GetMatchedText(const QString& text)
+{
+	//QString s = "http://comment.dy.163.com/api/v1/products/a2869674571f77b5a0867c3d71db5856/threads/C1G1285K0511A5KT/comments/gentoken?ibc=newspc";
+	//     QString pattern = "(.*)gentoken?ibc=newspc";
+	//     QRegExp regexp(pattern, Qt::CaseInsensitive);
+	// 
+	//     int pos = text.indexOf(regexp);
+	// 
+	//     QString s1 = regexp.cap(0);
+	//     QString s2 = regexp.cap(1);
+
+	int pos = text.indexOf("gentoken?ibc=newspc");
+
+	QString s2 = text.left(pos);
+
+	return s2;
+}
+
+QString auto_smzdm::GetToken()
+{
+	QNetworkRequest req;
+
+	QString str_url1 = m_token_url;
+
+	req.setUrl(QUrl(str_url1));
+
+	QString origin = "http://" + m_host;
+
+	req.setRawHeader("Cache-Control", "no-cache");
+	req.setRawHeader("Accept", "*/*");
+	req.setRawHeader("Connection", "Keep-Alive");
+	//req.setRawHeader("Accept-Encoding", "gzip, deflate");
+	req.setRawHeader("Accept-Language", "zh-CN");
+	req.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+	req.setRawHeader("Content-Length", "0");
+	req.setRawHeader("X-Requested-With", "XMLHttpRequest");
+	req.setRawHeader("Host", m_host.toUtf8().data());
+	req.setRawHeader("Origin", origin.toUtf8().data());
+	req.setRawHeader("Referer", m_referer.toUtf8().data());
+	req.setRawHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+
+	/*req.setAttribute()*/
+	QByteArray request_params;
+	//request_params.append("undefined");
+	QNetworkReply* reply = m_manager.post(req, request_params);
+
+	QTime t;
+	t.start();
+	while (!reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+		if (t.elapsed() >= 10 * 1000) {
+			break;
+		}
+	}
+
+	QString msg;
+	if (reply->error() != QNetworkReply::NoError)
+	{
+		msg = reply->errorString();
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	QByteArray data = reply->readAll();
+
+	QString ret = ParseToken(data);
+
+	reply->deleteLater();
+
+	return ret;
+}
+
+QString auto_smzdm::ParseToken(const QByteArray & data)
+{
+	QString ret;
+	QJsonParseError json_error;
+	QJsonDocument parse_doucment = QJsonDocument::fromJson(data, &json_error);
+	if (json_error.error == QJsonParseError::NoError)
+	{
+		if (parse_doucment.isObject())
+		{
+			QJsonObject obj = parse_doucment.object();
+			if (obj.contains("gentoken"))
+			{
+				QJsonValue name_value = obj.take("gentoken");
+				if (name_value.isString())
+				{
+					ret = name_value.toString();
+				}
+			}
+		}
+	}
+
+	return ret;
 }
