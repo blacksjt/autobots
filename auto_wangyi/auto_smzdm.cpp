@@ -110,10 +110,11 @@ void auto_smzdm::onPause()
 	 //QString token = GetToken();
 
 	 //QString path = GetMatchedText(m_token_url);
+	 QString token = GetToken();
 
 	 foreach(QString str, m_comment_list)
 	 {
-		 QString token = GetToken();
+		 //QString token = GetToken();
 		 if (token.isEmpty())
 		 {
 			 token = GetToken();

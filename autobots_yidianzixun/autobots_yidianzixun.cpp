@@ -1071,10 +1071,10 @@ bool autobots_yidianzixun::PreLoginSina(const QString& name, SinaData& data, QSt
     return false;
   }
 
-  if (!data._showpin) // 不需要验证码
-  {
-    return true;
-  }
+//   if (!data._showpin) // 不需要验证码
+//   {
+//     return true;
+//   }
   
   int n_rand = rand()%9;
   double d = 0.987654321235647/n_rand;
