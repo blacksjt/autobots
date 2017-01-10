@@ -76,8 +76,11 @@ private:
   bool ProcessRedirectSSL(const QString& str);
   bool ProcessRedirectGet(const QString& str);
   bool GetPostId(const QByteArray& arr);
+  bool GetUserId(const QByteArray & arr);
   bool ProcessRedirectLoginGet(const QString& str);
   bool ProcessRedirectLoginGet2(const QString& str);
+  bool ProcessRedirectLoginGet3(const QString & str);
+  bool ProcessRedirectLoginGet4(const QString & str);
   bool GetFatieStatus(const QByteArray& byte_arr);
   void FatieSucceed(const QString& comment,const QString& id);
   bool PreLoginSina(const QString& name,  SinaData& data, QString& vcode,QString& code_sign);
@@ -86,6 +89,7 @@ private:
   bool LoginSina(SinaData& sina_data, const QString& name, 
     const QString& password,const QString& vcode);
   bool AuthorizeSina(const SinaData& sina_data);
+  bool AuthorizeSina2(const SinaData & sina_data);
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
@@ -97,6 +101,8 @@ private:
     QString m_client_id;
     QString m_appkey;
     QString m_state;
+	QString m_verifyToken;
+	QString	m_uid;
 private:
   bool m_code_online;
   int m_interval;

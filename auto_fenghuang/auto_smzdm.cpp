@@ -92,30 +92,32 @@ int auto_smzdm::smzdm_run()
     header_list.push_back(HttpParamItem("Referer", m_comment_url));
     header_list.push_back(HttpParamItem("Cache-Control","no-cache"));
     header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-    header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
+    //header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
     header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
+    header_list.push_back(HttpParamItem("Accept", "*/*"));
     header_list.push_back(HttpParamItem("Host", m_host));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
-    
-//     HttpParamList post_data;
-//     post_data.push_back(HttpParamItem("act","support"));
-//     post_data.push_back(HttpParamItem("rid",str));
-//     post_data.push_back(HttpParamItem("tid", m_news_id));
 
     QNetworkReply* reply = network.GetRequest(url1, header_list);
-//      QTime _t;
-//      _t.start();
-//  
-//      bool _timeout = false;
-// 
-//      while (reply && !reply->isFinished())
-//      {
-//        QCoreApplication::processEvents();
-//        if (_t.elapsed() >= 10*1000) {
-//          _timeout = true;
-//          break;
-//        }
-//      }
+
+#ifdef _DEBUG
+      QTime _t;
+      _t.start();
+  
+      bool _timeout = false;
+ 
+      while (reply && !reply->isFinished())
+      {
+        QCoreApplication::processEvents();
+        if (_t.elapsed() >= 10*1000) {
+          _timeout = true;
+          break;
+        }
+      }
+
+      QString msg = reply->readAll();
+#endif 
+
       reply->deleteLater();
 // 
    }

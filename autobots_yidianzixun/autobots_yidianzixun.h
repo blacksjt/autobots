@@ -86,12 +86,14 @@ private:
   int LoginSina(SinaData& sina_data, const QString& name, 
     const QString& password,const QString& vcode);
   bool AuthorizeSina(const SinaData& sina_data);
+  bool AuthorizeSina2(const SinaData& sina_data);
   bool GetAuthorResult(const QByteArray& rp_data);
   bool DoSupport();
   void switchIP();
+  bool GetUserId(const QByteArray& arr);
 private:
     Ui::autobots_toutiaoClass ui;
-    toutiao_network network;
+    toutiao_network *network;
     bool control_status ;
 
     QString m_post_id;
@@ -100,6 +102,8 @@ private:
     QString m_client_id;
     QString m_appkey;
     QString m_state;
+	QString m_verifyToken;
+	QString	m_uid;
     bool m_code_online;
     bool m_bswitch_ip;
 private:

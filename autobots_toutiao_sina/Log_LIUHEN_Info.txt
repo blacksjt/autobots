@@ -58,3 +58,383 @@ worker0.hyslt.com----0k!----time:11:30:32
 {"result":true,"data":12370357996}----time:11:30:32
 worker0.hyslt.com----0k!----time:11:32:49
 {"result":true,"data":12370391916}----time:11:32:49
+v1-dll-api.jsdama.com----0k!----time:23:18:23
+{"result":true,"data":2827981928}----time:23:18:26
+v1-dll-api.jsdama.com----0k!----time:23:22:26
+{"result":true,"data":2828033127}----time:23:22:26
+v1-dll-api.jsdama.com----0k!----time:23:22:42
+{"result":true,"data":2828036377}----time:23:22:43
+v1-dll-api.jsdama.com----0k!----time:23:22:54
+{"result":true,"data":2828039226}----time:23:22:57
+v1-dll-api.jsdama.com----0k!----time:23:23:15
+{"result":true,"data":2828043464}----time:23:23:16
+v1-dll-api.jsdama.com----0k!----time:23:29:54
+{"result":true,"data":2828129745}----time:23:29:55
+v1-dll-api.jsdama.com----0k!----time:23:41:59
+{"result":true,"data":2828270084}----time:23:41:59
+v1-dll-api.jsdama.com----0k!----time:23:56:18
+{"result":true,"data":2828430186}----time:23:56:19
+v1-dll-api.jsdama.com----0k!----time:23:58:5
+{"result":true,"data":2828450638}----time:23:58:5
+v1-dll-api.jsdama.com----0k!----time:0:3:48
+{"result":true,"data":2828515300}----time:0:3:49
+v1-dll-api.jsdama.com----0k!----time:0:7:55
+{"result":true,"data":2828571093}----time:0:7:57
+v1-dll-api.jsdama.com----0k!----time:0:8:28
+{"result":true,"data":2828577061}----time:0:8:28
+v1-dll-api.jsdama.com----0k!----time:0:10:48
+{"result":true,"data":2828605665}----time:0:10:48
+v1-dll-api.jsdama.com----0k!----time:0:11:10
+{"result":true,"data":2828610171}----time:0:11:11
+v1-dll-api.jsdama.com----0k!----time:0:12:46
+{"result":true,"data":2828630382}----time:0:12:47
+v1-dll-api.jsdama.com----0k!----time:0:13:47
+{"result":true,"data":2828642909}----time:0:13:47
+v1-dll-api.jsdama.com----0k!----time:0:14:5
+{"result":true,"data":2828646789}----time:0:14:5
+v1-dll-api.jsdama.com----0k!----time:0:22:15
+{"result":true,"data":2828758310}----time:0:22:15
+v1-dll-api.jsdama.com----0k!----time:0:22:26
+{"result":true,"data":2828760650}----time:0:22:26
+v1-dll-api.jsdama.com----0k!----time:0:23:17
+{"result":true,"data":2828771461}----time:0:23:17
+v1-dll-api.jsdama.com----0k!----time:0:25:8
+{"result":true,"data":2828794164}----time:0:25:8
+v1-dll-api.jsdama.com----0k!----time:0:25:17
+{"result":true,"data":2828795919}----time:0:25:17
+v1-dll-api.jsdama.com----0k!----time:0:25:24
+{"result":true,"data":2828797586}----time:0:25:24
+v1-dll-api.jsdama.com----0k!----time:0:25:39
+{"result":true,"data":2828800482}----time:0:25:39
+v1-dll-api.jsdama.com----0k!----time:0:26:0
+{"result":true,"data":2828804622}----time:0:26:1
+v1-dll-api.jsdama.com----0k!----time:0:26:10
+{"result":true,"data":2828806529}----time:0:26:10
+v1-dll-api.jsdama.com----0k!----time:0:26:39
+{"result":true,"data":2828812131}----time:0:26:39
+v1-dll-api.jsdama.com----0k!----time:0:27:4
+{"result":true,"data":2828817165}----time:0:27:6
+v1-dll-api.jsdama.com----0k!----time:0:35:5
+{"result":true,"data":2828913878}----time:0:35:5
+v1-dll-api.jsdama.com----0k!----time:0:35:59
+{"result":true,"data":2828924523}----time:0:36:3
+v1-dll-api.jsdama.com----0k!----time:0:37:7
+{"result":true,"data":2828936683}----time:0:37:7
+v1-dll-api.jsdama.com----0k!----time:0:38:4
+{"result":true,"data":2828948013}----time:0:38:4
+v1-dll-api.jsdama.com----0k!----time:0:38:54
+{"result":true,"data":2828957861}----time:0:38:54
+v1-dll-api.jsdama.com----0k!----time:0:39:8
+{"result":true,"data":2828960656}----time:0:39:8
+v1-dll-api.jsdama.com----0k!----time:0:42:48
+{"result":true,"data":2829002359}----time:0:42:48
+v1-dll-api.jsdama.com----0k!----time:0:45:35
+{"result":true,"data":2829033644}----time:0:45:35
+v1-dll-api.jsdama.com----0k!----time:0:45:57
+{"result":true,"data":2829037743}----time:0:45:57
+v1-dll-api.jsdama.com----0k!----time:0:47:17
+{"result":true,"data":2829053050}----time:0:47:17
+v1-dll-api.jsdama.com----0k!----time:0:47:33
+{"result":true,"data":2829055919}----time:0:47:33
+v1-dll-api.jsdama.com----0k!----time:1:9:13
+{"result":true,"data":2829286397}----time:1:9:16
+v1-dll-api.jsdama.com----0k!----time:1:11:24
+{"result":true,"data":2829307244}----time:1:11:24
+v1-dll-api.jsdama.com----0k!----time:1:12:19
+{"result":true,"data":2829315753}----time:1:12:20
+v1-dll-api.jsdama.com----0k!----time:1:12:40
+{"result":true,"data":2829318735}----time:1:12:40
+v1-dll-api.jsdama.com----0k!----time:1:13:7
+{"result":true,"data":2829323119}----time:1:13:7
+v1-dll-api.jsdama.com----0k!----time:1:13:51
+{"result":true,"data":2829329360}----time:1:13:51
+v1-dll-api.jsdama.com----0k!----time:1:16:29
+{"result":true,"data":2829353324}----time:1:16:29
+v1-dll-api.jsdama.com----0k!----time:1:18:7
+{"result":true,"data":2829368499}----time:1:18:10
+v1-dll-api.jsdama.com----0k!----time:13:2:22
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:23
+上传返回:0----time:13:2:23
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:24
+上传返回:0----time:13:2:24
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:24
+上传返回:0----time:13:2:24
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:25
+上传返回:0----time:13:2:25
+v1-dll-api.jsdama.com----0k!----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:28
+上传返回:0----time:13:2:28
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:29
+上传返回:0----time:13:2:29
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:29
+上传返回:0----time:13:2:29
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:29
+上传返回:0----time:13:2:29
+v1-dll-api.jsdama.com----0k!----time:13:2:31
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:32
+上传返回:0----time:13:2:32
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:32
+上传返回:0----time:13:2:32
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:32
+上传返回:0----time:13:2:32
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:33
+上传返回:0----time:13:2:33
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:33
+上传返回:0----time:13:2:33
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:33
+上传返回:0----time:13:2:33
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:33
+上传返回:0----time:13:2:33
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:34
+上传返回:0----time:13:2:34
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:34
+上传返回:0----time:13:2:34
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:35
+上传返回:0----time:13:2:35
+v1-dll-api.jsdama.com----0k!----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:37
+上传返回:0----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:37
+上传返回:0----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:37
+上传返回:0----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:37
+上传返回:0----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:37
+上传返回:0----time:13:2:37
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:38
+上传返回:0----time:13:2:38
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:38
+上传返回:0----time:13:2:38
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:38
+上传返回:0----time:13:2:38
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:38
+上传返回:0----time:13:2:38
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:38
+上传返回:0----time:13:2:38
+v1-dll-api.jsdama.com----0k!----time:13:2:55
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:56
+上传返回:0----time:13:2:56
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:2:57
+上传返回:0----time:13:2:57
+v1-dll-api.jsdama.com----0k!----time:13:3:0
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:2
+上传返回:0----time:13:3:2
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:2
+上传返回:0----time:13:3:2
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:3
+上传返回:0----time:13:3:3
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:3
+上传返回:0----time:13:3:3
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:4
+上传返回:0----time:13:3:4
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:4
+上传返回:0----time:13:3:4
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:4
+上传返回:0----time:13:3:4
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:4
+上传返回:0----time:13:3:4
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:5
+上传返回:0----time:13:3:5
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:5
+上传返回:0----time:13:3:5
+v1-dll-api.jsdama.com----0k!----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:7
+上传返回:0----time:13:3:7
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:8
+上传返回:0----time:13:3:8
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:8
+上传返回:0----time:13:3:8
+v1-dll-api.jsdama.com----0k!----time:13:3:11
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:11
+上传返回:0----time:13:3:11
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:11
+上传返回:0----time:13:3:11
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:12
+上传返回:0----time:13:3:12
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:12
+上传返回:0----time:13:3:12
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:12
+上传返回:0----time:13:3:12
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:13
+上传返回:0----time:13:3:13
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:13
+上传返回:0----time:13:3:13
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:14
+上传返回:0----time:13:3:14
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:14
+上传返回:0----time:13:3:14
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:14
+上传返回:0----time:13:3:14
+v1-dll-api.jsdama.com----0k!----time:13:3:16
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:17
+上传返回:0----time:13:3:17
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:18
+上传返回:0----time:13:3:18
+v1-dll-api.jsdama.com----0k!----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:20
+上传返回:0----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:20
+上传返回:0----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:20
+上传返回:0----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:20
+上传返回:0----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:20
+上传返回:0----time:13:3:20
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:21
+上传返回:0----time:13:3:21
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:21
+上传返回:0----time:13:3:21
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:21
+上传返回:0----time:13:3:21
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:22
+上传返回:0----time:13:3:22
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:22
+上传返回:0----time:13:3:22
+v1-dll-api.jsdama.com----0k!----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:25
+上传返回:0----time:13:3:25
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:26
+上传返回:0----time:13:3:26
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:26
+上传返回:0----time:13:3:26
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:3:26
+上传返回:0----time:13:3:26
+v1-dll-api.jsdama.com----0k!----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:49
+上传返回:0----time:13:6:49
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:50
+上传返回:0----time:13:6:50
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:50
+上传返回:0----time:13:6:50
+{"result":false,"data":"用户点数不足 或 锁定点数"}----time:13:6:50
+上传返回:0----time:13:6:50
+v1-dll-api.jsdama.com----0k!----time:18:24:37
+{"result":true,"data":3061382111}----time:18:24:38
+v1-dll-api.jsdama.com----0k!----time:18:26:34
+{"result":true,"data":3061422313}----time:18:26:34
+v1-dll-api.jsdama.com----0k!----time:18:26:58
+{"result":true,"data":3061431589}----time:18:26:58
+v1-dll-api.jsdama.com----0k!----time:18:29:45
+{"result":true,"data":3061490269}----time:18:29:45
+v1-dll-api.jsdama.com----0k!----time:18:32:0
+{"result":true,"data":3061536079}----time:18:32:0
+v1-dll-api.jsdama.com----0k!----time:19:15:57
+{"result":true,"data":3062332135}----time:19:15:58
+v1-dll-api.jsdama.com----0k!----time:19:24:59
+{"result":true,"data":3062472741}----time:19:24:59
+v1-dll-api.jsdama.com----0k!----time:20:5:35
+{"result":true,"data":3063130513}----time:20:5:35
+v1-dll-api.jsdama.com----0k!----time:20:16:24
+{"result":true,"data":3063421292}----time:20:16:24
+v1-dll-api.jsdama.com----0k!----time:20:17:57
+{"result":true,"data":3063462101}----time:20:17:57
+v1-dll-api.jsdama.com----0k!----time:20:27:46
+{"result":true,"data":3063721257}----time:20:27:46
+v1-dll-api.jsdama.com----0k!----time:20:29:10
+{"result":true,"data":3063758518}----time:20:29:10
+v1-dll-api.jsdama.com----0k!----time:20:30:29
+{"result":true,"data":3063794077}----time:20:30:29
+v1-dll-api.jsdama.com----0k!----time:20:31:23
+{"result":true,"data":3063817828}----time:20:31:23
+v1-dll-api.jsdama.com----0k!----time:20:31:32
+{"result":true,"data":3063821470}----time:20:31:33
+v1-dll-api.jsdama.com----0k!----time:20:33:23
+{"result":true,"data":3063873220}----time:20:33:24
+v1-dll-api.jsdama.com----0k!----time:20:34:52
+{"result":true,"data":3063914217}----time:20:34:53

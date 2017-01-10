@@ -40,6 +40,7 @@ public:
   QNetworkReply* PostRequest(const QUrl& url, const HttpParamList& headers,const HttpParamList& post_data);
   QNetworkReply* PostRequest_ssl(const QUrl& url, const HttpParamList& headers,const HttpParamList& post_data);
   QNetworkReply* PostRequest_json(const QUrl& url, const HttpParamList& headers,const QJsonDocument& json_doc);
+  QNetworkReply* PostRequest_json_ssl(const QUrl& url, const HttpParamList& headers, const QJsonDocument& json_doc);
 
   //使用get方法发送url请求
   QNetworkReply* GetRequest(const QUrl& url, const HttpParamList& headers);

@@ -328,13 +328,13 @@ void auto_dirvers_fatie::AutoFatie()
 				if (m_work_list[k].doWork())
 				{
 					int current_id = m_work_list.at(k).getCurrentIndex();
-					QString msg = QStringLiteral("第%1篇，第%2条，已完成").arg(k+1,current_id);
+					QString msg = QStringLiteral("第%1篇，第%2条，已完成").arg(k+1).arg(current_id);
 					emitMsgBar(msg);
 				}
 				else
 				{
 					int current_id = m_work_list.at(k).getCurrentIndex();
-					QString msg = QStringLiteral("第%1篇，第%2条，失败").arg(k+1,current_id);
+					QString msg = QStringLiteral("第%1篇，第%2条，失败").arg(k+1).arg(current_id);
 					emitMsgBar(msg);
 				}
 

@@ -142,7 +142,7 @@ bool autobots_weibo_vote::DoWork()
 {
   //http://vote.weibo.com/aj/joinpoll?ajwvr=6&__rnd=1452062896586
   QString cur_time = GetTimeStr();
-  QString str_url1 = "http://vote.weibo.com/aj/joinpoll?ajwvr=6&__rnd=" + cur_time;
+  QString str_url1 = "http://vote.weibo.com/aj/joinpoll";//?ajwvr=6&__rnd=" + cur_time;
 
   QUrl url1;
   url1.setUrl(str_url1);
@@ -159,7 +159,7 @@ bool autobots_weibo_vote::DoWork()
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   HttpParamList post_data;
-  post_data.push_back(HttpParamItem("_t", "0"));
+  //post_data.push_back(HttpParamItem("_t", "0"));
   post_data.push_back(HttpParamItem("anonymous", "0"));
   post_data.push_back(HttpParamItem("items", m_vote_order));
   post_data.push_back(HttpParamItem("poll_id", m_vote_id));
@@ -895,10 +895,10 @@ bool autobots_weibo_vote::PreLoginSina(const QString& name, SinaData& data, QStr
     return false;
   }
 
-  if (!data._showpin) // 不需要验证码
-  {
-    return true;
-  }
+  //if (!data._showpin) // 不需要验证码
+  //{
+  //  return true;
+  //}
   
   int n_rand = rand()%9;
   double d = 0.987654321235647/n_rand;

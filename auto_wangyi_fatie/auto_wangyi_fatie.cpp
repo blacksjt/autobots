@@ -10,6 +10,8 @@
 #include "sina_encrypt.h"
 #include "vlidatecodeonline.h"
 #include "dailconnector.h"
+#include "netease_encrypt.h"
+#include "vlidatecodeonline.h"
 
 const int TIMEOUT = 20*1000;
 QString GetTimeStr()
@@ -222,6 +224,8 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+	  QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+	  QString msg = reply->errorString();
     return false;
   }
   
@@ -247,13 +251,13 @@ bool autobots_toutiao::GetContent()
   QUrl url_1(str_url_1);
   url_1.setUrl(str_url_1);
   HttpParamList header_list1;
-  header_list1.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
-  header_list1.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
+  header_list1.push_back(HttpParamItem("Accept",	"*/*"));
+  header_list1.push_back(HttpParamItem("Connection","keep-alive"));
+  //header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
   header_list1.push_back(HttpParamItem("Accept-Language","zh-cn"));
   header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
 
-  header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
+  //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
   header_list1.push_back(HttpParamItem("Host", m_host)); // mhost
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
@@ -277,39 +281,123 @@ bool autobots_toutiao::GetContent()
   QVariant statusCodeV =  rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
   bool res = statusCodeV.toInt() == 200 ? true : false;
 
+  QString c = rp->readAll();
+
   if (rp!=NULL)
     rp->deleteLater();
 
   return  res;
 }
 
+bool autobots_toutiao::GetCookies()
+{
+    QString str_url_1 = QString("https://dl.reg.163.com/ini?pd=tie&pkid=cGTVPrV&pkht=tie.163.com&nocache=%1").arg(GetTimeStr());
+
+    QUrl url_1(str_url_1);
+    url_1.setUrl(str_url_1);
+    HttpParamList header_list1;
+    header_list1.push_back(HttpParamItem("Accept", "*/*"));
+    header_list1.push_back(HttpParamItem("Connection", "keep-alive"));
+    //header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
+    header_list1.push_back(HttpParamItem("Accept-Language", "zh-cn"));
+    header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
+
+    //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
+    //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
+    header_list1.push_back(HttpParamItem("Host", "dl.reg.163.com")); // mhost
+    header_list1.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+    QNetworkReply* rp = network.GetRequest(url_1, header_list1);
+
+    QTime _t;
+    _t.start();
+
+    bool _timeout = false;
+
+    while (rp && !rp->isFinished())
+    {
+        QCoreApplication::processEvents();
+        if (_t.elapsed() >= TIMEOUT) {
+            _timeout = true;
+            break;
+        }
+    }
+
+    QVariant statusCodeV = rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    bool res = statusCodeV.toInt() == 200 ? true : false;
+
+    QString c = rp->readAll();
+
+    if (rp != NULL)
+        rp->deleteLater();
+
+    return  res;
+}
 
 
 bool autobots_toutiao::LoginWY(const QString& name, const QString& password)
 {
-  QString str_login_url = "https://reg.163.com/logins.jsp";
+  QString tk = GetTk(name);
+
+  if(tk.isEmpty())
+  { 
+      tk = GetTk(name);
+  }
+
+  if (tk.isEmpty())
+  {
+      return false;
+  }
+
+  
+  bool r = GetVlidateCode(name);
+
+  if (!r)
+  {
+      return false;
+  }
+
+  QNetworkCookieJar* jar= network.GetManager().cookieJar();
+  QList<QNetworkCookie> Cl = jar->cookiesForUrl(QUrl("163.com"));
+  QMap<QString,QString> map;
+  for each (QNetworkCookie var in Cl)
+  {
+	  QString name = var.name();
+	  QString val = var.value();
+	  map.insert(name, val);
+  }
+
+  QString str_login_url = "https://dl.reg.163.com/l";
   QUrl url1(str_login_url);
 
   HttpParamList header_list;
-  header_list.push_back(HttpParamItem("Accept","text/html, application/xhtml+xml, */*"));
+  header_list.push_back(HttpParamItem("Accept","*/*"));
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
-  header_list.push_back(HttpParamItem("Content-Type","application/x-www-form-urlencoded"));
+  header_list.push_back(HttpParamItem("Cache-Control","no-cache"));
+  header_list.push_back(HttpParamItem("Content-Type","application/json"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "reg.163.com"));
+  header_list.push_back(HttpParamItem("Host", "dl.reg.163.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"));
-  header_list.push_back(HttpParamItem("Referer",m_url));
+  header_list.push_back(HttpParamItem("Referer","https://dl.reg.163.com/src/mp-agent-finger.html?WEBZJVersion=1481026394335"));
 
-  QString temp = QString("http://comment.api.163.com/api/v1/products/a2869674571f77b5a0867c3d71db5856/users/checklogin?url=%1&ibc=newspc").arg(m_url);
+  QString pw = netease_encrypt::GetInstance()->EncryptPassword(password);
+  QJsonObject obj;
+  obj.insert("un", name);
+  obj.insert("pw", pw);
+  obj.insert("pd", "tie");
+  obj.insert("l", 1);
+  obj.insert("d", 10);
+  obj.insert("t", QDateTime::currentMSecsSinceEpoch());
+  obj.insert("pkid", "cGTVPrV");
+  obj.insert("domains", "");
+  obj.insert("tk", tk);
+  obj.insert("pwdKeyUp", 0);
 
-  HttpParamList post_data;
-  post_data.push_back(HttpParamItem("password",password));
-  post_data.push_back(HttpParamItem("product","content"));
-  post_data.push_back(HttpParamItem("savelogin", "1"));
-  post_data.push_back(HttpParamItem("url",temp));
-  post_data.push_back(HttpParamItem("username",name));
+  QJsonDocument doc1(obj);
+  QString temp2 = doc1.toJson(QJsonDocument::Compact);
+  header_list.push_back(HttpParamItem("Content-Length", QString::number(temp2.length())));
 
-  QNetworkReply* reply = network.PostRequest_ssl(url1, header_list, post_data);
+  QNetworkReply* reply = network.PostRequest_json_ssl(url1, header_list, doc1);
 
   QTime _t;
   _t.start();
@@ -335,6 +423,10 @@ bool autobots_toutiao::LoginWY(const QString& name, const QString& password)
   QVariant statusCodeV =  reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
 
   int n = statusCodeV.toInt();
+
+  QByteArray data = reply->readAll();
+
+  QString res = ParseToken(data, "ret");
 
   if (n != 200)
   {
@@ -680,6 +772,7 @@ void autobots_toutiao::AutoFatie()
 
     network.GetManager().setCookieJar(cookie);
 
+#ifndef _DEBUG
     EmitMsgStatusBar(QStringLiteral("拨号中..."));
     QString dial_msg;
     while(!connector.ReConnect(dial_msg))
@@ -705,6 +798,19 @@ void autobots_toutiao::AutoFatie()
       EmitMsgStatusBar(QStringLiteral("网站连接失败...,请检查网络连接"));
       continue;;
     }
+#else
+    GetContent();
+    GetCookies();
+#endif
+
+	cookie->insertCookie(QNetworkCookie("JSESSIONID-WYTXZDL", "hFjXm\\HiIB5LHxRu/sa85d6e3vpMuaBZII/Qa7DwrQ+TJbGeKLaaANWmK7xhWq2S8H84G23RbddZArgGZW6Ng887sK5QIl68SNKcK\\BKwJH+BVV2g5faPYeFU35qsmZGnU\\N2mEnYqj843BRKOWk4rj8\\6QooF9nh+0eLxQomX9q7rZl:1481454979717"));
+	cookie->insertCookie(QNetworkCookie("_ntes_nnid", "23757ad21b8bbf955a7660e31feef5a7,1481299415884"));
+	cookie->insertCookie(QNetworkCookie("_ntes_nuid", "23757ad21b8bbf955a7660e31feef5a7"));
+	cookie->insertCookie(QNetworkCookie("_ihtxzdilxldP8_", "30"));
+	cookie->insertCookie(QNetworkCookie("Province", "025"));
+	cookie->insertCookie(QNetworkCookie("City", "0512"));
+	cookie->insertCookie(QNetworkCookie("vjlast", "1482226924.1482226924.30"));
+	cookie->insertCookie(QNetworkCookie("vjuids", "604fbdd11.1582e3a43f8.0.c65f3906b4f35"));
 
     // 尝试登陆
     bool login_status = false;
@@ -718,6 +824,11 @@ void autobots_toutiao::AutoFatie()
         //m_account_row_list.at(m_account_order)->setCheckState(Qt::Checked);
         ui.tableWidget_account_id->item(m_account_order, 0)->setBackgroundColor(QColor(255,0,0, 180));
         m_account_order++;
+
+		cookie->deleteLater();
+		QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
+		network.GetManager().setCookieJar(cookie);
+		GetCookies();
         continue;
       }
       else
@@ -941,14 +1052,14 @@ QString autobots_toutiao::GetToken()
 
 	QByteArray data = reply->readAll();
 
-	QString ret = ParseToken(data);
+	QString ret = ParseToken(data, "gentoken");
 
 	reply->deleteLater();
 
 	return ret;
 }
 
-QString autobots_toutiao::ParseToken(const QByteArray & data)
+QString autobots_toutiao::ParseToken(const QByteArray & data, const QString& section)
 {
 	QString ret;
 	QJsonParseError json_error;
@@ -958,9 +1069,9 @@ QString autobots_toutiao::ParseToken(const QByteArray & data)
 		if (parse_doucment.isObject())
 		{
 			QJsonObject obj = parse_doucment.object();
-			if (obj.contains("gentoken"))
+			if (obj.contains(section))
 			{
-				QJsonValue name_value = obj.take("gentoken");
+				QJsonValue name_value = obj.take(section);
 				if (name_value.isString())
 				{
 					ret = name_value.toString();
@@ -970,6 +1081,135 @@ QString autobots_toutiao::ParseToken(const QByteArray & data)
 	}
 
 	return ret;
+}
+
+bool autobots_toutiao::GetVlidateCode(const QString& name)
+{
+    QString vcode, code_sign;
+    QString url = QString("https://dl.reg.163.com/cp?pd=tie&pkid=cGTVPrV&random=%1").arg(GetTimeStr());
+    QUrl url1;
+    url1.setUrl(url);
+
+    //QNetworkRequest req;
+    HttpParamList header_list;
+    //QString origin = "http://" + m_host;
+
+    header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
+    header_list.push_back(HttpParamItem("Accept", "image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5"));
+    header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+    //header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
+    header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
+    header_list.push_back(HttpParamItem("Content-Type", "application/json"));
+    header_list.push_back(HttpParamItem("Content-Length", "0"));
+    header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
+    header_list.push_back(HttpParamItem("Host", "dl.reg.163.com"));
+    //header_list.push_back(HttpParamItem("Origin", origin));
+    header_list.push_back(HttpParamItem("Referer", "http://webzj.reg.163.com/v1.0.1/pub/index_dl.html?cd=http://img1.cache.netease.com/tie/static/2016113014/&cf=tie_error_login_urs.css&MGID=1481201470968.5168&wdaId="));
+    header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+    //HttpParamList post_data;
+    QNetworkReply* reply = network.GetRequest_ssl(url1, header_list);
+
+    QTime _t;
+    _t.start();
+
+    bool _timeout = false;
+
+    while (reply && !reply->isFinished())
+    {
+        QCoreApplication::processEvents();
+        if (_t.elapsed() >= TIMEOUT) {
+            _timeout = true;
+            break;
+        }
+    }
+
+    QString msg;
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        msg = reply->errorString();
+        EmitMsgStatusBar(msg);
+        return false;
+    }
+
+    QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+    int n = statusCodeV.toInt();
+
+    QByteArray data = reply->readAll();
+
+    QImage image_ = QImage::fromData(data);//(data.data(),100,40,QImage::Format_RGB32);
+    image_.save("e:/2.jpg");
+
+    VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
+    int res = obj->GetRecResults(data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+    //obj->ReportError("bestsalt", code_sign); 
+
+    reply->deleteLater();
+
+    if (res != 0)
+        return false;
+
+    // 确认验证码
+    url = QString("https://dl.reg.163.com/vfcp");
+    url1.setUrl(url);
+
+    header_list.clear();
+    //header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
+    header_list.push_back(HttpParamItem("Accept", "*/*"));
+    header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+    //header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
+    header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
+    header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded"));
+    //header_list.push_back(HttpParamItem("Content-Length", "0"));
+    header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
+    header_list.push_back(HttpParamItem("Host", "dl.reg.163.com"));
+    //header_list.push_back(HttpParamItem("Origin", origin));
+    header_list.push_back(HttpParamItem("Referer", "https://dl.reg.163.com/src/mp-agent-finger.html?WEBZJVersion=1481026394335"));
+    header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+
+    HttpParamList post_data;
+    post_data.push_back(HttpParamItem("cap", vcode));
+    post_data.push_back(HttpParamItem("pd", "tie"));
+    post_data.push_back(HttpParamItem("pkid", "cGTVPrV"));
+    post_data.push_back(HttpParamItem("un", name));
+
+    QNetworkReply* reply2 = network.PostRequest_ssl(url1, header_list,post_data);
+
+    _t.restart();
+
+    _timeout = false;
+
+    while (reply2 && !reply2->isFinished())
+    {
+        QCoreApplication::processEvents();
+        if (_t.elapsed() >= TIMEOUT) {
+            _timeout = true;
+            break;
+        }
+    }
+
+    msg = "";
+    if (reply2->error() != QNetworkReply::NoError)
+    {
+        msg = reply2->errorString();
+        EmitMsgStatusBar(msg);
+        return false;
+    }
+
+    statusCodeV = reply2->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+    n = statusCodeV.toInt();
+
+    QByteArray data2 = reply2->readAll();
+
+    QString str = ParseToken(data2, "ret");
+
+    if (str == "201" || str == "200")
+        return true;
+
+    return false;
 }
 
 void autobots_toutiao::intialVPN()
@@ -1026,6 +1266,64 @@ void autobots_toutiao::SaveIniSettings()
 
 	QSettings setting(inipath, QSettings::IniFormat);
 	setting.setValue("default", ui.comboBox_adsl->currentIndex());
+}
+
+QString autobots_toutiao::GetTk(const QString & name)
+{
+    //netease_encrypt::GetInstance()->EncryptPassword();
+    QString url = QString("https://dl.reg.163.com/gt?un=%1&pkid=cGTVPrV&pd=tie&nocache=%2").arg(name).arg(GetTimeStr());
+    QUrl url1;
+    url1.setUrl(url);
+
+    //QNetworkRequest req;
+    HttpParamList header_list;
+    //QString origin = "http://" + m_host;
+
+    header_list.push_back(HttpParamItem("Accept", "*/*"));
+    header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+    //header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
+    header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3"));
+    header_list.push_back(HttpParamItem("Content-Type", "application/json"));
+    header_list.push_back(HttpParamItem("Host", "dl.reg.163.com"));
+    header_list.push_back(HttpParamItem("Referer", "https://dl.reg.163.com/src/mp-agent-finger.html?WEBZJVersion=1481026394335"));
+    header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+    //HttpParamList post_data;
+    QNetworkReply* reply = network.GetRequest_ssl(url1, header_list);
+
+    QTime _t;
+    _t.start();
+
+    bool _timeout = false;
+
+    while (reply && !reply->isFinished())
+    {
+        QCoreApplication::processEvents();
+        if (_t.elapsed() >= TIMEOUT) {
+            _timeout = true;
+            break;
+        }
+    }
+
+    QString msg;
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        msg = reply->errorString();
+        EmitMsgStatusBar(msg);
+        return QString();
+    }
+
+    QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+    int n = statusCodeV.toInt();
+
+    QByteArray data = reply->readAll();
+
+    QString ret = ParseToken(data, "tk");
+
+    reply->deleteLater();
+
+    return ret;
 }
 
 void autobots_toutiao::onChanged(const QString& text)

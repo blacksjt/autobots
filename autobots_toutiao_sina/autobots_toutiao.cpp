@@ -56,11 +56,11 @@ void autobots_toutiao::onStart()
   // 更新界面输入
   UpdateData();
   
-  if (m_account_list.size() < m_comment_list.size())
-  {
-    QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("用户账户太少")); 
-    return;
-  }
+  //if (m_account_list.size() < m_comment_list.size())
+  //{
+  //  QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("用户账户太少")); 
+  //  return;
+  //}
 
   control_status = true;
 
@@ -82,6 +82,8 @@ void autobots_toutiao::onStart()
     bool login_status = false;
     while (m_account_order < m_account_list.size())
     {
+		network.GetManager().clearAccessCache();
+		network.GetManager().cookieJar()->deleteLater();
       QNetworkCookieJar* cookie = new QNetworkCookieJar();
 
       network.GetManager().setCookieJar(cookie);
@@ -170,9 +172,7 @@ void autobots_toutiao::onPause()
 
 bool autobots_toutiao::DoPostFatie(const QString& content)
 {
-  // http://toutiao.com/group/6222456302762934530/post_comment/
-     http://toutiao.com/group/6226929286129942786/post_comment/
-  QString str_url1 = "http://toutiao.com/group/" + m_group_id + "/post_comment/";
+  QString str_url1 = "http://www.toutiao.com/api/comment/post_comment/";
 
   QUrl url1;
   url1.setUrl(str_url1);
@@ -180,12 +180,12 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
+  //header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
   header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
   header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
   header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("Referer", m_url));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
@@ -194,6 +194,9 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
   post_data.push_back(HttpParamItem("group_id", m_group_id));
   post_data.push_back(HttpParamItem("item_id", m_news_id));
   post_data.push_back(HttpParamItem("status", content));
+  post_data.push_back(HttpParamItem("content", content));
+  post_data.push_back(HttpParamItem("id", "0"));
+  post_data.push_back(HttpParamItem("aid", "24"));
 
   QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
 
@@ -213,7 +216,12 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
-    return false;
+	  QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+	  int n = statusCodeV.toInt();
+	  QString ss = reply->errorString();
+	  ui.lineEdit_msg->setText(ss);
+	  reply->deleteLater();
+	  return false;
   }
 
   QByteArray rp_data = reply->readAll();
@@ -224,61 +232,76 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
   if (type.contains("json"))
   {
-     return GetFatieStatus(rp_data); 
+	  bool res = GetFatieStatus(rp_data);
+	  if (!res)
+	  {
+		  QString msg = rp_data;
+		  ui.lineEdit_msg->setText(msg);
+	  }
+
+	  return res;
   }
-  else 
+  else
   {
-      return false;
-  } 
+	  return false;
+  }
   
 }
 
 bool autobots_toutiao::GetContent()
 {
-  QString str_url_1 = m_url;
+	QString str_url_1 = m_url;
 
-  QUrl url_1(str_url_1);
-  url_1.setUrl(str_url_1);
-  HttpParamList header_list1;
-  header_list1.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
-  header_list1.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
-  header_list1.push_back(HttpParamItem("Accept-Language","zh-cn"));
-  header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
+	QUrl url_1(str_url_1);
+	url_1.setUrl(str_url_1);
+	HttpParamList header_list1;
+	header_list1.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
+	header_list1.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	header_list1.push_back(HttpParamItem("Accept-Encoding", "deflate"));
+	header_list1.push_back(HttpParamItem("Accept-Language", "zh-cn"));
+	header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
 
-  header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
-  //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
-  header_list1.push_back(HttpParamItem("Referer", "http://toutiao.com/"));
-  header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
- 
-  QNetworkReply* rp = network.GetRequest(url_1, header_list1);
+	//header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
+	//header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
+	header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
+	header_list1.push_back(HttpParamItem("Referer", "http://www.toutiao.com/"));
+	header_list1.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
-  QTime _t;
-  _t.start();
+	QNetworkReply* rp = network.GetRequest(url_1, header_list1);
 
-  bool _timeout = false;
+	QTime _t;
+	_t.start();
 
-  while (rp && !rp->isFinished())
-  {
-    QCoreApplication::processEvents();
-    if (_t.elapsed() >= TIMEOUT) {
-      _timeout = true;
-      break;
-    }
-  }
+	bool _timeout = false;
 
-  bool res = GetCsrfToken(rp->readAll());
+	while (rp && !rp->isFinished())
+	{
+		QCoreApplication::processEvents();
+		if (_t.elapsed() >= TIMEOUT) {
+			_timeout = true;
+			break;
+		}
+	}
 
-  if (rp!=NULL)
-    rp->deleteLater();
+	if (rp->error() != QNetworkReply::NoError)
+	{
+		QString msg = rp->errorString();
+		ui.lineEdit_msg->setText(msg);
+		rp->deleteLater();
+		return false;
+	}
 
-  return  res;
+	bool res = GetCsrfToken(rp->readAll());
+
+	if (rp != NULL)
+		rp->deleteLater();
+
+	return  res;
 }
 
 bool autobots_toutiao::RequestForSina()
 {
-  QString str_url1 = "http://toutiao.com/auth/connect/?type=toutiao&platform=sina_weibo";
+  QString str_url1 = QString("https://www.toutiao.com/auth/connect/?type=sso&platform=sina_weibo&next=https://sso.toutiao.com/auth/login_success/?service=%1").arg(m_url);;
 
   QUrl url1(str_url1);
 
@@ -288,7 +311,8 @@ bool autobots_toutiao::RequestForSina()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
+  header_list.push_back(HttpParamItem("Referer", "https://sso.toutiao.com/login/"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network.GetRequest(url1, header_list);
@@ -310,6 +334,7 @@ bool autobots_toutiao::RequestForSina()
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+	  QString msg = reply->errorString();
     return false;
   }
 
@@ -486,7 +511,7 @@ void autobots_toutiao::onActFromTxt()
 
 void autobots_toutiao::Logout()
 {
-  QString str_url_1 = "http://web.toutiao.com/auth/logout/";
+  QString str_url_1 = "https://sso.toutiao.com/logout/";
 
   QUrl url_1(str_url_1);
 
@@ -499,11 +524,11 @@ void autobots_toutiao::Logout()
 
   //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   ////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "sso.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
-  QNetworkReply* reply_1 = network.GetRequest(url_1, header_list1);
+  QNetworkReply* reply_1 = network.GetRequest_ssl(url_1, header_list1);
 
   QTime _t;
   _t.start();
@@ -671,6 +696,7 @@ bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
   }
 
   QByteArray data = reply->readAll();
+  QString t = data;
 
   return GetPostId(data);
 
@@ -789,6 +815,46 @@ bool autobots_toutiao::GetPostId(const QByteArray& arr)
   return true;
 }
 
+bool autobots_toutiao::GetUserId(const QByteArray& arr)
+{
+	// name="client_id" value="2504490989"
+	// name="appkey62" value="42iQjj"
+	// name="state" value="f4b2dd6diaFhGKFwqnNpbmFfd2VpYm-hc6ChcgKhdgKhaQChaKt0b3V0aWFvLmNvbaFtAKFuwA%3D%3D"
+
+	HtmlParseUtils html_parse(arr.data(), arr.length());
+
+	// "查找uid"
+	GumboNode* node = html_parse.FirstElementNode("name", "uid");
+	QString temp1;
+	if (node != NULL)
+	{
+		std::string post_from_id = HtmlParseUtils::GetAttributeValue(node, "value");
+
+		QString str = QString::fromStdString(post_from_id);
+
+		if (!str.isEmpty())
+		{
+			m_uid = str;
+		}
+	}
+
+	// "查找verifyToken"
+	node = html_parse.FirstElementNode("name", "verifyToken");
+	if (node != NULL)
+	{
+		std::string client_id = HtmlParseUtils::GetAttributeValue(node, "value");
+
+		QString temp = QString::fromStdString(client_id);
+
+		if (!temp.isEmpty())
+		{
+			m_verifyToken = temp;
+		}
+	}
+
+	return true;
+}
+
 bool autobots_toutiao::ProcessRedirectLoginGet(const QString& str)
 {
   HttpParamList header_list;
@@ -817,6 +883,7 @@ bool autobots_toutiao::ProcessRedirectLoginGet(const QString& str)
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+	  QString s = reply->errorString();
     return false;
   }
 
@@ -848,7 +915,7 @@ bool autobots_toutiao::ProcessRedirectLoginGet2(const QString& str)
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
-  header_list.push_back(HttpParamItem("Host","toutiao.com"));
+  header_list.push_back(HttpParamItem("Host","sso.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
@@ -877,21 +944,123 @@ bool autobots_toutiao::ProcessRedirectLoginGet2(const QString& str)
 
   int n = statusCodeV.toInt();
 
-  if (n != 200)
+  if (n == 302 || n == 301)
   {
-    return false;
+	  // 重定向
+	  QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+	  QUrl red_url = redirectionTarget.toUrl();
+
+	  QString str2 = red_url.toString();
+
+	  return ProcessRedirectLoginGet3(str2);
   }
-
-  QByteArray data = reply->readAll();
-
-  QString temp_s = data;
-  if (temp_s.contains("window.opener.user.connected") 
-    || temp_s.contains("window.parent.user.connected") )
+  else
   {
-    return true;
+	  return false;
   }
+}
 
-  return false;
+
+bool autobots_toutiao::ProcessRedirectLoginGet3(const QString& str)
+{
+	HttpParamList header_list;
+	header_list.push_back(HttpParamItem("Accept", "text/html, application/xhtml+xml, */*"));
+	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	//header_list.push_back(HttpParamItem("Accept-Encoding", "deflate"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
+	header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
+	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+
+	QTime _t;
+	_t.start();
+
+	bool _timeout = false;
+
+	while (reply && !reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+
+		if (_t.elapsed() >= TIMEOUT) {
+			_timeout = true;
+			break;
+		}
+	}
+
+	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
+	{
+		return false;
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+
+	if (n == 302)
+	{
+		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+		QUrl red_url = redirectionTarget.toUrl();
+
+		QString str2 = red_url.toString();
+
+		return ProcessRedirectLoginGet4(str2);
+	}
+
+	QByteArray data = reply->readAll();
+
+
+	return (n == 200) ? true:false;
+}
+
+bool autobots_toutiao::ProcessRedirectLoginGet4(const QString& str)
+{
+	HttpParamList header_list;
+	header_list.push_back(HttpParamItem("Accept", "text/html, application/xhtml+xml, */*"));
+	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	//header_list.push_back(HttpParamItem("Accept-Encoding", "deflate"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
+	header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
+	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+
+	QTime _t;
+	_t.start();
+
+	bool _timeout = false;
+
+	while (reply && !reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+
+		if (_t.elapsed() >= TIMEOUT) {
+			_timeout = true;
+			break;
+		}
+	}
+
+	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
+	{
+		return false;
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	if (n != 200)
+	{
+		return false;
+	}
+
+	QByteArray data = reply->readAll();
+
+
+	return true;
 }
 
 
@@ -965,7 +1134,7 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
   sina_encrypt* encryptor = sina_encrypt::GetInstance();
   QString encrypted_name = encryptor->EncryptName(name);
 
-  QString str_url1 = QString("https://login.sina.com.cn/sso/prelogin.php?entry=openapi&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.15)&_=%2").arg(encrypted_name, str_time);
+  QString str_url1 = QString("https://login.sina.com.cn/sso/prelogin.php?entry=openapi&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=%2").arg(encrypted_name, str_time);
   QUrl url1(str_url1);
 
   QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://service.zol.com.cn/user/api/sina/callback.php&response_type=code").arg(m_client_id, m_state);
@@ -1199,8 +1368,9 @@ bool autobots_toutiao::LoginSina(SinaData& sina_data,const
   if (sina_data._showpin)
   {
     // 需要验证码
-    str_login_url = QString("https://login.sina.com.cn/sso/login.php?entry=openapi&gateway=1&from=&savestate=0&useticket=1&pagerefer=&pcid=%1&ct=1800&s=1&vsnf=1&vsnval=&door=%2&appkey=%3&su=%4&service=miniblog&servertime=%5&nonce=%6&pwencode=rsa2&rsakv=%7&sp=%8&sr=1192*670&encoding=UTF-8&cdult=2&domain=weibo.com&prelt=140&returntype=TEXT&callback=sinaSSOController.loginCallBack&client=ssologin.js(v1.4.15)&_=%9").arg(
-      sina_data._pcid, vcode, m_appkey, encrypted_name, sina_data._servertime,sina_data._nonce, sina_data._rsakv, encrypted_pwd, str_time);
+	  str_login_url=  QString("https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)&_=%1&openapilogin=qrcode").arg(str_time);
+    //str_login_url = QString("https://login.sina.com.cn/sso/login.php?entry=openapi&gateway=1&from=&savestate=0&useticket=1&pagerefer=&pcid=%1&ct=1800&s=1&vsnf=1&vsnval=&door=%2&appkey=%3&su=%4&service=miniblog&servertime=%5&nonce=%6&pwencode=rsa2&rsakv=%7&sp=%8&sr=1192*670&encoding=UTF-8&cdult=2&domain=weibo.com&prelt=140&returntype=TEXT&callback=sinaSSOController.loginCallBack&client=ssologin.js(v1.4.15)&_=%9").arg(
+    //  sina_data._pcid, vcode, m_appkey, encrypted_name, sina_data._servertime,sina_data._nonce, sina_data._rsakv, encrypted_pwd, str_time);
   }
   else
   {
@@ -1215,13 +1385,42 @@ bool autobots_toutiao::LoginSina(SinaData& sina_data,const
   
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
+  //header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
   header_list.push_back(HttpParamItem("Host", "login.sina.com.cn"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
   header_list.push_back(HttpParamItem("Referer",str_temp));
 
-  QNetworkReply* reply = network.GetRequest_ssl(url1, header_list);
+  HttpParamList post_data;
+  //post_data.push_back(HttpParamItem("action", "login"));
+  post_data.push_back(HttpParamItem("appkey62", m_appkey));
+  post_data.push_back(HttpParamItem("cdult", "2"));
+  post_data.push_back(HttpParamItem("ct", "1800"));
+  post_data.push_back(HttpParamItem("domain", "weibo.com"));
+  post_data.push_back(HttpParamItem("door", vcode));
+  post_data.push_back(HttpParamItem("encoding", "UTF-8"));
+  post_data.push_back(HttpParamItem("entry", "openapi"));
+  post_data.push_back(HttpParamItem("from", ""));
+  post_data.push_back(HttpParamItem("gateway", "1"));
+  post_data.push_back(HttpParamItem("nonce", sina_data._nonce));
+  post_data.push_back(HttpParamItem("pagerefer", "https://sso.toutiao.com/login/"));
+  post_data.push_back(HttpParamItem("pcid", sina_data._pcid));
+  post_data.push_back(HttpParamItem("prelt", "1235"));
+  post_data.push_back(HttpParamItem("pwencode", "rsa2"));
+  post_data.push_back(HttpParamItem("returntype", "TEXT"));
+  post_data.push_back(HttpParamItem("rsakv", sina_data._rsakv));
+  post_data.push_back(HttpParamItem("s", "1"));
+  post_data.push_back(HttpParamItem("savestate", "0"));
+  post_data.push_back(HttpParamItem("servertime", sina_data._servertime));
+  post_data.push_back(HttpParamItem("service", "miniblog"));
+  post_data.push_back(HttpParamItem("sp", encrypted_pwd));
+  post_data.push_back(HttpParamItem("sr", "1366*768"));
+  post_data.push_back(HttpParamItem("su", encrypted_name));
+  post_data.push_back(HttpParamItem("useticket", "1"));
+  post_data.push_back(HttpParamItem("vsnf", "1"));
+  post_data.push_back(HttpParamItem("vsnval", ""));
+
+  QNetworkReply* reply = network.PostRequest_ssl(url1, header_list,post_data);
 
   QTime _t;
   _t.start();
@@ -1262,21 +1461,16 @@ bool autobots_toutiao::LoginSina(SinaData& sina_data,const
 
 bool autobots_toutiao::GetLoginResult(const QByteArray& str, SinaData& data)
 {
-  //sinaSSOController.loginCallBack({"
-  //retcode":"0","ticket":"ST-MjE4MTM3NTY1MQ==-1451291428-gz-EA95CC25100A66DC457C19BC5DA43316",
-  //"uid":"2181375651","nick":"\u7528\u62372181375651",
-  //"crossDomainUrlList":["https:\/\/crosdom.weicaifu.com\/sso\/crosdom?action=login&savestate=1451291428",
-  //"https:\/\/passport.weibo.cn\/sso\/crossdomain?action=login&savestate=1"]});
 
-  QString temp = str;
+  //QString temp = str;
 
-  int first = temp.indexOf("(");
-  QString temp2= temp.right(temp.length() - first -1);
-  int last = temp2.lastIndexOf(")");
-  temp2 = temp2.left(last);
+  //int first = temp.indexOf("(");
+  //QString temp2= temp.right(temp.length() - first -1);
+  //int last = temp2.lastIndexOf(")");
+  //temp2 = temp2.left(last);
 
   QJsonParseError json_error;
-  QJsonDocument parse_doucment = QJsonDocument::fromJson(temp2.toLocal8Bit(), &json_error); 
+  QJsonDocument parse_doucment = QJsonDocument::fromJson(str, &json_error);
   if(json_error.error == QJsonParseError::NoError) 
   {  
     if(parse_doucment.isObject())  
@@ -1313,12 +1507,12 @@ bool autobots_toutiao::AuthorizeSina(const SinaData& sina_data)
 
   QUrl url1(str_url_author);
   
-  QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://api.snssdk.com/auth/login_success/").arg(m_client_id, m_state);
+  QString str_temp = QString("https://api.weibo.com/2/oauth2/authorize?client_id=%1&response_type=code&display=default&redirect_uri=http%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success%2F&from=&with_cookie=").arg(m_client_id);
 
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Accept",	"text/html, application/xhtml+xml, */*"));
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
-  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
+  //header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
   header_list.push_back(HttpParamItem("Host", "api.weibo.com"));
   header_list.push_back(HttpParamItem("Referer", str_temp));
@@ -1329,7 +1523,7 @@ bool autobots_toutiao::AuthorizeSina(const SinaData& sina_data)
   post_data.push_back(HttpParamItem("appkey62",m_appkey));
   post_data.push_back(HttpParamItem("client_id", m_client_id));
   post_data.push_back(HttpParamItem("display","default"));
-  post_data.push_back(HttpParamItem("from","5"));
+  post_data.push_back(HttpParamItem("from",""));
   post_data.push_back(HttpParamItem("isLoginSina",""));
   post_data.push_back(HttpParamItem("passwd",""));
   post_data.push_back(HttpParamItem("quick_auth","null"));
@@ -1341,8 +1535,10 @@ bool autobots_toutiao::AuthorizeSina(const SinaData& sina_data)
   post_data.push_back(HttpParamItem("switchLogin","0"));
   post_data.push_back(HttpParamItem("ticket",sina_data._ticket));
   post_data.push_back(HttpParamItem("userId",""));
+  //post_data.push_back(HttpParamItem("url", "https://api.weibo.com/oauth2/authorize"));
   post_data.push_back(HttpParamItem("verifyToken","null"));
-  post_data.push_back(HttpParamItem("withOfficalAccount",""));
+  //post_data.push_back(HttpParamItem("visible", "0"));
+  post_data.push_back(HttpParamItem("withOfficalAccount","null"));
   post_data.push_back(HttpParamItem("withOfficalFlag","0"));
 
   QNetworkReply* reply = network.PostRequest_ssl(url1, header_list,post_data);
@@ -1381,8 +1577,101 @@ bool autobots_toutiao::AuthorizeSina(const SinaData& sina_data)
 
     return ProcessRedirectLoginGet(str);
   }
+  else if(n == 200)
+  {
+	 QByteArray data = reply->readAll();
+	 QString t = data;
+	 GetUserId(data);
+	 return AuthorizeSina2(sina_data);
+  }
   else
   {
+	QByteArray data = reply->readAll();
+	QString t = data;
     return false;
   }
+}
+
+bool autobots_toutiao::AuthorizeSina2(const SinaData& sina_data)
+{
+	QString str_url_author = "https://api.weibo.com/oauth2/authorize";
+
+	QUrl url1(str_url_author);
+
+	QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://api.snssdk.com/auth/login_success/").arg(m_client_id, m_state);
+
+	HttpParamList header_list;
+	header_list.push_back(HttpParamItem("Accept", "text/html, application/xhtml+xml, */*"));
+	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	//header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
+	header_list.push_back(HttpParamItem("Host", "api.weibo.com"));
+	header_list.push_back(HttpParamItem("Referer", str_temp));
+	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+
+	HttpParamList post_data;
+	post_data.push_back(HttpParamItem("action", "authorize"));
+	post_data.push_back(HttpParamItem("appkey62", m_appkey));
+	post_data.push_back(HttpParamItem("client_id", m_client_id));
+	post_data.push_back(HttpParamItem("display", "default"));
+	post_data.push_back(HttpParamItem("from", ""));
+	post_data.push_back(HttpParamItem("isLoginSina", ""));
+	post_data.push_back(HttpParamItem("passwd", ""));
+	post_data.push_back(HttpParamItem("quick_auth", "null"));
+	post_data.push_back(HttpParamItem("redirect_uri", "http://api.snssdk.com/auth/login_success/"));
+	post_data.push_back(HttpParamItem("regCallback", str_temp));
+	post_data.push_back(HttpParamItem("response_type", "code"));
+	post_data.push_back(HttpParamItem("scope", ""));
+	post_data.push_back(HttpParamItem("state", m_state));
+	//post_data.push_back(HttpParamItem("switchLogin","0"));
+	post_data.push_back(HttpParamItem("ticket", sina_data._ticket));
+	post_data.push_back(HttpParamItem("uid", m_uid));
+	post_data.push_back(HttpParamItem("url", "https://api.weibo.com/oauth2/authorize"));
+	post_data.push_back(HttpParamItem("verifyToken", m_verifyToken));
+	post_data.push_back(HttpParamItem("visible", "0"));
+	post_data.push_back(HttpParamItem("withOfficalAccount", "null"));
+	post_data.push_back(HttpParamItem("withOfficalFlag", "0"));
+
+	QNetworkReply* reply = network.PostRequest_ssl(url1, header_list, post_data);
+
+	QTime _t;
+	_t.start();
+
+	bool _timeout = false;
+
+	while (reply && !reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+		if (_t.elapsed() >= TIMEOUT) {
+			_timeout = true;
+			break;
+		}
+	}
+
+	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
+	{
+		return false;
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	if (n == 302 || n == 301)
+	{
+		// 重定向
+		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+		QUrl red_url = redirectionTarget.toUrl();
+
+		QString str = red_url.toString();
+
+		return ProcessRedirectLoginGet(str);
+	}
+	else
+	{
+		QByteArray data = reply->readAll();
+		QString t = data;
+		return false;
+	}
 }

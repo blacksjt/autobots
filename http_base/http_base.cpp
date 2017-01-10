@@ -191,3 +191,26 @@ QNetworkReply* HttpBase::PostRequest_json(const QUrl& url, const HttpParamList& 
   return networkManager.post(r,json_doc.toJson(QJsonDocument::Compact));
 }
 
+QNetworkReply * HttpBase::PostRequest_json_ssl(const QUrl & url, const HttpParamList & headers, const QJsonDocument & json_doc)
+{
+    if (url.isEmpty() || !url.isValid())
+    {
+        return NULL;
+    }
+
+    QNetworkRequest r(url);
+
+    QSslConfiguration conf = r.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    conf.setProtocol(QSsl::TlsV1SslV3);
+    r.setSslConfiguration(conf);
+
+    //…Ë÷√header
+    for (size_t i = 0; i < headers.size(); ++i)
+    {
+        r.setRawHeader(headers[i].strName.toUtf8().data(), headers[i].strValue.toUtf8().data());
+    }
+
+    return networkManager.post(r, json_doc.toJson(QJsonDocument::Compact));
+}
+

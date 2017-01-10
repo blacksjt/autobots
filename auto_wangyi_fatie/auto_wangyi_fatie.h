@@ -65,6 +65,7 @@ private:
   bool DoPostFatie(const QString& content);
   void GetUerInfo();
   bool GetContent();
+  bool GetCookies();
   void GetConnection();
   //void LoginRequest();
   //bool RequestForLogin();
@@ -95,10 +96,12 @@ private:
   void WaitforSeconds(int nseconds);
   bool NeedValidate();
   bool NeedReply();
-  QString ParseToken(const QByteArray & data);
+  QString ParseToken(const QByteArray & data, const QString& section);
   QString GetToken();
   void intialVPN();
   void SaveIniSettings();
+  QString GetTk(const QString& name);
+  bool GetVlidateCode(const QString& name);
 private:
     Ui::autobots_toutiaoClass ui;
     toutiao_network network;
