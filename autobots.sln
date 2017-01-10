@@ -55,8 +55,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_toutiaokeji_fatie", "a
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_zhanzhangzhijia_fatie", "auto_zhanzhangzhijia_fatie\auto_zhanzhangzhijia_fatie.vcxproj", "{BC18B623-3F3F-4030-BFA7-413E8D0DE441}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_weibo", "auto_weibo\auto_weibo.vcxproj", "{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_zhongguancun_fatie", "autobots_zhongguancun_fatie\autobots_zhongguancun_fatie.vcxproj", "{8F5B2D6A-12AC-4E63-A433-E00326732503}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_read", "auto_read\auto_read.vcxproj", "{768C425C-39B5-40EE-B32B-CFF0BFAA8D3A}"
@@ -265,12 +263,6 @@ Global
 		{BC18B623-3F3F-4030-BFA7-413E8D0DE441}.Release|Win32.ActiveCfg = Release|Win32
 		{BC18B623-3F3F-4030-BFA7-413E8D0DE441}.Release|Win32.Build.0 = Release|Win32
 		{BC18B623-3F3F-4030-BFA7-413E8D0DE441}.Release|x86.ActiveCfg = Release|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Debug|Win32.Build.0 = Debug|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Debug|x86.ActiveCfg = Debug|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Release|Win32.ActiveCfg = Release|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Release|Win32.Build.0 = Release|Win32
-		{9CCBCAC1-22EF-4BE0-A505-67A9B5F923C2}.Release|x86.ActiveCfg = Release|Win32
 		{8F5B2D6A-12AC-4E63-A433-E00326732503}.Debug|Win32.ActiveCfg = Debug|Win32
 		{8F5B2D6A-12AC-4E63-A433-E00326732503}.Debug|Win32.Build.0 = Debug|Win32
 		{8F5B2D6A-12AC-4E63-A433-E00326732503}.Debug|x86.ActiveCfg = Debug|Win32
