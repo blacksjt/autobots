@@ -261,7 +261,7 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
 bool autobots_toutiao::GetContent()
 {
-  QString str_url_1 = "http://toutiao.com/";
+  QString str_url_1 = "http://www.toutiao.com/";
 
   QUrl url_1(str_url_1);
   url_1.setUrl(str_url_1);
@@ -274,7 +274,7 @@ bool autobots_toutiao::GetContent()
 
   header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   //header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "wenda.toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
 //  header_list1.push_back(HttpParamItem("Referer", "http://toutiao.com/"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -304,7 +304,7 @@ bool autobots_toutiao::GetContent()
 
 bool autobots_toutiao::RequestForRenren()
 {
-  QString str_url1 = "http://toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
+  QString str_url1 = "http://www.toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
 
   QUrl url1(str_url1);
 
@@ -313,7 +313,7 @@ bool autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
 //  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network.GetRequest(url1, header_list);
@@ -587,7 +587,7 @@ void autobots_toutiao::Logout()
 
   //header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
   ////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-  header_list1.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
@@ -1074,11 +1074,11 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp2(const QString& str)
   int pos1 = str.indexOf("code=");
   int pos2 = str.indexOf("&",pos1);
   QString t = str.mid(pos1, pos2-pos1);
-  QString s_url = "http://toutiao.com/auth/connected/?state=renren_sns__0____toutiao____2__0__24&" + t;
+  QString s_url = "http://www.toutiao.com/auth/connected/?state=renren_sns__0____toutiao____2__0__24&" + t;
 
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-  header_list.push_back(HttpParamItem("Host","toutiao.com"));
+  header_list.push_back(HttpParamItem("Host","www.toutiao.com"));
   //header_list.push_back(HttpParamItem("Referer","http://graph.renren.com/oauth/grant?client_id=394e2173327e4ead8302dc27f4ae8879&redirect_uri=http%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success%2F&response_type=code&display=page&scope=status_update+photo_upload+create_album&state=renren_sns__0____toutiao____2__0__24&secure=true&origin=00000"));
   //header_list.push_back(HttpParamItem("",""));
   header_list.push_back(HttpParamItem("Connection","keep-alive"));
