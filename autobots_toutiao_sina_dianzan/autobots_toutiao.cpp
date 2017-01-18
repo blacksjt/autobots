@@ -83,12 +83,13 @@ void autobots_toutiao::onStart()
     GetContent();
     if (m_csrf_token.isEmpty())
     {
-      GetContent();
-      ui.lineEdit_msg->setText(QStringLiteral("连接网站中..."));
-      if (m_csrf_token.isEmpty())
-      {
-        continue;
-      }
+		m_csrf_token = "undefined";
+      //GetContent();
+      //ui.lineEdit_msg->setText(QStringLiteral("连接网站中..."));
+      //if (m_csrf_token.isEmpty())
+      //{
+      //  continue;
+      //}
     }
 
 	if (!RequestForSina())
@@ -179,7 +180,7 @@ bool autobots_toutiao::DoAction()
 	}
 
     HttpParamList header_list;
-    header_list.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
+    header_list.push_back(HttpParamItem("Accept",	"text/javascript, text/html, application/xml, text/xml, */*"));
     header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
     header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
     header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
@@ -189,6 +190,7 @@ bool autobots_toutiao::DoAction()
     header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
     header_list.push_back(HttpParamItem("Referer", m_url));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
+	header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
 
     HttpParamList post_data;
     post_data.push_back(HttpParamItem("action", "digg"));

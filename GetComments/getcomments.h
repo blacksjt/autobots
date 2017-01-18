@@ -20,10 +20,12 @@ private slots:
 private:
     void updataData();
     void startWork();
-    bool ExactComments(const QByteArray& rp_data);
+	bool GetSubComments(int& n, QStringList& cmts);
+    bool ExactComments(const QByteArray& rp_data, QStringList& cmts);
     bool WriteToFile(const QStringList& comments);
 private:
-    QString m_id; // 文章id
+    QString m_group_id; // 文章id
+	QString m_item_id; // 文章id
     int m_count;  // 提取数量
     QString m_file_path; // 默认保存文件的位置
 
