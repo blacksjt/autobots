@@ -11,17 +11,12 @@ public:
   toutiao_network(QObject* parent = 0);
   ~toutiao_network();
 
-  QString Vote_id() const { return m_vote_id; }
-  void setVote_id(QString val) { m_vote_id = val; }
-  void setVote_order(QString val) { m_vote_order = val; }
-
 signals:
-  void postIdReady(QString post_id);
-  void csrftokenReady(QString token);
-  void loginsucceed(QString id);
-  void clientID(QString id);
-  void votesucceed();
-  void resultsucceed(double);
+//   void postIdReady(QString post_id);
+//   void csrftokenReady(QString token);
+//   void loginsucceed(QString id);
+//   void clientID(QString id);
+//   void diggsuccess(double commentid, int digcount);
 
 protected:
   virtual void ProcessReplyData(QNetworkReply* reply);
@@ -32,13 +27,11 @@ protected slots:
   
   
 private:
-  void ProcessRedirect(const QUrl& url);
-  void ParseHtml(const QByteArray byte_arr);
-  void ParseJson(const QByteArray byte_arr);
+//   void ProcessRedirect(const QUrl& url);
+//   void ParseHtml(const QByteArray byte_arr);
+//   void ParseJson(const QByteArray byte_arr);
 
 private:
-  QString m_vote_id;
-  QString m_vote_order;
 
 };
 

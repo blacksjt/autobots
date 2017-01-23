@@ -84,7 +84,7 @@ private:
   void GetIDList(bool& has_more, int offset);
 private:
     Ui::autobots_toutiaoClass ui;
-    toutiao_network network;
+    toutiao_network* network;
     bool control_status ;
     QString m_client_id;
     QString m_post_id;

@@ -10,7 +10,7 @@ const int TIMEOUT = 20*1000;
 const int TIMEOUT1 = 1*1000;
 
 autobots_toutiao::autobots_toutiao(QWidget *parent)
-    : control_status(true),QMainWindow(parent),
+    : control_status(true),QMainWindow(parent),network(NULL),
     m_client_id("394e2173327e4ead8302dc27f4ae8879")
 {
     ui.setupUi(this);
@@ -64,9 +64,13 @@ void autobots_toutiao::onStart()
       break;
     }
 
-    QNetworkCookieJar* cookie = new QNetworkCookieJar();
+	if (network == NULL)
+	{
+		network->deleteLater();
+		network = NULL;
+	}
 
-    network.GetManager().setCookieJar(cookie);
+	network = new toutiao_network;
 
     // 获取CSRF TOKEN
     GetContent();
@@ -120,7 +124,6 @@ void autobots_toutiao::onStart()
     while(t2.elapsed()<1000 )  
       QCoreApplication::processEvents();
 
-    cookie->deleteLater();
   }
 
   ui.lineEdit_msg->setText(QStringLiteral("已完成"));
@@ -145,7 +148,7 @@ void autobots_toutiao::Logout()
   header_list1.push_back(HttpParamItem("Referer", m_url));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
-  QNetworkReply* reply_1 = network.GetRequest(url_1, header_list1);
+  QNetworkReply* reply_1 = network->GetRequest(url_1, header_list1);
 
   QTime _t;
   _t.start();
@@ -209,7 +212,7 @@ bool autobots_toutiao::DoAction()
     post_data.push_back(HttpParamItem("group_id", m_group_id));
 	//post_data.push_back(HttpParamItem("item_id", m_item_id));
 
-    QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
+    QNetworkReply* reply = network->PostRequest(url1, header_list, post_data);
 
     QTime _t;
     _t.start();
@@ -277,7 +280,7 @@ bool autobots_toutiao::GetContent()
   header_list1.push_back(HttpParamItem("Referer", "http://www.toutiao.com/"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
-  QNetworkReply* rp = network.GetRequest(url_1, header_list1);
+  QNetworkReply* rp = network->GetRequest(url_1, header_list1);
 
   QTime _t;
   _t.start();
@@ -313,10 +316,10 @@ bool autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
-  QNetworkReply* reply = network.GetRequest(url1, header_list);
+  QNetworkReply* reply = network->GetRequest(url1, header_list);
 
   QTime _t;
   _t.start();
@@ -411,7 +414,7 @@ bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& passwo
   post_data.push_back(HttpParamItem("state","renren_sns__0____toutiao____2__0__24"));
   post_data.push_back(HttpParamItem("username",name));
 
-  QNetworkReply* reply = network.PostRequest_ssl(url1, header_list,post_data);
+  QNetworkReply* reply = network->PostRequest_ssl(url1, header_list,post_data);
 
   QTime _t;
   _t.start();
@@ -735,7 +738,7 @@ bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
     return false;
   }
 
-  QNetworkReply* reply = network.GetRequest_ssl(QUrl(str), header_list);
+  QNetworkReply* reply = network->GetRequest_ssl(QUrl(str), header_list);
 
   QTime _t;
   _t.start();
@@ -793,7 +796,7 @@ bool autobots_toutiao::ProcessRedirectGet(const QString& str)
   header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
-  QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+  QNetworkReply* reply = network->GetRequest(QUrl(str), header_list);
 
   QTime _t;
   _t.start();
@@ -881,7 +884,7 @@ int autobots_toutiao::ProcessRedirectLoginGet(const QString& str)
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN,zh;q=0.8"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"));
 
-  QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+  QNetworkReply* reply = network->GetRequest(QUrl(str), header_list);
 
   QTime _t;
   _t.start();
@@ -965,7 +968,7 @@ bool autobots_toutiao::ProcessRedirectLoginGet2(const QString& str)
   header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
-  QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+  QNetworkReply* reply = network->GetRequest(QUrl(str), header_list);
 
   QTime _t;
   _t.start();
@@ -1023,7 +1026,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
   header_list.push_back(HttpParamItem("Host", "graph.renren.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
   header_list.push_back(HttpParamItem("Referer",str_temp));
-  //network.GetManager().setCookieJar(new QNetworkCookieJar(this));
+  //network->GetManager().setCookieJar(new QNetworkCookieJar(this));
 
   HttpParamList post_data;
   post_data.push_back(HttpParamItem("authFeed","true"));
@@ -1044,7 +1047,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
   post_data.push_back(HttpParamItem("state","renren_sns__0____toutiao____2__0__24"));
   post_data.push_back(HttpParamItem("username",name));
 
-  QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
+  QNetworkReply* reply = network->PostRequest(url1, header_list, post_data);
 
   QTime _t;
   _t.start();
@@ -1093,7 +1096,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
    header_list2.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
    header_list2.push_back(HttpParamItem("Referer",str_temp));
  
-   QNetworkReply* reply2 = network.GetRequest(url2, header_list2);
+   QNetworkReply* reply2 = network->GetRequest(url2, header_list2);
  
    _t.restart();
  
@@ -1178,7 +1181,7 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp(const QString& str)
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN,zh;q=0.8"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"));
 
-  QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
+  QNetworkReply* reply = network->GetRequest(QUrl(str), header_list);
 
   QTime _t;
   _t.start();
@@ -1263,7 +1266,7 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp2(const QString& str)
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN,zh;q=0.8"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"));
 
-  QNetworkReply* reply = network.GetRequest(QUrl(s_url), header_list);
+  QNetworkReply* reply = network->GetRequest(QUrl(s_url), header_list);
 
   QTime _t;
   _t.start();

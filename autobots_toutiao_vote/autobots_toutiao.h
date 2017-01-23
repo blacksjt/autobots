@@ -35,41 +35,44 @@ private:
 private slots:
   void onStart();
   void onPause();
-  void onPostIdReday(QString);
-  void onAddCommentID();
-  void onCsrfTokenReday(QString str);
-  void onLoginsucceed(QString id);
   void onActFromTxt();
   void onActImportComment();
 
   void onActClearComments();
   void onActClearAccounts();
-  void onClientIdReday(QString _id);
-  void onVotesucceed();
-  void onResultChanged(double count);
 
 private:
   int LogInbySina();
-  QNetworkReply* LogInbyRenren(const QString& name, const QString& password);
-  int DoAction();
+  bool DoAction();
   void GetUerInfo();
-  QNetworkReply* GetContent();
+  bool GetContent();
   void GetConnection();
-  //void LoginRequest();
-  QNetworkReply* RequestForRenren();
+  ////void LoginRequest();
+  bool RequestForRenren();
   //void CodeCheckForRenren();
-  QNetworkReply* AuthorByRenren(const QString& name, const QString& password);
+  bool AuthorByRenren(const QString& name, const QString& password);
   void UpdateData();
   void initialize();
   void Logout();
   bool CheckInput();
-
   void AddToTree(const QString& text);
   void GetVoteStatus();
 
+  bool GetCsrfToken(const QByteArray& arr);
+  bool ProcessRedirectSSL(const QString& str);
+  bool ProcessRedirectGet(const QString& str);
+  bool GetPostId(const QByteArray& arr);
+  int ProcessRedirectLoginGet(const QString& str);
+  bool ProcessRedirectLoginGet2(const QString& str);
+  bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
+  int GetRandom();
+
+  int ProcessRedirectLoginGetTemp(const QString& str);
+  int ProcessRedirectLoginGetTemp2(const QString& str);
+  void WaitforSeconds(int nseconds);
 private:
     Ui::autobots_toutiaoClass ui;
-    toutiao_network network;
+    toutiao_network* network;
     bool control_status ;
     QString m_client_id;
     QString m_post_id;
@@ -77,8 +80,6 @@ private:
     bool m_doVote;
 
 private:
-  bool m_b_csrf; // m_b_csrf״̬
-  bool m_b_post_id; // m_post_id״̬
 
 private:
     QString m_url;
