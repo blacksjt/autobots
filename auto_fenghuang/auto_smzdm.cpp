@@ -100,7 +100,7 @@ int auto_smzdm::smzdm_run()
 
     QNetworkReply* reply = network.GetRequest(url1, header_list);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
       QTime _t;
       _t.start();
   
@@ -116,7 +116,7 @@ int auto_smzdm::smzdm_run()
       }
 
       QString msg = reply->readAll();
-#endif 
+//#endif 
 
       reply->deleteLater();
 // 
