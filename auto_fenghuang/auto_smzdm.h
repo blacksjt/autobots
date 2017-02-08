@@ -46,7 +46,7 @@ private:
 private:
     Ui::auto_smzdmClass ui;
     bool control_status;
-    smzdm_network network;
+    smzdm_network* network;
     
     QString m_host;
     QString m_news_url;  // URL

@@ -5,7 +5,7 @@
 #include "QDateTime"
 
 auto_smzdm::auto_smzdm(QWidget *parent)
-    : control_status(true), QMainWindow(parent)
+    : control_status(true), QMainWindow(parent),network(NULL)
 {
     ui.setupUi(this);
 
@@ -57,7 +57,7 @@ void auto_smzdm::onStart()
 
     QElapsedTimer t;
     t.start();
-    while(t.elapsed()<1000)  
+    while(t.elapsed()<5000)  
       QCoreApplication::processEvents();
 
   }
@@ -71,9 +71,15 @@ void auto_smzdm::onPause()
 
 int auto_smzdm::smzdm_run()
 {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
+  //QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
 
-  network.GetManager().setCookieJar(cookie);
+  //network->GetManager().setCookieJar(cookie);
+	if (network != NULL)
+	{
+		network->deleteLater();
+		network = NULL;
+	}
+	network = new smzdm_network;
 
   GetContent();
 
@@ -98,7 +104,7 @@ int auto_smzdm::smzdm_run()
     header_list.push_back(HttpParamItem("Host", m_host));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
-    QNetworkReply* reply = network.GetRequest(url1, header_list);
+    QNetworkReply* reply = network->GetRequest(url1, header_list);
 
 //#ifdef _DEBUG
       QTime _t;
@@ -117,12 +123,12 @@ int auto_smzdm::smzdm_run()
 
       QString msg = reply->readAll();
 //#endif 
-
+	  ui.lineEdit_msg->setText(msg);
       reply->deleteLater();
 // 
    }
 
-  cookie->deleteLater();
+  //cookie->deleteLater();
 
   return 0;
 }
@@ -279,6 +285,9 @@ void auto_smzdm::onAddCommentID()
 
 bool auto_smzdm::GetContent()
 {
+	if (network == NULL)
+		network = new smzdm_network;
+
   QString str_url_1 = m_news_url;
 
   QUrl url_1(str_url_1);
@@ -293,7 +302,23 @@ bool auto_smzdm::GetContent()
   header_list1.push_back(HttpParamItem("Host", m_host)); // mhost
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
  
-  QNetworkReply* rp = network.GetRequest(url_1, header_list1);
+  QNetworkReply* rp = network->GetRequest(url_1, header_list1);
+
+  QTime _t;
+  _t.start();
+
+  bool _timeout = false;
+
+  while (rp && !rp->isFinished())
+  {
+	  QCoreApplication::processEvents();
+	  if (_t.elapsed() >= 10 * 1000) {
+		  _timeout = true;
+		  break;
+	  }
+  }
+
+  QByteArray rp_data = rp->readAll();
 
   if (rp!=NULL)
     rp->deleteLater();
