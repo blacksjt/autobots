@@ -75,7 +75,7 @@ private:
   void WaitforSeconds(int nseconds);
 private:
     Ui::autobots_toutiaoClass ui;
-    toutiao_network network;
+    toutiao_network* network;
     bool control_status ;
     QString m_client_id;
     QString m_post_id;
