@@ -97,6 +97,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_dirvers_mobile", "auto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_sina_dianzan", "autobots_toutiao_sina_dianzan\autobots_toutiao_sina_dianzan.vcxproj", "{29911A67-7C70-4927-81A0-42C13E21F10F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_mobile_dz", "autobots_toutiao_mobile_dz\autobots_toutiao_mobile_dz.vcxproj", "{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -403,6 +405,14 @@ Global
 		{29911A67-7C70-4927-81A0-42C13E21F10F}.Release|Win32.Build.0 = Release|Win32
 		{29911A67-7C70-4927-81A0-42C13E21F10F}.Release|x86.ActiveCfg = Release|Win32
 		{29911A67-7C70-4927-81A0-42C13E21F10F}.Release|x86.Build.0 = Release|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Debug|Win32.Build.0 = Debug|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Debug|x86.ActiveCfg = Debug|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Debug|x86.Build.0 = Debug|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|Win32.ActiveCfg = Release|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|Win32.Build.0 = Release|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|x86.ActiveCfg = Release|Win32
+		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

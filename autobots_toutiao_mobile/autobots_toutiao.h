@@ -99,6 +99,7 @@ private:
 	bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
 
 	void WaitforSeconds(int nseconds);
+	
 private:
 	Ui::autobots_toutiaoClass ui;
 	toutiao_network network;
@@ -120,6 +121,7 @@ private:
 	int m_account_order;
 
 	DeviceParamList m_devices_list;
+	size_t m_device_order;
 };
 
 #endif // AUTOBOTS_TOUTIAO_H

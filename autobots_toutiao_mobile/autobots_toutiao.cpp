@@ -21,7 +21,10 @@ QString GetTimeStr()
 
 QString GetUuid()
 {
-	return QUuid::createUuid().toString();
+	QString uuid = QUuid::createUuid().toString();
+	uuid.remove('{');
+	uuid.remove('}');
+	return uuid;
 }
 
 QString GetDeviceType()
@@ -46,7 +49,7 @@ const int TIMEOUT = 20 * 1000;
 
 autobots_toutiao::autobots_toutiao(QWidget *parent)
 	: control_status(true), QMainWindow(parent),
-	m_account_order(0),
+	m_account_order(0),m_device_order(0),
 	m_client_id("394e2173327e4ead8302dc27f4ae8879")
 {
 	ui.setupUi(this);
@@ -128,15 +131,6 @@ void autobots_toutiao::onStart()
 
 			network.GetManager().setCookieJar(cookie);
 
-			// 获取CSRF TOKEN
-			//GetContent();
-			/*if (m_csrf_token.isEmpty())
-			{
-			ui.lineEdit_msg->setText(QStringLiteral("连接网站中..."));
-			cookie->deleteLater();
-			continue;
-			}*/
-
 			if (!RequestForRenren())
 			{
 				ui.lineEdit_msg->setText(QStringLiteral("请求失败..."));
@@ -189,6 +183,12 @@ void autobots_toutiao::onStart()
 			QCoreApplication::processEvents();
 
 		Logout();
+		m_device_order++;
+
+		if (m_device_order >= m_devices_list.size())
+		{
+			m_device_order = 0;
+		}
 
 		QString msg;
 		msg.setNum(i + 1);
@@ -216,7 +216,8 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 {
 
 	//https://is.snssdk.com/2/data/post_message/?version_code=5.8.3&app_name=news_article&vid=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&device_id=3135986566&channel=App%20Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=iPhone%206&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A
-	QString str_url1 = "https://is.snssdk.com/2/data/post_message/?version_code=5.8.3&app_name=news_article&vid=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&device_id=3135986566&channel=App%20Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=iPhone%206&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
+	QString str_url1 = QString("https://is.snssdk.com/2/data/post_message/?version_code=5.8.3&app_name=news_article&vid=%1&device_id=%2&channel=App%20Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=%3&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=%4&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A")
+		.arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._did).arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._device_type);
 
 	QUrl url1;
 	url1.setUrl(str_url1);
@@ -233,7 +234,8 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 	header_list.push_back(HttpParamItem("Host", "is.snssdk.com"));
 	header_list.push_back(HttpParamItem("Referer", m_url));
 	header_list.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
-	header_list.push_back(HttpParamItem("User-Agent", "News/5.8.3 (iPhone; iOS 9.3.5; Scale/2.00)"));
+	//header_list.push_back(HttpParamItem("User-Agent", "News/5.8.3 (iPhone; iOS 9.3.5; Scale/2.00)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	HttpParamList post_data;
 	post_data.push_back(HttpParamItem("aggr_type", "1"));
@@ -356,7 +358,8 @@ bool autobots_toutiao::GetContent()
 
 bool autobots_toutiao::RequestForRenren()
 {
-	QString str_url1 = "http://isub.snssdk.com/2/auth/login/v2/?platform=renren_sns&version_code=5.8.3&uid_type=14&app_name=news_article&vid=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&device_id=3135986566&channel=App Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=iPhone 6&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
+	QString str_url1 = QString("http://isub.snssdk.com/2/auth/login/v2/?platform=renren_sns&version_code=5.8.3&uid_type=14&app_name=news_article&vid=%1&device_id=%2&channel=App Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=%3&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=%4&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A")
+		.arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._did).arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._device_type);
 
 	QUrl url1(str_url1);
 
@@ -366,7 +369,7 @@ bool autobots_toutiao::RequestForRenren()
 	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
 	header_list.push_back(HttpParamItem("Host", "isub.snssdk.com"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(url1, header_list);
 
@@ -438,7 +441,7 @@ bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& passwo
 	header_list.push_back(HttpParamItem("Host", "graph.renren.com"));
 	header_list.push_back(HttpParamItem("Referer", str_temp));
 	//Referer	
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	HttpParamList post_data;
 	QString t = QString("http://api.snssdk.com/auth/login_success/") + "&client_id=" + m_client_id;
@@ -657,7 +660,7 @@ void autobots_toutiao::Logout()
 	////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
 	header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
 	header_list1.push_back(HttpParamItem("Referer", m_url));
-	header_list1.push_back(HttpParamItem("User-Agent", ""));
+	header_list1.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply_1 = network.GetRequest(url_1, header_list1);
 
@@ -787,7 +790,7 @@ bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
 	header_list.push_back(HttpParamItem("Proxy-Connection", "keep-alive"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	if (!str.contains("https://", Qt::CaseInsensitive))
 	{
@@ -820,6 +823,8 @@ bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
 
 	int n = statusCodeV.toInt();
 
+	bool res = false;
+
 	if (n == 302 || n == 301)
 	{
 		// 重定向
@@ -829,12 +834,19 @@ bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
 
 		QString str2 = red_url.toString();
 
-		return ProcessRedirectGet(str2);
+		res = ProcessRedirectGet(str2);
 	}
 	else
 	{
-		return false;
+		res = false;
 	}
+
+	if (reply != NULL)
+	{
+		reply->deleteLater();
+	}
+
+	return res;
 }
 
 bool autobots_toutiao::ProcessRedirectGet(const QString& str)
@@ -843,7 +855,7 @@ bool autobots_toutiao::ProcessRedirectGet(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
 	//  header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
 
@@ -877,6 +889,11 @@ bool autobots_toutiao::ProcessRedirectGet(const QString& str)
 	}
 
 	QByteArray data = reply->readAll();
+
+	if (reply != NULL)
+	{
+		reply->deleteLater();
+	}
 
 	return GetPostId(data);
 
@@ -935,7 +952,7 @@ int autobots_toutiao::ProcessRedirectLoginGet(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
 	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
 
@@ -1022,7 +1039,7 @@ bool autobots_toutiao::ProcessRedirectLoginGet2(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
 	//  header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
 
@@ -1079,7 +1096,7 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
 	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
 
@@ -1164,7 +1181,7 @@ int autobots_toutiao::ProcessRedirectLoginGetTemp2(const QString& str)
 	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
 	//header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply = network.GetRequest(QUrl(s_url), header_list);
 
@@ -1296,7 +1313,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 	//  header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
 	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
 	header_list.push_back(HttpParamItem("Host", "graph.renren.com"));
-	header_list.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 	header_list.push_back(HttpParamItem("Referer", str_temp));
 	//network.GetManager().setCookieJar(new QNetworkCookieJar(this));
 
@@ -1366,7 +1383,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 	//  header_list2.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
 	header_list2.push_back(HttpParamItem("Accept-Language", "zh-CN"));
 	header_list2.push_back(HttpParamItem("Host", "icode.renren.com"));
-	header_list2.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
+	header_list2.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 	header_list2.push_back(HttpParamItem("Referer", str_temp));
 
 	QNetworkReply* reply2 = network.GetRequest(url2, header_list2);
