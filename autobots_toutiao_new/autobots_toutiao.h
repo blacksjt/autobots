@@ -88,6 +88,7 @@ private:
     bool control_status ;
     QString m_client_id;
     QString m_post_id;
+	QString m_state;
     QString m_csrf_token;
     //bool m_bDoAction;
     bool m_code_online;

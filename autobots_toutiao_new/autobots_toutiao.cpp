@@ -307,7 +307,7 @@ bool autobots_toutiao::GetContent()
 
 bool autobots_toutiao::RequestForRenren()
 {
-  QString str_url1 = "http://toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
+  QString str_url1 = "http://www.toutiao.com/auth/connect/?type=toutiao&platform=renren_sns";
 
   QUrl url1(str_url1);
 
@@ -316,7 +316,7 @@ bool autobots_toutiao::RequestForRenren()
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
   header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
   header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
-  header_list.push_back(HttpParamItem("Host", "toutiao.com"));
+  header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
   QNetworkReply* reply = network->GetRequest(url1, header_list);
@@ -338,6 +338,8 @@ bool autobots_toutiao::RequestForRenren()
 
   if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
   {
+	QString s =  reply->errorString();
+	int n = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     return false;
   }
 
@@ -411,7 +413,7 @@ bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& passwo
   post_data.push_back(HttpParamItem("response_type","code"));
   post_data.push_back(HttpParamItem("scope","status_update photo_upload create_album"));
   post_data.push_back(HttpParamItem("secure","true"));
-  post_data.push_back(HttpParamItem("state","renren_sns__0____toutiao____2__0__24"));
+  post_data.push_back(HttpParamItem("state",m_state));
   post_data.push_back(HttpParamItem("username",name));
 
   QNetworkReply* reply = network->PostRequest_ssl(url1, header_list,post_data);
@@ -863,6 +865,16 @@ bool autobots_toutiao::GetPostId(const QByteArray& arr)
     std::string client_id = HtmlParseUtils::GetAttributeValue(node, "value");
 
     m_client_id = QString::fromStdString(client_id);
+  }
+
+  // "≤È’“state"
+  node = html_parse.FirstElementNode("name", "state");
+
+  if (node != NULL)
+  {
+	  std::string sstate = HtmlParseUtils::GetAttributeValue(node, "value");
+
+	  m_state = QString::fromStdString(sstate);
   }
 
   if (m_post_id.isEmpty() || m_client_id.isEmpty())
