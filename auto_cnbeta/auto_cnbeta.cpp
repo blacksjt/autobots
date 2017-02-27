@@ -7,7 +7,7 @@
 auto_cnbeta::auto_cnbeta(QWidget *parent)
     : control_status(true), QMainWindow(parent)
 {
-  m_csrf_token = "89fac5a185d6bb823ad892724d40dda8f22edd4f";
+  m_csrf_token = "OG5hb0FxdTJULTY9MzsXZQo.CAcgFiIGZ1grJnZAI1tQNC9XJztCQw==";
 
     ui.setupUi(this);
 
@@ -78,21 +78,22 @@ int auto_cnbeta::smzdm_run()
   network.GetManager().setCookieJar(cookie);
 
   bool res = GetContent();
+  m_token = "OG5hb0FxdTJULTY9MzsXZQo.CAcgFiIGZ1grJnZAI1tQNC9XJztCQw==";
   res = GetToken();
 
   if (!res)
   {
-    if (!GetToken())
-    {
-      ui.lineEdit_msg->setText(QStringLiteral("打开不了网页或速度过慢"));
-      return -1;
-    }
+	  if (!GetToken())
+	  {
+		  ui.lineEdit_msg->setText(QStringLiteral("打开不了网页或速度过慢"));
+		  return -1;
+	  }
   }
 
 
   foreach(QString str, m_comment_list)
   {
-    QString str_url1 = "http://www.cnbeta.com/comment";
+    QString str_url1 = "http://www.cnbeta.com/comment/do";
 
     QUrl url1(str_url1);
 
@@ -108,7 +109,7 @@ int auto_cnbeta::smzdm_run()
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
     HttpParamList post_data;
-    post_data.push_back(HttpParamItem("csrf_token",m_token));
+    post_data.push_back(HttpParamItem("_csrf",m_token));
     post_data.push_back(HttpParamItem("op","support"));
     post_data.push_back(HttpParamItem("sid",m_news_id));
     post_data.push_back(HttpParamItem("tid", str));
@@ -334,7 +335,7 @@ bool auto_cnbeta::GetContent()
 
 bool auto_cnbeta::GetToken()
 {
-  QString str_url_1 = "http://www.cnbeta.com/cmt";
+  QString str_url_1 = QString("http://www.cnbeta.com/comment/read?csrf_token=%1&op=1,514733,0daad").arg(m_csrf_token);
 
   QUrl url_1(str_url_1);
 
@@ -350,11 +351,11 @@ bool auto_cnbeta::GetToken()
   header_list1.push_back(HttpParamItem("Origin", "http://www.cnbeta.com"));
   header_list1.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"));
  
-  HttpParamList post_data;
-  post_data.push_back(HttpParamItem("csrf_token", m_csrf_token));
-  post_data.push_back(HttpParamItem("op","1,514733,0daad"));
+  //HttpParamList post_data;
+  //post_data.push_back(HttpParamItem("csrf_token", m_csrf_token));
+  //post_data.push_back(HttpParamItem("op","1,514733,0daad"));
 
-  QNetworkReply* rp = network.PostRequest(url_1, header_list1,post_data);
+  QNetworkReply* rp = network.GetRequest(url_1, header_list1);
 
   QTime _t;
   _t.start();
