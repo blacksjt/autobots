@@ -9,6 +9,13 @@
 const int TIMEOUT = 20*1000;
 const int TIMEOUT1 = 1*1000;
 
+QString GetTimeStr()
+{
+	qint64 n = QDateTime::currentMSecsSinceEpoch();
+
+	return QString::number(n);
+}
+
 autobots_toutiao::autobots_toutiao(QWidget *parent)
     : control_status(true),QMainWindow(parent),
     m_client_id("394e2173327e4ead8302dc27f4ae8879")
@@ -155,25 +162,27 @@ void autobots_toutiao::onPause()
 bool autobots_toutiao::DoAction()
 {
   //1. 获取wendacsrftoken
-  QString token;
-  bool b_token = GetWendaToken(token);
+  //QString token;
+  //bool b_token = GetWendaToken(token);
 
-  if (!b_token)
-  {
-    ui.lineEdit_msg->setText(QStringLiteral("获取wendacsrftoken失败"));
-    return false;
-  }
+  //if (!b_token)
+  //{
+  //  ui.lineEdit_msg->setText(QStringLiteral("获取wendacsrftoken失败"));
+  //  return false;
+  //}
 
   //2. dosupport
   // http://wenda.toutiao.com/wenda/web/commit/digg/?ansid=6309036376276861186
-  QString str_url = "http://wenda.toutiao.com/wenda/web/commit/digg/?ansid=";
+	//https://wenda.toutiao.com/wenda/web/commit/digg/?ansid=6396876022574219521&callback=reqwest_1489486262706
+  //QString str_url = "http://wenda.toutiao.com/wenda/web/commit/digg/?ansid=";
 
   QList<int> remove_list;
 
   for(int i = 0; i <m_comment_list.size(); ++i)
   {
     QString str_comm_id = m_comment_list[i]->text(0);
-    QString str_url_temp = str_url + str_comm_id;
+	QString time_stamp = "reqwest_" + GetTimeStr();
+    QString str_url_temp = QString("https://wenda.toutiao.com/wenda/web/commit/digg/?ansid=%1&callback=%2").arg(str_comm_id).arg(time_stamp);
     QUrl url1;
     url1.setUrl(str_url_temp);
 
@@ -184,7 +193,7 @@ bool autobots_toutiao::DoAction()
     header_list.push_back(HttpParamItem("Accept-Language","zh-cn"));
     header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
     header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
-    header_list.push_back(HttpParamItem("wendacsrftoken", token));
+    //header_list.push_back(HttpParamItem("wendacsrftoken", token));
     header_list.push_back(HttpParamItem("Host", "wenda.toutiao.com"));
     header_list.push_back(HttpParamItem("Referer", "http://wenda.toutiao.com/"));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
@@ -194,7 +203,7 @@ bool autobots_toutiao::DoAction()
 //     post_data.push_back(HttpParamItem("comment_id", str));
 //     post_data.push_back(HttpParamItem("group_id", m_group_id));
 
-    QNetworkReply* reply = network.GetRequest(url1, header_list);
+    QNetworkReply* reply = network.GetRequest_ssl(url1, header_list);
 
     QTime _t;
     _t.start();
