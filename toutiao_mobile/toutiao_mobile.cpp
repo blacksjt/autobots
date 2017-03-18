@@ -1,4 +1,4 @@
-#include "autobots_toutiao.h"
+#include "toutiao_mobile.h"
 #include "html_parse_utils.h"
 #include <QVariant>
 #include <QFileDialog>
@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QUuid>
 #include <time.h>
+#include "../utility/utility_common.h"
 
 QString GetTimeStr()
 {
@@ -45,6 +46,27 @@ QString GetDid()
 	return QString::number(n);
 }
 
+QString Getiid()
+{
+	srand(time(NULL));
+	double i = (double)rand() / RAND_MAX;
+	qlonglong n = 7111111111 + 888888888 * i;
+	return QString::number(n);
+}
+
+QString GetOpenUdid()
+{
+	QString uuid1 = QUuid::createUuid().toString();
+	QString uuid2 = QUuid::createUuid().toString();
+	uuid1 += uuid2;
+	uuid1.remove('{');
+	uuid1.remove('}');
+	uuid1.remove('-');
+	QString temp = uuid1.left(40);
+	return temp;
+}
+
+
 const int TIMEOUT = 20 * 1000;
 
 autobots_toutiao::autobots_toutiao(QWidget *parent)
@@ -69,18 +91,6 @@ autobots_toutiao::autobots_toutiao(QWidget *parent)
 	connect(ui.action_clear_comments, SIGNAL(triggered()), this, SLOT(onActClearComments()));
 
 	connect(ui.action_clear_accounts, SIGNAL(triggered()), this, SLOT(onActClearAccounts()));
-
-	//connect(&network, SIGNAL(postIdReady(QString)), this, SLOT(onPostIdReday(QString)));
-
-	//connect(&network, SIGNAL(clientID(QString)), this, SLOT(onClientIdReday(QString)));
-
-	//connect(&network, SIGNAL(csrftokenReady(QString)), this, SLOT(onCsrfTokenReday(QString)));
-
-	//connect(&network, SIGNAL(loginsucceed(QString)), this, SLOT(onLoginsucceed(QString)));
-
-	// connect(&network, SIGNAL(fatiesucceed(QString, double)), this, SLOT(onFatieSucceed(QString, double)));
-
-	//connect(&network, SIGNAL(newCommentID(double)), this, SLOT(onNewCommentID(QString)));
 }
 
 autobots_toutiao::~autobots_toutiao()
@@ -131,16 +141,16 @@ void autobots_toutiao::onStart()
 
 			network.GetManager().setCookieJar(cookie);
 
-			if (!RequestForRenren())
-			{
-				ui.lineEdit_msg->setText(QStringLiteral("请求失败..."));
-				cookie->deleteLater();
-				continue;
-			}
+			//if (!RequestForRenren())
+			//{
+			//	ui.lineEdit_msg->setText(QStringLiteral("请求失败..."));
+			//	cookie->deleteLater();
+			//	continue;
+			//}
 
 			AccountParam ac = m_account_list.at(m_account_order);
 
-			if (!AuthorByRenren(ac._id, ac._password))
+			if (!LoginTTByMobile(ac._id, ac._password))
 			{
 				ui.lineEdit_msg->setText(QStringLiteral("登陆失败..."));
 				ui.tableWidget_account_id->item(m_account_order, 0)->setBackgroundColor(QColor(255, 0, 0, 180));
@@ -182,7 +192,7 @@ void autobots_toutiao::onStart()
 		while (t2.elapsed()<1000)
 			QCoreApplication::processEvents();
 
-		Logout();
+		//Logout();
 		m_device_order++;
 
 		if (m_device_order >= m_devices_list.size())
@@ -232,7 +242,7 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 	header_list.push_back(HttpParamItem("Cache-Control", "no-cache"));
 	header_list.push_back(HttpParamItem("X-CSRFToken", m_csrf_token));
 	header_list.push_back(HttpParamItem("Host", "is.snssdk.com"));
-	header_list.push_back(HttpParamItem("Referer", m_url));
+	//header_list.push_back(HttpParamItem("Referer", m_url));
 	header_list.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
 	//header_list.push_back(HttpParamItem("User-Agent", "News/5.8.3 (iPhone; iOS 9.3.5; Scale/2.00)"));
 	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
@@ -299,169 +309,51 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 
 }
 
-bool autobots_toutiao::GetContent()
-{
-	QString str_url_1 = m_url;
-
-	QUrl url_1(str_url_1);
-	url_1.setUrl(str_url_1);
-	HttpParamList header_list1;
-	header_list1.push_back(HttpParamItem("Accept", "text/html, application/xhtml+xml, */*"));
-	header_list1.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	//  header_list1.push_back(HttpParamItem("Accept-Encoding","deflate"));
-	header_list1.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
-
-	header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
-	//header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-	header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
-	//  header_list1.push_back(HttpParamItem("Referer", "http://www.toutiao.com/"));
-	header_list1.push_back(HttpParamItem("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G36 NewsArticle/5.8.3.2 JsSdk/2.0 NetType/WIFI (News 5.8.3 9.300000)"));
-
-	QNetworkReply* rp = network.GetRequest(url_1, header_list1);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (rp && !rp->isFinished())
-	{
-		QCoreApplication::processEvents();
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	QVariant statusCodeV = rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-	int n = statusCodeV.toInt();
-
-	if (rp == NULL || (rp->error() != QNetworkReply::NoError) || _timeout)
-	{
-		QVariant statusCodeV = rp->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-		int n = statusCodeV.toInt();
-
-		QString ss = rp->errorString();
-		ui.lineEdit_msg->setText(ss);
-		rp->deleteLater();
-		return false;
-	}
-
-	bool res = GetCsrfToken(rp->readAll());
-
-	if (rp != NULL)
-		rp->deleteLater();
-
-	return  res;
-}
-
-bool autobots_toutiao::RequestForRenren()
-{
-	QString str_url1 = QString("http://isub.snssdk.com/2/auth/login/v2/?platform=renren_sns&version_code=5.8.3&uid_type=14&app_name=news_article&vid=%1&device_id=%2&channel=App Store&resolution=750*1334&aid=13&ab_version=83098,79288,87751,87331,85045,86854,86884,87032,86738,31650,87244,82679,87835,87830,87494,87036,87629&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.3.0&idfv=%3&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=6088961915&ab_client=a1,f2,f7,e1&device_type=%4&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A")
-		.arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._did).arg(m_devices_list[m_device_order]._uuid).arg(m_devices_list[m_device_order]._device_type);
-
-	QUrl url1(str_url1);
-
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
-	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
-	header_list.push_back(HttpParamItem("Host", "isub.snssdk.com"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(url1, header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
-	{
-		return false;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	int n = statusCodeV.toInt();
-
-	if (n == 302 || n == 301)
-	{
-		// 重定向
-		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-
-		QUrl red_url = redirectionTarget.toUrl();
-
-		QString str = red_url.toString();
-
-		return ProcessRedirectSSL(str);
-	}
-	else
-	{
-		return false;
-	}
-
-}
 
 void autobots_toutiao::CodeCheckForRenren()
 {
 
 }
 
-bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& password)
+bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& password)
 {
-	//1.检验验证码
-	QString vcode, code_sign;
-	bool need_code = NeedValidateCode(name, vcode, code_sign);
-	QString str_need_code = need_code ? "true" : "";
+	////1.检验验证码
+	//QString vcode, code_sign;
+	//bool need_code = NeedValidateCode(name, vcode, code_sign);
+	//QString str_need_code = need_code ? "true" : "";
+	QString account_en = Utility::encodeTT(name);
+	QString pwd_en = Utility::encodeTT(password);
 
-	QString str_url1 = "https://graph.renren.com/oauth/grant";
+	if (account_en.isEmpty() || pwd_en.isEmpty())
+	{
+		return false;
+	}
+	QString temp = "mobile=" + account_en + "&password=" + pwd_en;
+	int body_len = temp.length();
+	QString body_len_str = QString::number(body_len);
 
+	QString str_url1 = QString("https://security.snssdk.com/user/mobile/login/v2/?mix_mode=1&version_code=6.0.1&app_name=news_article&vid=%1&device_id=%2&channel=App%20Store&resolution=750*1334&aid=13&ab_version=112577,101786,101533,113093,110341,112639,112692,112070,113114,106784,112630,97143,113119,111341,101558,112868,112815,112532,105610,105822,112578,111798,110795,98039,105475&ab_feature=z2&ab_group=z2&openudid=%3&live_sdk_version=1.6.5&idfv=%4&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=%5&ab_client=a1,f2,f7,e1&device_type=iPhone%206&idfa=%6")
+		.arg(m_devices_list[m_device_order]._uuid)
+		.arg(m_devices_list[m_device_order]._did)
+		.arg(m_devices_list[m_device_order]._openudid)
+		.arg(m_devices_list[m_device_order]._uuid)
+		.arg(m_devices_list[m_device_order]._iid)
+		.arg(m_devices_list[m_device_order]._idfa);
 	QUrl url1(str_url1);
 
-	QString str_temp = "http://graph.renren.com/oauth/grant?client_id=" + m_client_id + "&redirect_uri=http://api.snssdk.com/auth/login_success/&response_type=code&display=page&scope=status_update+photo_upload+create_album&state=renren_sns__0____toutiao____2__0__24&secure=true&origin=00000";
-
 	HttpParamList header_list;
-	//header_list.push_back(HttpParamItem("(Request-Line)",	"GET /auth/connect/?type=toutiao&platform=renren_sns HTTP/1.1"));
 	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	header_list.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN"));
-	header_list.push_back(HttpParamItem("Host", "graph.renren.com"));
-	header_list.push_back(HttpParamItem("Referer", str_temp));
-	//Referer	
+	header_list.push_back(HttpParamItem("Accept", "*/*"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-Hans-CN;q=1"));
+	header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded"));
+	header_list.push_back(HttpParamItem("Host", "security.snssdk.com"));
 	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
+	header_list.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
+	header_list.push_back(HttpParamItem("Content-Length", body_len_str));
 
 	HttpParamList post_data;
-	QString t = QString("http://api.snssdk.com/auth/login_success/") + "&client_id=" + m_client_id;
-	//post_data.push_back(HttpParamItem("authFeed","true"));
-	post_data.push_back(HttpParamItem("authorizeOrigin", "00000"));
-	//post_data.push_back(HttpParamItem("client_id", m_client_id));
-	post_data.push_back(HttpParamItem("display", "touch"));
-	post_data.push_back(HttpParamItem("follow", "true"));
-	post_data.push_back(HttpParamItem("icode", vcode));
-	post_data.push_back(HttpParamItem("isNeedIcode", str_need_code));
-	post_data.push_back(HttpParamItem("login_type", "false"));
-	post_data.push_back(HttpParamItem("password", password));
-	post_data.push_back(HttpParamItem("porigin", "80103"));
-	post_data.push_back(HttpParamItem("post_form_id", m_post_id));
-	post_data.push_back(HttpParamItem("redirect_uri", t));
-	post_data.push_back(HttpParamItem("response_type", "code"));
-	post_data.push_back(HttpParamItem("scope", "status_update photo_upload create_album"));
-	post_data.push_back(HttpParamItem("secure", "true"));
-	post_data.push_back(HttpParamItem("state", m_state_id));
-	post_data.push_back(HttpParamItem("username", name));
+	post_data.push_back(HttpParamItem("mobile", account_en));
+	post_data.push_back(HttpParamItem("password", pwd_en));
 
 	QNetworkReply* reply = network.PostRequest_ssl(url1, header_list, post_data);
 
@@ -481,7 +373,8 @@ bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& passwo
 
 	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
 	{
-		reply->deleteLater();
+		QString msg = reply->errorString();
+		reply->deleteLater();	
 		return false;
 	}
 
@@ -489,34 +382,15 @@ bool autobots_toutiao::AuthorByRenren(const QString& name, const QString& passwo
 
 	int n = statusCodeV.toInt();
 
+	if (n!=200)
+	{
+		return false;
+	}
+
 	bool res = false;
-	if (n == 302 || n == 301)
-	{
-		// 重定向
-		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
-		QUrl red_url = redirectionTarget.toUrl();
-
-		QString str = red_url.toString();
-
-		int r = ProcessRedirectLoginGet(str);
-
-		if (r == 0)
-		{
-			res = true;
-		}
-		else if (r == -2)
-		{
-			// 验证码错误
-			VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-			obj->ReportError("bestsalt", code_sign);
-		}
-	}
-	else
-	{
-		QString msg = reply->readAll();
-		res = false;
-	}
+	QByteArray data = reply->readAll();
+	res = GetLoginRst(data);
 
 	if (reply != NULL)
 	{
@@ -540,7 +414,7 @@ void autobots_toutiao::onAddCommentID()
 
 void autobots_toutiao::UpdateData()
 {
-	m_url = ui.lineEdit_url->text();
+	//m_url = ui.lineEdit_url->text();
 	m_news_id = ui.lineEdit_page_id->text();
 	m_group_id = ui.lineEdit_comment_group->text();
 	m_comment_list.clear();
@@ -585,14 +459,31 @@ void autobots_toutiao::initialize()
 
 void autobots_toutiao::initialDevices()
 {
-	for (size_t i = 0; i < 10; i++)
+	//for (size_t i = 0; i < 100; i++)
+	//{
+	//	DeviceParam dev;
+	//	dev._uuid = GetUuid();
+	//	dev._did = GetDid();
+	//	dev._useragent = "News/6.0.1 (iPhone; iOS 9.3.5; Scale/2.00)";
+	//	dev._device_type = GetDeviceType();
+	//	dev._idfa = GetUuid();
+	//	dev._openudid = GetOpenUdid();
+	//	dev._iid = Getiid();
+	//	m_devices_list.push_back(dev);
+
+	//}
+	for (size_t i = 0; i < 100; i++)
 	{
 		DeviceParam dev;
-		dev._uuid = GetUuid();
-		dev._did = GetDid();
+		dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";
+		dev._did = "3135986566";
 		dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
-		dev._device_type = GetDeviceType();
+		dev._device_type = "iPhone%206";
+		dev._idfa = "86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
+		dev._openudid = "0d919477efbefb99dfe7a02a2df34d9127ecc947";
+		dev._iid = "7730017535";
 		m_devices_list.push_back(dev);
+
 	}
 }
 
@@ -659,7 +550,7 @@ void autobots_toutiao::Logout()
 	//header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
 	////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
 	header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
-	header_list1.push_back(HttpParamItem("Referer", m_url));
+	//header_list1.push_back(HttpParamItem("Referer", m_url));
 	header_list1.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
 	QNetworkReply* reply_1 = network.GetRequest(url_1, header_list1);
@@ -727,11 +618,11 @@ void autobots_toutiao::onActClearAccounts()
 
 bool autobots_toutiao::CheckInput()
 {
-	if (ui.lineEdit_url->text().isEmpty())
-	{
-		QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("URL没有输入"));
-		return false;
-	}
+	//if (ui.lineEdit_url->text().isEmpty())
+	//{
+	//	QMessageBox::critical(this, QStringLiteral("提示"), QStringLiteral("URL没有输入"));
+	//	return false;
+	//}
 
 	if (ui.lineEdit_page_id->text().isEmpty())
 	{
@@ -765,480 +656,6 @@ void autobots_toutiao::FatieSucceed(const QString& comment, const QString& id)
 	ui.lineEdit_msg->setText(comment + QStringLiteral(":成功"));
 
 	ui.textBrowser_commentid->append(id);
-}
-
-bool autobots_toutiao::GetCsrfToken(const QByteArray& rp_data)
-{
-	HtmlParseUtils html_parse(rp_data.data(), rp_data.length());
-
-	// "查找csrftoken"
-	GumboNode*  node = html_parse.FirstElementNode("name", "csrfmiddlewaretoken");
-
-	if (node != NULL)
-	{
-		std::string csrf_token = HtmlParseUtils::GetAttributeValue(node, "value");
-		m_csrf_token = QString::fromStdString(csrf_token);
-		return true;
-	}
-
-	return false;
-}
-
-bool autobots_toutiao::ProcessRedirectSSL(const QString& str)
-{
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	header_list.push_back(HttpParamItem("Proxy-Connection", "keep-alive"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	if (!str.contains("https://", Qt::CaseInsensitive))
-	{
-		return false;
-	}
-
-	QNetworkReply* reply = network.GetRequest_ssl(QUrl(str), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
-	{
-		return false;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	int n = statusCodeV.toInt();
-
-	bool res = false;
-
-	if (n == 302 || n == 301)
-	{
-		// 重定向
-		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-
-		QUrl red_url = redirectionTarget.toUrl();
-
-		QString str2 = red_url.toString();
-
-		res = ProcessRedirectGet(str2);
-	}
-	else
-	{
-		res = false;
-	}
-
-	if (reply != NULL)
-	{
-		reply->deleteLater();
-	}
-
-	return res;
-}
-
-bool autobots_toutiao::ProcessRedirectGet(const QString& str)
-{
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	//  header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
-	{
-		return false;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	int n = statusCodeV.toInt();
-
-	if (n != 200)
-	{
-		return false;
-	}
-
-	QByteArray data = reply->readAll();
-
-	if (reply != NULL)
-	{
-		reply->deleteLater();
-	}
-
-	return GetPostId(data);
-
-}
-
-bool autobots_toutiao::GetPostId(const QByteArray& arr)
-{
-	HtmlParseUtils html_parse(arr.data(), arr.length());
-
-	// "查找post_from_id"
-	GumboNode* node = html_parse.FirstElementNode("name", "post_form_id");
-
-	if (node != NULL)
-	{
-		std::string post_from_id = HtmlParseUtils::GetAttributeValue(node, "value");
-
-		QString str = QString::fromStdString(post_from_id);
-
-		m_post_id = str;
-	}
-
-	// "查找client_id"
-	node = html_parse.FirstElementNode("name", "client_id");
-
-	if (node != NULL)
-	{
-		std::string client_id = HtmlParseUtils::GetAttributeValue(node, "value");
-
-		m_client_id = QString::fromStdString(client_id);
-	}
-
-	// "查找state"
-	node = html_parse.FirstElementNode("name", "state");
-
-	if (node != NULL)
-	{
-		std::string state_id = HtmlParseUtils::GetAttributeValue(node, "value");
-
-		m_state_id = QString::fromStdString(state_id);
-	}
-
-	if (m_post_id.isEmpty() || m_client_id.isEmpty())
-	{
-		return false;
-	}
-
-	return true;
-}
-
-// 0 正常，-1 未知错误， -2 验证码错误
-int autobots_toutiao::ProcessRedirectLoginGet(const QString& str)
-{
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-	header_list.push_back(HttpParamItem("Host", "api.snssdk.com"));
-	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
-	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
-	{
-		if (reply != NULL)
-		{
-			QString t = reply->errorString();
-
-			int n = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-
-			t = reply->readAll();
-			//reply->deleteLater();
-			return ProcessRedirectLoginGetTemp(str);
-		}
-		else
-		{
-			return -1;
-		}
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	int n = statusCodeV.toInt();
-	int res = -1;
-	if (n == 302 || n == 301)
-	{
-		// 重定向
-		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-
-		QUrl red_url = redirectionTarget.toUrl();
-
-		QString str2 = red_url.toString();
-
-		if (str2.contains("session_key="))
-			return 0;
-
-		res = ProcessRedirectLoginGet2(str2) ? 0 : -1;
-	}
-	else if (n == 302)
-	{
-		QString str2 = reply->readAll();
-		if (str2.contains(QStringLiteral("验证码错误")))
-		{
-			res = -2;
-		}
-	}
-	else if (n == 500)
-	{
-		// 找不到页面
-		res = ProcessRedirectLoginGetTemp(str);
-	}
-	else
-	{
-		QString t = reply->readAll();
-	}
-
-	if (reply != NULL)
-	{
-		reply->deleteLater();
-	}
-
-	return res;
-}
-
-bool autobots_toutiao::ProcessRedirectLoginGet2(const QString& str)
-{
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
-	//  header_list.push_back(HttpParamItem("Accept-Encoding","deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-cn"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
-	{
-		return false;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	int n = statusCodeV.toInt();
-
-	if (n != 200)
-	{
-		return false;
-	}
-
-	QByteArray data = reply->readAll();
-
-	QString temp_s = data;
-	if (temp_s.contains("\"message\": \"success\""))
-	{
-		return true;
-	}
-
-	return false;
-}
-
-// 0 正常，-1 未知错误， -2 验证码错误
-int autobots_toutiao::ProcessRedirectLoginGetTemp(const QString& str)
-{
-	WaitforSeconds(2);
-
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-	header_list.push_back(HttpParamItem("Host", "api.snssdk.com"));
-	header_list.push_back(HttpParamItem("Referer", "http://graph.renren.com/oauth/grant?client_id=394e2173327e4ead8302dc27f4ae8879&redirect_uri=http%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success%2F&response_type=code&display=page&scope=status_update+photo_upload+create_album&state=renren_sns__0____toutiao____2__0__24&secure=true&origin=00000"));
-	//header_list.push_back(HttpParamItem("",""));
-	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
-	header_list.push_back(HttpParamItem("Accept-Encoding", "gzip, deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(QUrl(str), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || _timeout)
-	{
-
-		reply->deleteLater();
-		return -1;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-	int n = statusCodeV.toInt();
-
-	if ((reply->error() != QNetworkReply::NoError) && n != 500)
-	{
-		QString t = reply->errorString();
-		return -1;
-	}
-
-	int res = -1;
-	if (n == 302 || n == 301)
-	{
-		// 重定向
-		QVariant redirectionTarget = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-
-		QUrl red_url = redirectionTarget.toUrl();
-
-		QString str2 = red_url.toString();
-
-		res = ProcessRedirectLoginGet2(str2) ? 0 : -1;
-	}
-	else if (n == 302)
-	{
-		QString str2 = reply->readAll();
-		if (str2.contains(QStringLiteral("验证码错误")))
-		{
-			res = -2;
-		}
-	}
-	else if (n == 500)
-	{
-		// 找不到页面
-		res = ProcessRedirectLoginGetTemp2(str);
-	}
-
-	if (reply != NULL)
-	{
-		reply->deleteLater();
-	}
-
-	return res;
-}
-
-int autobots_toutiao::ProcessRedirectLoginGetTemp2(const QString& str)
-{
-	//http://api.snssdk.com/auth/login_success/?code=vM988uwAJr91qLN7Yh4tKCxw4alqNDDz&state=renren_sns__0____toutiao____2__0__24
-	int pos1 = str.indexOf("code=");
-	int pos2 = str.indexOf("&", pos1);
-	QString t = str.mid(pos1, pos2 - pos1);
-	QString s_url = "http://toutiao.com/auth/connected/?state=renren_sns__0____toutiao____2__0__24&" + t;
-
-	HttpParamList header_list;
-	header_list.push_back(HttpParamItem("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-	header_list.push_back(HttpParamItem("Host", "www.toutiao.com"));
-	//header_list.push_back(HttpParamItem("Referer","http://graph.renren.com/oauth/grant?client_id=394e2173327e4ead8302dc27f4ae8879&redirect_uri=http%3A%2F%2Fapi.snssdk.com%2Fauth%2Flogin_success%2F&response_type=code&display=page&scope=status_update+photo_upload+create_album&state=renren_sns__0____toutiao____2__0__24&secure=true&origin=00000"));
-	//header_list.push_back(HttpParamItem("",""));
-	header_list.push_back(HttpParamItem("Connection", "keep-alive"));
-	//header_list.push_back(HttpParamItem("Accept-Encoding","gzip, deflate"));
-	header_list.push_back(HttpParamItem("Accept-Language", "zh-CN,zh;q=0.8"));
-	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
-
-	QNetworkReply* reply = network.GetRequest(QUrl(s_url), header_list);
-
-	QTime _t;
-	_t.start();
-
-	bool _timeout = false;
-
-	while (reply && !reply->isFinished())
-	{
-		QCoreApplication::processEvents();
-
-		if (_t.elapsed() >= TIMEOUT) {
-			_timeout = true;
-			break;
-		}
-	}
-
-	if (reply == NULL || _timeout)
-	{
-
-		reply->deleteLater();
-		return -1;
-	}
-
-	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-	int n = statusCodeV.toInt();
-
-	if ((reply->error() != QNetworkReply::NoError) && n != 500)
-	{
-		QString t2 = reply->errorString();
-		return -1;
-	}
-
-	int res = -1;
-
-	if (n != 200)
-	{
-		return -1;
-	}
-
-	QByteArray data = reply->readAll();
-
-	QString temp_s = data;
-	if (temp_s.contains("window.opener.user.connected")
-		|| temp_s.contains("window.parent.user.connected"))
-	{
-		return 0;
-	}
-
-
-	if (reply != NULL)
-	{
-		reply->deleteLater();
-	}
-
-	return res;
 }
 
 
@@ -1445,4 +862,31 @@ void autobots_toutiao::WaitforSeconds(int nseconds)
 	t2.restart();
 	while (t2.elapsed() < nseconds * 1000)
 		QCoreApplication::processEvents();
+}
+
+bool autobots_toutiao::GetLoginRst(const QByteArray& data)
+{
+	QJsonParseError json_error;
+	QJsonDocument parse_doucment = QJsonDocument::fromJson(data, &json_error);
+	if (json_error.error == QJsonParseError::NoError)
+	{
+		if (parse_doucment.isObject())
+		{
+			QJsonObject obj = parse_doucment.object();
+			if (obj.contains("message"))
+			{
+				QJsonValue name_value = obj.take("message");
+				if (name_value.isString())
+				{
+					QString str_value = name_value.toString(); // success
+					if (str_value.contains("success"))
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }

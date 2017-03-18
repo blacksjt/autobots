@@ -108,7 +108,7 @@ public:
 
         lineEdit_url = new QLineEdit(centralWidget);
         lineEdit_url->setObjectName(QStringLiteral("lineEdit_url"));
-        lineEdit_url->setEnabled(true);
+        lineEdit_url->setEnabled(false);
 
         horizontalLayout_3->addWidget(lineEdit_url);
 
@@ -333,7 +333,7 @@ public:
         checkBox_code_online->setText(QApplication::translate("autobots_toutiaoClass", "\350\207\252\345\212\250\350\257\206\345\210\253\351\252\214\350\257\201\347\240\201", 0));
         label_5->setText(QApplication::translate("autobots_toutiaoClass", "\351\227\264\351\232\224\357\274\210\347\247\222\357\274\211", 0));
         label_2->setText(QApplication::translate("autobots_toutiaoClass", "\346\226\207\347\253\240ID(data-itemid)", 0));
-        lineEdit_page_id->setText(QApplication::translate("autobots_toutiaoClass", "0", 0));
+        lineEdit_page_id->setText(QString());
         label_4->setText(QApplication::translate("autobots_toutiaoClass", "Group ID(data-groupid)", 0));
         groupBox->setTitle(QApplication::translate("autobots_toutiaoClass", "\350\257\204\350\256\272\345\206\205\345\256\271", 0));
         pushButton_add_comment_id->setText(QApplication::translate("autobots_toutiaoClass", "\346\267\273\345\212\240", 0));

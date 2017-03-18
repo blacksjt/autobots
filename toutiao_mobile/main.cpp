@@ -1,4 +1,4 @@
-#include "autobots_toutiao.h"
+#include "toutiao_mobile.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])

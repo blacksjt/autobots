@@ -42,6 +42,9 @@ public:
 	QString _did;
 	QString _useragent;
 	QString _device_type;
+	QString _idfa;
+	QString _openudid;
+	QString _iid;
 };
 
 typedef QList<DeviceParam> DeviceParamList;
@@ -60,46 +63,29 @@ private:
 	private slots :
 		void onStart();
 	void onPause();
-	//void onPostIdReday(QString);
 	void onAddCommentID();
-	//void onCsrfTokenReday(QString str);
-	//void onLoginsucceed(QString id);
 	void onActFromTxt();
 	void onActImportComment();
 	void onActClearComments();
 	void onActClearAccounts();
-	//void onClientIdReday(QString _id);
-	//void onFatieSucceed(QString comment, double id);
 private:
-	int LogInbySina();
-	//QNetworkReply* LogInbyRenren(const QString& name, const QString& password);
 	bool DoPostFatie(const QString& content);
-	void GetUerInfo();
-	bool GetContent();
-	void GetConnection();
-	void LoginRequest();
+
 	bool RequestForRenren();
 	void CodeCheckForRenren();
-	bool AuthorByRenren(const QString& name, const QString& password);
+	bool LoginTTByMobile(const QString& name, const QString& password);
 	void UpdateData();
 	void initialize();
 	void initialDevices();
 	void Logout();
 	bool CheckInput();
-	bool GetCsrfToken(const QByteArray& arr);
-	bool ProcessRedirectSSL(const QString& str);
-	bool ProcessRedirectGet(const QString& str);
-	bool GetPostId(const QByteArray& arr);
-	int ProcessRedirectLoginGet(const QString& str);
-	bool ProcessRedirectLoginGet2(const QString& str);
-	int ProcessRedirectLoginGetTemp(const QString& str);
-	int ProcessRedirectLoginGetTemp2(const QString& str);
 	bool GetFatieStatus(const QByteArray& byte_arr);
 	void FatieSucceed(const QString& comment, const QString& id);
 	bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
 
 	void WaitforSeconds(int nseconds);
-	
+	bool GetLoginRst(const QByteArray& data);
+
 private:
 	Ui::autobots_toutiaoClass ui;
 	toutiao_network network;
@@ -110,7 +96,7 @@ private:
 	QString m_state_id;
 	bool m_code_online;
 private:
-	QString m_url;
+	//QString m_url;
 	QString m_news_id;
 	QString m_group_id;
 	int m_interval;

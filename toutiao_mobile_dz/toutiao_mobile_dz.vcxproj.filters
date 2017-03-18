@@ -38,15 +38,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="autobots_toutiao.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_autobots_toutiao.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_autobots_toutiao.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_autobots_toutiao.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -74,11 +65,17 @@
     <ClCompile Include="GeneratedFiles\Release\moc_code_dlg.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="toutiao_mobile_dz.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_toutiao_mobile_dz.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_toutiao_mobile_dz.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="autobots_toutiao.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="autobots_toutiao.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -92,6 +89,9 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="code_dlg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="toutiao_mobile_dz.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
