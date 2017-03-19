@@ -21,7 +21,7 @@ QString GetUuid()
 	QString uuid = QUuid::createUuid().toString();
 	uuid.remove('{');
 	uuid.remove('}');
-	return uuid;
+	return uuid.toUpper();
 }
 
 QString GetDeviceType()
@@ -224,7 +224,7 @@ bool autobots_toutiao::DoAction()
 	 header_list.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
 	 header_list.push_back(HttpParamItem("Host", "is.snssdk.com"));
 	 //header_list.push_back(HttpParamItem("Referer", m_url));
-	 header_list.push_back(HttpParamItem("User-Agent", "News/5.9.8 (iPhone; iOS 9.3.5; Scale/2.00)"));
+	 header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 	 //header_list.push_back(HttpParamItem("X-Requested-With", "XMLHttpRequest"));
 
     HttpParamList post_data;
@@ -260,6 +260,8 @@ bool autobots_toutiao::DoAction()
 
     QByteArray data = reply->readAll();
 
+	reply->deleteLater();
+
     int count = 0;
     bool res = UpdateDiggCount(data, count);
 
@@ -283,7 +285,7 @@ bool autobots_toutiao::DoAction()
       }  
     }
 
-	int interval = ((i+1) % 5 == 0) ? 15000 : 2000;
+	int interval = 2000;
 
 	QTime _t2;
 	_t2.start();
@@ -353,32 +355,33 @@ void autobots_toutiao::initialize()
 
 void autobots_toutiao::initialDevices()
 {
-	//for (size_t i = 0; i < 100; i++)
-	//{
-	//	DeviceParam dev;
-	//	dev._uuid = GetUuid();
-	//	dev._did = GetDid();
-	//	dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
-	//	dev._device_type = GetDeviceType();
-	//	dev._idfa = GetUuid();
-	//	dev._openudid = GetOpenUdid();
-	//	dev._iid = Getiid();
-	//	m_devices_list.push_back(dev);
-	//	
-	//}
 	for (size_t i = 0; i < 100; i++)
 	{
 		DeviceParam dev;
-		dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";
+		dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";//GetUuid();
+		//dev._did = GetDid();
 		dev._did = "3135986566";
-		dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
-		dev._device_type = "iPhone%206";
-		dev._idfa = "86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
-		dev._openudid = "0d919477efbefb99dfe7a02a2df34d9127ecc947";
-		dev._iid = "7730017535";
+		dev._useragent = "News/6.0.1 (iPhone; iOS 9.3.5; Scale/2.00)";
+		dev._device_type = GetDeviceType();
+		dev._idfa = GetUuid();
+		dev._openudid = GetOpenUdid();
+		dev._iid = Getiid();
 		m_devices_list.push_back(dev);
-
+		
 	}
+	//for (size_t i = 0; i < 100; i++)
+	//{
+	//	DeviceParam dev;
+	//	dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";
+	//	dev._did = "3135986566";
+	//	dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
+	//	dev._device_type = "iPhone%206";
+	//	dev._idfa = "86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
+	//	dev._openudid = "0d919477efbefb99dfe7a02a2df34d9127ecc947";
+	//	dev._iid = "7730017535";
+	//	m_devices_list.push_back(dev);
+
+	//}
 }
 
 void autobots_toutiao::onActFromTxt()
@@ -429,24 +432,21 @@ void autobots_toutiao::onActFromTxt()
 
 void autobots_toutiao::Logout()
 {
-	QString str_url_1 = "http://web.toutiao.com/auth/logout/";
+	QString str_url_1 = "https://is.snssdk.com/user/tab/tabs/?version_code=6.0.1&app_name=news_article&vid=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&device_id=3135986566&channel=App%20Store&resolution=750*1334&aid=13&ab_version=112577,101786,113311,113268,101533,113093,110341,112640,112694,113423,113114,106784,112630,97142,31211,111339,101558,112867,112815,105610,105826,112578,113452,110795,113374,98046,105475&ab_feature=z2&ab_group=z2&openudid=0d919477efbefb99dfe7a02a2df34d9127ecc947&live_sdk_version=1.6.5&idfv=674FB6B1-60E9-4315-88FC-AAC84BEFAB46&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=7730017535&ab_client=a1,f2,f7,e1&device_type=iPhone%206&idfa=86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
 
 	QUrl url_1(str_url_1);
 
 	HttpParamList header_list1;
-	header_list1.push_back(HttpParamItem("Accept", "application/json, text/javascript, */*; q=0.01"));
+	header_list1.push_back(HttpParamItem("Accept", "*/*"));
 	header_list1.push_back(HttpParamItem("Connection", "Keep-Alive"));
 	header_list1.push_back(HttpParamItem("Accept-Encoding", "deflate"));
 	header_list1.push_back(HttpParamItem("Accept-Language", "zh-cn"));
 	header_list1.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
-
-	//header_list1.push_back(HttpParamItem("Cache-Control", "no-cache"));
-	////header_list.push_back(HttpParamItem("X-CSRFToken", "20c9e1fc22618a31cbfcd42218e96dd0"));
-	header_list1.push_back(HttpParamItem("Host", "www.toutiao.com"));
-	//header_list1.push_back(HttpParamItem("Referer", m_url));
+	header_list1.push_back(HttpParamItem("Host", "is.snssdk.com"));
+	header_list1.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
 	header_list1.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
-	QNetworkReply* reply_1 = network->GetRequest(url_1, header_list1);
+	QNetworkReply* reply_1 = network->GetRequest_ssl(url_1, header_list1);
 
 	QTime _t;
 	_t.start();
@@ -459,6 +459,11 @@ void autobots_toutiao::Logout()
 			break;
 		}
 	}
+
+	QString a = reply_1->readAll();
+
+	reply_1->deleteLater();
+
 }
 
 
