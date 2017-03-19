@@ -107,6 +107,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_mobile", "toutiao_m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_mobile_dz", "toutiao_mobile_dz\toutiao_mobile_dz.vcxproj", "{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_pc_dz", "toutiao_pc_dz\toutiao_pc_dz.vcxproj", "{6FE402F4-954F-473C-A708-B7BCDD7EE225}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -561,6 +563,16 @@ Global
 		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|x64.Build.0 = Release|x64
 		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|x86.ActiveCfg = Release|Win32
 		{FEE1C1C0-69C0-42EA-B7DF-8FCC62F946E9}.Release|x86.Build.0 = Release|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Debug|Win32.Build.0 = Debug|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Debug|x64.ActiveCfg = Debug|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Debug|x86.ActiveCfg = Debug|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Debug|x86.Build.0 = Debug|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|Win32.ActiveCfg = Release|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|Win32.Build.0 = Release|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x64.ActiveCfg = Release|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x86.ActiveCfg = Release|Win32
+		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
