@@ -72,7 +72,8 @@ const int TIMEOUT = 20 * 1000;
 autobots_toutiao::autobots_toutiao(QWidget *parent)
 	: control_status(true), QMainWindow(parent),
 	m_account_order(0),m_device_order(0),
-	m_client_id("394e2173327e4ead8302dc27f4ae8879")
+	m_client_id("394e2173327e4ead8302dc27f4ae8879"),
+	network(NULL)
 {
 	ui.setupUi(this);
 
@@ -95,7 +96,10 @@ autobots_toutiao::autobots_toutiao(QWidget *parent)
 
 autobots_toutiao::~autobots_toutiao()
 {
-
+	if (network != NULL)
+	{
+		network->deleteLater();
+	}
 }
 
 void autobots_toutiao::onStart()
@@ -135,11 +139,12 @@ void autobots_toutiao::onStart()
 		bool login_status = false;
 		while (m_account_order < m_account_list.size())
 		{
-			network.GetManager().clearAccessCache();
-
-			QNetworkCookieJar* cookie = new QNetworkCookieJar();
-
-			network.GetManager().setCookieJar(cookie);
+			if (network != NULL)
+			{
+				delete network;
+				network = NULL;
+			}
+			network = new toutiao_network(this);
 
 			//if (!RequestForRenren())
 			//{
@@ -155,6 +160,7 @@ void autobots_toutiao::onStart()
 				ui.lineEdit_msg->setText(QStringLiteral("登陆失败..."));
 				ui.tableWidget_account_id->item(m_account_order, 0)->setBackgroundColor(QColor(255, 0, 0, 180));
 				m_account_order++;
+				WaitforSeconds(5);
 				continue;
 			}
 			else
@@ -259,7 +265,7 @@ bool autobots_toutiao::DoPostFatie(const QString& content)
 	post_data.push_back(HttpParamItem("text", content));
 	post_data.push_back(HttpParamItem("zz", "0"));
 
-	QNetworkReply* reply = network.PostRequest_ssl(url1, header_list, post_data);
+	QNetworkReply* reply = network->PostRequest_ssl(url1, header_list, post_data);
 
 	QTime _t;
 	_t.start();
@@ -355,7 +361,7 @@ bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& passw
 	post_data.push_back(HttpParamItem("mobile", account_en));
 	post_data.push_back(HttpParamItem("password", pwd_en));
 
-	QNetworkReply* reply = network.PostRequest_ssl(url1, header_list, post_data);
+	QNetworkReply* reply = network->PostRequest_ssl(url1, header_list, post_data);
 
 	QTime _t;
 	_t.start();
@@ -388,9 +394,19 @@ bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& passw
 	}
 
 	bool res = false;
+	QString captcha;
 
 	QByteArray data = reply->readAll();
-	res = GetLoginRst(data);
+	int log_res = GetLoginRst(data, captcha);
+
+	if (log_res == 0)
+	{
+		res = true;
+	}
+	else if (log_res == -1)
+	{
+		res = LoginTTByMobile(name, password, captcha);
+	}
 
 	if (reply != NULL)
 	{
@@ -399,6 +415,105 @@ bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& passw
 
 	return res;
 }
+
+bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& password, const QString& captcha)
+{
+	////1.检验验证码
+	QByteArray arr = QByteArray::fromBase64(captcha.toUtf8().data());
+	QImage image_ = QImage::fromData(arr);//(data.data(),100,40,QImage::Format_RGB32);
+	bool result = image_.save("e:\\1.jpg");
+
+	QString vcode, code_sign;
+	VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
+	int res_vcode = obj->GetRecResults(arr, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+
+
+	QString account_en = Utility::encodeTT(name);
+	QString pwd_en = Utility::encodeTT(password);
+
+	if (account_en.isEmpty() || pwd_en.isEmpty())
+	{
+		return false;
+	}
+	QString temp = "mobile=" + account_en + "&password=" + pwd_en + "&captcha=" + vcode;
+	int body_len = temp.length();
+	QString body_len_str = QString::number(body_len);
+
+	QString str_url1 = QString("https://security.snssdk.com/user/mobile/login/v2/?mix_mode=1&version_code=6.0.1&app_name=news_article&vid=%1&device_id=%2&channel=App%20Store&resolution=750*1334&aid=13&ab_version=112577,101786,101533,113093,110341,112639,112692,112070,113114,106784,112630,97143,113119,111341,101558,112868,112815,112532,105610,105822,112578,111798,110795,98039,105475&ab_feature=z2&ab_group=z2&openudid=%3&live_sdk_version=1.6.5&idfv=%4&ac=WIFI&os_version=9.3.5&ssmix=a&device_platform=iphone&iid=%5&ab_client=a1,f2,f7,e1&device_type=iPhone%206&idfa=%6")
+		.arg(m_devices_list[m_device_order]._uuid)
+		.arg(m_devices_list[m_device_order]._did)
+		.arg(m_devices_list[m_device_order]._openudid)
+		.arg(m_devices_list[m_device_order]._uuid)
+		.arg(m_devices_list[m_device_order]._iid)
+		.arg(m_devices_list[m_device_order]._idfa);
+	QUrl url1(str_url1);
+
+	HttpParamList header_list;
+	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
+	header_list.push_back(HttpParamItem("Accept", "*/*"));
+	header_list.push_back(HttpParamItem("Accept-Language", "zh-Hans-CN;q=1"));
+	header_list.push_back(HttpParamItem("Content-Type", "application/x-www-form-urlencoded"));
+	header_list.push_back(HttpParamItem("Host", "security.snssdk.com"));
+	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
+	header_list.push_back(HttpParamItem("tt-request-time", GetTimeStr()));
+	header_list.push_back(HttpParamItem("Content-Length", body_len_str));
+
+	HttpParamList post_data;
+	post_data.push_back(HttpParamItem("mobile", account_en));
+	post_data.push_back(HttpParamItem("password", pwd_en));
+	post_data.push_back(HttpParamItem("captcha", vcode));
+
+	QNetworkReply* reply = network->PostRequest_ssl(url1, header_list, post_data);
+
+	QTime _t;
+	_t.start();
+
+	bool _timeout = false;
+
+	while (reply && !reply->isFinished())
+	{
+		QCoreApplication::processEvents();
+		if (_t.elapsed() >= TIMEOUT) {
+			_timeout = true;
+			break;
+		}
+	}
+
+	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
+	{
+		QString msg = reply->errorString();
+		reply->deleteLater();
+		return false;
+	}
+
+	QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+	int n = statusCodeV.toInt();
+
+	if (n != 200)
+	{
+		return false;
+	}
+
+	bool res = false;
+
+	QString captcha_t;
+	QByteArray data = reply->readAll();
+	int r = GetLoginRst(data, captcha_t);
+
+	if (r == 0)
+	{
+		res = true;
+	}
+
+	if (reply != NULL)
+	{
+		reply->deleteLater();
+	}
+
+	return res;
+}
+
 
 
 void autobots_toutiao::onAddCommentID()
@@ -459,32 +574,33 @@ void autobots_toutiao::initialize()
 
 void autobots_toutiao::initialDevices()
 {
+	for (size_t i = 0; i < 100; i++)
+	{
+	DeviceParam dev;
+	dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";//GetUuid();
+													   //dev._did = GetDid();
+	dev._did = "3135986566";
+	dev._useragent = "News/6.0.1 (iPhone; iOS 9.3.5; Scale/2.00)";
+	dev._device_type = GetDeviceType();
+	dev._idfa = GetUuid();
+	dev._openudid = GetOpenUdid();
+	dev._iid = Getiid();
+	m_devices_list.push_back(dev);
+	}
+
 	//for (size_t i = 0; i < 100; i++)
 	//{
 	//	DeviceParam dev;
-	//	dev._uuid = GetUuid();
-	//	dev._did = GetDid();
-	//	dev._useragent = "News/6.0.1 (iPhone; iOS 9.3.5; Scale/2.00)";
-	//	dev._device_type = GetDeviceType();
-	//	dev._idfa = GetUuid();
-	//	dev._openudid = GetOpenUdid();
-	//	dev._iid = Getiid();
+	//	dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";
+	//	dev._did = "3135986566";
+	//	dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
+	//	dev._device_type = "iPhone%206";
+	//	dev._idfa = "86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
+	//	dev._openudid = "0d919477efbefb99dfe7a02a2df34d9127ecc947";
+	//	dev._iid = "7730017535";
 	//	m_devices_list.push_back(dev);
 
 	//}
-	for (size_t i = 0; i < 100; i++)
-	{
-		DeviceParam dev;
-		dev._uuid = "674FB6B1-60E9-4315-88FC-AAC84BEFAB46";
-		dev._did = "3135986566";
-		dev._useragent = "Mozilla / 5.0 (iPhone; CPU iPhone OS 9_3_5 like Mac OS X) AppleWebKit / 601.1.46 (KHTML, like Gecko) Mobile / 13G36 NewsArticle / 5.8.3.2 JsSdk / 2.0 NetType / WIFI(News 5.8.3 9.300000)";
-		dev._device_type = "iPhone%206";
-		dev._idfa = "86E011D2-C2DA-40CB-AB9D-DB1E1F9D668A";
-		dev._openudid = "0d919477efbefb99dfe7a02a2df34d9127ecc947";
-		dev._iid = "7730017535";
-		m_devices_list.push_back(dev);
-
-	}
 }
 
 void autobots_toutiao::onActFromTxt()
@@ -553,7 +669,7 @@ void autobots_toutiao::Logout()
 	//header_list1.push_back(HttpParamItem("Referer", m_url));
 	header_list1.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 
-	QNetworkReply* reply_1 = network.GetRequest(url_1, header_list1);
+	QNetworkReply* reply_1 = network->GetRequest(url_1, header_list1);
 
 	QTime _t;
 	_t.start();
@@ -732,7 +848,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 	header_list.push_back(HttpParamItem("Host", "graph.renren.com"));
 	header_list.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 	header_list.push_back(HttpParamItem("Referer", str_temp));
-	//network.GetManager().setCookieJar(new QNetworkCookieJar(this));
+	//network->GetManager().setCookieJar(new QNetworkCookieJar(this));
 
 	HttpParamList post_data;
 	post_data.push_back(HttpParamItem("authFeed", "true"));
@@ -753,7 +869,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 	post_data.push_back(HttpParamItem("state", "renren_sns__0____toutiao____2__0__24"));
 	post_data.push_back(HttpParamItem("username", name));
 
-	QNetworkReply* reply = network.PostRequest(url1, header_list, post_data);
+	QNetworkReply* reply = network->PostRequest(url1, header_list, post_data);
 
 	QTime _t;
 	_t.start();
@@ -803,7 +919,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 	header_list2.push_back(HttpParamItem("User-Agent", m_devices_list[m_device_order]._useragent));
 	header_list2.push_back(HttpParamItem("Referer", str_temp));
 
-	QNetworkReply* reply2 = network.GetRequest(url2, header_list2);
+	QNetworkReply* reply2 = network->GetRequest(url2, header_list2);
 
 	_t.restart();
 
@@ -864,7 +980,8 @@ void autobots_toutiao::WaitforSeconds(int nseconds)
 		QCoreApplication::processEvents();
 }
 
-bool autobots_toutiao::GetLoginRst(const QByteArray& data)
+// 0成功  -1 验证码问题 -2 其他错误
+int autobots_toutiao::GetLoginRst(const QByteArray& data, QString& captcha)
 {
 	QJsonParseError json_error;
 	QJsonDocument parse_doucment = QJsonDocument::fromJson(data, &json_error);
@@ -881,12 +998,36 @@ bool autobots_toutiao::GetLoginRst(const QByteArray& data)
 					QString str_value = name_value.toString(); // success
 					if (str_value.contains("success"))
 					{
-						return true;
+						return 0;
+					}
+					else if (str_value.contains("error"))
+					{
+						if (obj.contains("data"))
+						{
+							QJsonObject data_obj = obj.take("data").toObject();
+							int errcode = data_obj.take("error_code").toInt();
+							if (errcode == 1102 || errcode == 1101)
+							{
+							    captcha = data_obj.take("captcha").toString();
+
+// 								QByteArray arr = QByteArray::fromBase64(captcha.toUtf8().data());
+// 								QImage image_ = QImage::fromData(arr);//(data.data(),100,40,QImage::Format_RGB32);
+// 								bool result = image_.save("e:\\1.jpg");
+// 
+// 								VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
+// 								int res = obj->GetRecResults(arr, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+
+								return -1;
+							}
+
+							return -2;
+						}
 					}
 				}
 			}
+			
 		}
 	}
 
-	return false;
+	return -2;
 }

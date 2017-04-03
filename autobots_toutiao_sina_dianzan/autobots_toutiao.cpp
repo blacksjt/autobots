@@ -6,7 +6,8 @@
 #include "code_dlg.h"
 #include "vlidatecodeonline.h"
 #include "sina_encrypt.h"
-
+#include <time.h>
+#include <stdlib.h>
 
 const int TIMEOUT = 20*1000;
 const int TIMEOUT1 = 1*1000;
@@ -54,7 +55,7 @@ void autobots_toutiao::onStart()
   // 更新界面输入
   UpdateData();
 
-  bool res = GetDongtaiIDMap();
+  //bool res = GetDongtaiIDMap();
   ui.lineEdit_msg->setText(QStringLiteral("获取动态ID"));
   
   control_status = true;
@@ -169,15 +170,15 @@ bool autobots_toutiao::DoAction()
   for(int i = 0; i <m_comment_list.size(); ++i)
   {
     QString str_id = m_comment_list[i]->text(0);
-	QString str_d_id;
-	if (m_id_dongtaiid.find(str_id) != m_id_dongtaiid.end())
-	{
-		str_d_id = m_id_dongtaiid[str_id];
-	}
-	else
-	{
-		continue;
-	}
+	//QString str_d_id;
+	//if (m_id_dongtaiid.find(str_id) != m_id_dongtaiid.end())
+	//{
+	//	str_d_id = m_id_dongtaiid[str_id];
+	//}
+	//else
+	//{
+	//	continue;
+	//}
 
     HttpParamList header_list;
     header_list.push_back(HttpParamItem("Accept",	"text/javascript, text/html, application/xml, text/xml, */*"));
@@ -195,7 +196,7 @@ bool autobots_toutiao::DoAction()
     HttpParamList post_data;
     post_data.push_back(HttpParamItem("action", "digg"));
     post_data.push_back(HttpParamItem("comment_id", str_id));
-	post_data.push_back(HttpParamItem("dongtai_id", str_d_id));
+	//post_data.push_back(HttpParamItem("dongtai_id", str_d_id));
     post_data.push_back(HttpParamItem("group_id", m_group_id));
 	post_data.push_back(HttpParamItem("item_id", m_item_id));
 
@@ -1273,8 +1274,8 @@ bool autobots_toutiao::ProcessRedirectLoginGet4(const QString& str)
 bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
 	QString& vcode, QString& code_sign)
 {
-	qint64 time = QDateTime::currentMSecsSinceEpoch();
-	QString str_time = QString::number(time);
+	qint64 ntime = QDateTime::currentMSecsSinceEpoch();
+	QString str_time = QString::number(ntime);
 
 	// 获取用户名
 	sina_encrypt* encryptor = sina_encrypt::GetInstance();
@@ -1283,7 +1284,7 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
 	QString str_url1 = QString("https://login.sina.com.cn/sso/prelogin.php?entry=openapi&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=%2").arg(encrypted_name, str_time);
 	QUrl url1(str_url1);
 
-	QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://service.zol.com.cn/user/api/sina/callback.php&response_type=code").arg(m_client_id, m_state);
+	QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://api.snssdk.com/auth/login_success/").arg(m_client_id, m_state);
 
 	HttpParamList header_list;
 	header_list.push_back(HttpParamItem("Connection", "Keep-Alive"));
@@ -1311,6 +1312,7 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
 
 	if (reply == NULL || (reply->error() != QNetworkReply::NoError) || _timeout)
 	{
+		QString msg = reply->errorString();
 		return false;
 	}
 
@@ -1339,6 +1341,7 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
 		return true;
 	}
 
+	srand(time(NULL));
 	int n_rand = rand() % 9;
 	double d = 0.987654321235647 / n_rand;
 	d = d * 100000000;
@@ -1389,12 +1392,13 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data,
 	//   QString type = var.toString();
 
 	QImage image_ = QImage::fromData(rp_data);
+	bool result = image_.save("e:\\1.jpg");
 	if (m_code_online)
 	{
 		// 在线验证
 		//bool result = image_.save("e:\\1.jpg");
 		VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-		int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+		int int_res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
 		//obj->ReportError("bestsalt", code_sign); 
 	}
 	else

@@ -74,6 +74,7 @@ private:
 	bool RequestForRenren();
 	void CodeCheckForRenren();
 	bool LoginTTByMobile(const QString& name, const QString& password);
+	bool LoginTTByMobile(const QString& name, const QString& password, const QString& captcha);
 	void UpdateData();
 	void initialize();
 	void initialDevices();
@@ -84,11 +85,13 @@ private:
 	bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
 
 	void WaitforSeconds(int nseconds);
-	bool GetLoginRst(const QByteArray& data);
+
+	// 0成功  -1 验证码问题 -2 其他错误
+	int GetLoginRst(const QByteArray& data, QString& captcha);
 
 private:
 	Ui::autobots_toutiaoClass ui;
-	toutiao_network network;
+	toutiao_network* network;
 	bool control_status;
 	QString m_client_id;
 	QString m_post_id;
