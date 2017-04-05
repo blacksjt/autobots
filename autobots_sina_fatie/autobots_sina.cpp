@@ -1151,7 +1151,7 @@ bool autobots_toutiao::PreLoginSina(const QString& name, SinaData& data, QString
     //bool result = image_.save("e:\\1.jpg");
 
     VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-    int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+    int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
     //obj->ReportError("bestsalt", code_sign); 
   }
   else

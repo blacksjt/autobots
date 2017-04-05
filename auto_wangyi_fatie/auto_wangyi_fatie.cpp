@@ -1142,7 +1142,7 @@ bool autobots_toutiao::GetVlidateCode(const QString& name)
     image_.save("e:/2.jpg");
 
     VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-    int res = obj->GetRecResults(data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+    int res = obj->GetRecResults(data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
     //obj->ReportError("bestsalt", code_sign); 
 
     reply->deleteLater();

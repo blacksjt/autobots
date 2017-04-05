@@ -1118,7 +1118,7 @@ bool auto_sohu::PreLoginSina(const QString& name, SinaData& data, QString& vcode
     //bool result = image_.save("e:\\1.jpg");
 
     VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-    int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+    int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
     //obj->ReportError("bestsalt", code_sign); 
   }
   else

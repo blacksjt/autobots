@@ -511,7 +511,7 @@ bool auto_dirvers_fatie::getCode(QString& vcode, QString& code_sign)
 #endif
 	
 	VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-	int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+	int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
 
 	if (res==0 && !vcode.isEmpty())
 	{

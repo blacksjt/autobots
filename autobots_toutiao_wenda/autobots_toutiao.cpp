@@ -1116,7 +1116,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
      // 在线验证
      //bool result = image_.save("e:\\1.jpg");
      VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-     int res = obj->GetRecResults(data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+     int res = obj->GetRecResults(data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
    }
    else
    {

@@ -1002,7 +1002,7 @@ bool autobots_weibo_dianzan::PreLoginSina(const QString& name, SinaData& data, Q
   {
     // 在线验证
       VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-      int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+      int res = obj->GetRecResults(rp_data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
       //obj->ReportError("bestsalt", code_sign); 
 
   }

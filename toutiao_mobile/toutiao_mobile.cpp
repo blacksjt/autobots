@@ -425,7 +425,7 @@ bool autobots_toutiao::LoginTTByMobile(const QString& name, const QString& passw
 
 	QString vcode, code_sign;
 	VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-	int res_vcode = obj->GetRecResults(arr, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+	int res_vcode = obj->GetRecResults(arr, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
 
 
 	QString account_en = Utility::encodeTT(name);
@@ -957,7 +957,7 @@ bool autobots_toutiao::NeedValidateCode(const QString& name, QString& vcode, QSt
 		// 在线验证
 		//bool result = image_.save("e:\\1.jpg");
 		VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-		int res = obj->GetRecResults(data, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+		int res = obj->GetRecResults(data, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
 	}
 	else
 	{
@@ -1015,7 +1015,7 @@ int autobots_toutiao::GetLoginRst(const QByteArray& data, QString& captcha)
 // 								bool result = image_.save("e:\\1.jpg");
 // 
 // 								VlidateCodeOnLine* obj = VlidateCodeOnLine::GetInstance();
-// 								int res = obj->GetRecResults(arr, "bestsalt", "hh610520", "bestsalt", vcode, code_sign);
+// 								int res = obj->GetRecResults(arr, "bestsalt", "hh610520;;", "bestsalt", vcode, code_sign);
 
 								return -1;
 							}
