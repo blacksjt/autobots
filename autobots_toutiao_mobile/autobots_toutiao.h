@@ -46,6 +46,17 @@ public:
 
 typedef QList<DeviceParam> DeviceParamList;
 
+struct SinaData
+{
+public:
+	QString _servertime;
+	QString _pcid;
+	QString _nonce;
+	QString _pubkey;
+	QString _rsakv;
+	QString _ticket;
+	bool    _showpin;
+};
 
 class autobots_toutiao : public QMainWindow
 {
@@ -71,16 +82,11 @@ private:
 	//void onClientIdReday(QString _id);
 	//void onFatieSucceed(QString comment, double id);
 private:
-	int LogInbySina();
-	//QNetworkReply* LogInbyRenren(const QString& name, const QString& password);
 	bool DoPostFatie(const QString& content);
-	void GetUerInfo();
-	bool GetContent();
-	void GetConnection();
-	void LoginRequest();
-	bool RequestForRenren();
+	//bool GetContent();
+	bool RequestForSina();
 	void CodeCheckForRenren();
-	bool AuthorByRenren(const QString& name, const QString& password);
+	bool AuthorBySina(const QString& name, const QString& password);
 	void UpdateData();
 	void initialize();
 	void initialDevices();
@@ -90,7 +96,7 @@ private:
 	bool ProcessRedirectSSL(const QString& str);
 	bool ProcessRedirectGet(const QString& str);
 	bool GetPostId(const QByteArray& arr);
-	int ProcessRedirectLoginGet(const QString& str);
+	bool ProcessRedirectLoginGet(const QString& str);
 	bool ProcessRedirectLoginGet2(const QString& str);
 	int ProcessRedirectLoginGetTemp(const QString& str);
 	int ProcessRedirectLoginGetTemp2(const QString& str);
@@ -99,16 +105,28 @@ private:
 	bool NeedValidateCode(const QString& name, QString& vcode, QString& code_sign);
 
 	void WaitforSeconds(int nseconds);
+
+	bool PreLoginSina(const QString& name, SinaData& data, QString& vcode, QString& code_sign);
+	bool GetPreLoginResult(const QByteArray& str, SinaData& data);
+	bool GetLoginResult(const QByteArray& str, SinaData& data, const QString& code_sign);
+	bool LoginSina(SinaData& sina_data, const QString& name,
+		const QString& password, const QString& vcode, const QString& code_sign);
+	bool AuthorizeSina(const SinaData& sina_data);
+	bool AuthorizeSina2(const SinaData & sina_data);
+	bool GetUserId(const QByteArray& arr);
 	
 private:
 	Ui::autobots_toutiaoClass ui;
-	toutiao_network network;
+	toutiao_network* network;
 	bool control_status;
-	QString m_client_id;
-	QString m_post_id;
 	QString m_csrf_token;
-	QString m_state_id;
 	bool m_code_online;
+
+	QString m_client_id;
+	QString m_appkey;
+	QString m_state;
+	QString m_verifyToken;
+	QString	m_uid;
 private:
 	QString m_url;
 	QString m_news_id;

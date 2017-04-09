@@ -109,6 +109,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_mobile_dz", "toutia
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_pc_dz", "toutiao_pc_dz\toutiao_pc_dz.vcxproj", "{6FE402F4-954F-473C-A708-B7BCDD7EE225}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_taipingyang_dp", "auto_taipingyang_dp\auto_taipingyang_dp.vcxproj", "{4F7B655A-6D39-4206-AF67-67265D7B3B8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -573,6 +575,16 @@ Global
 		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x64.ActiveCfg = Release|Win32
 		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x86.ActiveCfg = Release|Win32
 		{6FE402F4-954F-473C-A708-B7BCDD7EE225}.Release|x86.Build.0 = Release|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Debug|Win32.Build.0 = Debug|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Debug|x64.ActiveCfg = Debug|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Debug|x86.ActiveCfg = Debug|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Debug|x86.Build.0 = Debug|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|Win32.ActiveCfg = Release|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|Win32.Build.0 = Release|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x64.ActiveCfg = Release|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x86.ActiveCfg = Release|Win32
+		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

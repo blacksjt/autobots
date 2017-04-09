@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>今日头条发帖</string>
+   <string>今日头条App发帖（微博）</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
@@ -85,7 +85,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>0</string>
+         <string/>
         </property>
        </widget>
       </item>
