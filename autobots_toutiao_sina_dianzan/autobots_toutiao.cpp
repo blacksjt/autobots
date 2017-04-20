@@ -9,7 +9,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-const int TIMEOUT = 20*1000;
+const int TIMEOUT = 50*1000;
 const int TIMEOUT1 = 1*1000;
 
 autobots_toutiao::autobots_toutiao(QWidget *parent)

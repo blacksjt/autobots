@@ -45,7 +45,7 @@ private:
     //QString m_news_id;  // ĞÂÎÅID
     //QStringList m_comment_list;  // ÆÀÂÛID
     QStringList m_url_list;
-    QNetworkAccessManager m_manager;
+    QNetworkAccessManager* m_manager;
     
 };
 

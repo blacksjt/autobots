@@ -41,7 +41,7 @@ QString GetHost(const QString& str)
 }
 
 auto_smzdm::auto_smzdm(QWidget *parent)
-    : control_status(true), QMainWindow(parent)
+    : control_status(true), QMainWindow(parent),m_manager(NULL)
 {
     m_thread_count = 1;
     ui.setupUi(this);
@@ -58,7 +58,7 @@ auto_smzdm::auto_smzdm(QWidget *parent)
 
     connect(ui.action_clear_URLs, SIGNAL(triggered()), this, SLOT(onActClearComments()));
 
-	connect(&m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinshed(QNetworkReply*)));
+	//connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinshed(QNetworkReply*)));
 }
 
 auto_smzdm::~auto_smzdm()
@@ -253,10 +253,18 @@ void auto_smzdm::onMsg(const QString& msg)
 
 void auto_smzdm::workRun()
 {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar();
+  //QNetworkCookieJar* cookie = new QNetworkCookieJar();
 
-  m_manager.setCookieJar(cookie);
+  //m_manager.setCookieJar(cookie);
   //QNetworkAccessManager mana;
+
+  if (m_manager != NULL)
+  {
+	  m_manager->deleteLater();
+	  m_manager = NULL;
+  }
+
+  m_manager = new QNetworkAccessManager;
 
   foreach(QString str, m_url_list)
   {
@@ -285,9 +293,9 @@ void auto_smzdm::workRun()
 		req.setSslConfiguration(conf);
 	}
 
-	QNetworkReply* reply = m_manager.get(req);
+	QNetworkReply* reply = m_manager->get(req);
 
-    #ifdef _DEBUG
+    //#ifdef _DEBUG
     QTime _t;
     _t.start();
 
@@ -306,6 +314,7 @@ void auto_smzdm::workRun()
     if (reply->error() != QNetworkReply::NoError)
     {
       msg = reply->errorString();
+	  continue;
     }
 
     QVariant statusCodeV =  reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);  
@@ -313,7 +322,7 @@ void auto_smzdm::workRun()
     int n = statusCodeV.toInt();
 
     msg = reply->readAll();
-    #endif
+    //#endif
     //waitForSeconds(1);
     reply->deleteLater();
   }
