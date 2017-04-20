@@ -85,7 +85,7 @@ void auto_smzdm::onStart()
     workRun();
     QTime _t;
     _t.start();
-    while (_t.elapsed() < m_interval*1000)
+    while (_t.elapsed() < m_interval*100)
     {
       QCoreApplication::processEvents();
     }
@@ -304,7 +304,7 @@ void auto_smzdm::workRun()
     while (reply && !reply->isFinished())
     {
       QCoreApplication::processEvents();
-      if (_t.elapsed() >= 10*1000) {
+      if (_t.elapsed() >= 5*1000) {
         _timeout = true;
         break;
       }
