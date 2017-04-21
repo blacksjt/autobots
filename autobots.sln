@@ -111,6 +111,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "toutiao_pc_dz", "toutiao_pc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_taipingyang_dp", "auto_taipingyang_dp\auto_taipingyang_dp.vcxproj", "{4F7B655A-6D39-4206-AF67-67265D7B3B8A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_weitoutiao_fatie", "autobots_weitoutiao_fatie\autobots_weitoutiao_fatie.vcxproj", "{BF86B01A-9D65-4F60-8828-2D22417CC292}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -585,6 +587,16 @@ Global
 		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x64.ActiveCfg = Release|Win32
 		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x86.ActiveCfg = Release|Win32
 		{4F7B655A-6D39-4206-AF67-67265D7B3B8A}.Release|x86.Build.0 = Release|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Debug|Win32.Build.0 = Debug|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Debug|x64.ActiveCfg = Debug|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Debug|x86.ActiveCfg = Debug|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Debug|x86.Build.0 = Debug|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|Win32.ActiveCfg = Release|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|Win32.Build.0 = Release|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x64.ActiveCfg = Release|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x86.ActiveCfg = Release|Win32
+		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
