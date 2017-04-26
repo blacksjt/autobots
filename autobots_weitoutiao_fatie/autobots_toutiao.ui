@@ -75,7 +75,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>文章ID(thread_id)</string>
+         <string>(group_id)(thread_id)</string>
         </property>
        </widget>
       </item>
@@ -96,7 +96,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Group ID(forum_id)</string>
+         <string>(forum_id)</string>
         </property>
        </widget>
       </item>
