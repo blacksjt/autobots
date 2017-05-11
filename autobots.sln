@@ -113,6 +113,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auto_taipingyang_dp", "auto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_weitoutiao_fatie", "autobots_weitoutiao_fatie\autobots_weitoutiao_fatie.vcxproj", "{BF86B01A-9D65-4F60-8828-2D22417CC292}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autobots_toutiao_sina_shouchang", "autobots_toutiao_sina_shouchang\autobots_toutiao_sina_shouchang.vcxproj", "{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -597,6 +599,16 @@ Global
 		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x64.ActiveCfg = Release|Win32
 		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x86.ActiveCfg = Release|Win32
 		{BF86B01A-9D65-4F60-8828-2D22417CC292}.Release|x86.Build.0 = Release|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Debug|Win32.Build.0 = Debug|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Debug|x64.ActiveCfg = Debug|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Debug|x86.ActiveCfg = Debug|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Debug|x86.Build.0 = Debug|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Release|Win32.ActiveCfg = Release|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Release|Win32.Build.0 = Release|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Release|x64.ActiveCfg = Release|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Release|x86.ActiveCfg = Release|Win32
+		{15E022EE-BAB4-4BE1-9B0D-6E07CA26C9E4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
