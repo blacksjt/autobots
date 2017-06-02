@@ -332,9 +332,9 @@ public:
         label_3->setText(QApplication::translate("autobots_toutiaoClass", "\347\275\221\351\241\265URL", 0));
         checkBox_code_online->setText(QApplication::translate("autobots_toutiaoClass", "\350\207\252\345\212\250\350\257\206\345\210\253\351\252\214\350\257\201\347\240\201", 0));
         label_5->setText(QApplication::translate("autobots_toutiaoClass", "\351\227\264\351\232\224\357\274\210\347\247\222\357\274\211", 0));
-        label_2->setText(QApplication::translate("autobots_toutiaoClass", "\346\226\207\347\253\240ID(thread_id)", 0));
+        label_2->setText(QApplication::translate("autobots_toutiaoClass", "(group_id)(thread_id)", 0));
         lineEdit_page_id->setText(QString());
-        label_4->setText(QApplication::translate("autobots_toutiaoClass", "Group ID(forum_id)", 0));
+        label_4->setText(QApplication::translate("autobots_toutiaoClass", "(forum_id)", 0));
         groupBox->setTitle(QApplication::translate("autobots_toutiaoClass", "\350\257\204\350\256\272\345\206\205\345\256\271", 0));
         pushButton_add_comment_id->setText(QApplication::translate("autobots_toutiaoClass", "\346\267\273\345\212\240", 0));
         groupBox_2->setTitle(QApplication::translate("autobots_toutiaoClass", "\350\264\246\345\217\267\345\210\227\350\241\250", 0));

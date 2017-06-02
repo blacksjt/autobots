@@ -152,12 +152,12 @@ void autobots_weibo_dianzan::onPause()
 
 bool autobots_weibo_dianzan::DoWork()
 {
-  QString str_url1 = "http://weibo.com/aj/v6/like/objectlike?ajwvr=6";
-  QUrl url1;
-  url1.setUrl(str_url1);
 
   for (size_t i = 0; i < m_comment_list.size(); ++i)
   {
+	QString str_url1 = QString("http://weibo.com/aj/v6/like/objectlike?ajwvr=6&__rnd=%1").arg(GetTimeStr());
+	QUrl url1;
+	url1.setUrl(str_url1);
 
     HttpParamList header_list;
     header_list.push_back(HttpParamItem("Accept",	"application/json, text/javascript, */*; q=0.01"));
@@ -171,6 +171,7 @@ bool autobots_weibo_dianzan::DoWork()
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
 
     HttpParamList post_data;
+	post_data.push_back(HttpParamItem("_t", "0"));
     post_data.push_back(HttpParamItem("location", m_page_id));
     post_data.push_back(HttpParamItem("object_id", m_comment_list[i]));
     post_data.push_back(HttpParamItem("object_type", "comment"));
@@ -888,11 +889,10 @@ bool autobots_weibo_dianzan::PreLoginSina(const QString& name, SinaData& data, Q
   // 获取用户名
   sina_encrypt* encryptor = sina_encrypt::GetInstance();
   QString encrypted_name = encryptor->EncryptName(name);
-                            //http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=1452062874752
-  QString str_url1 = QString("http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.15)&_=%2").arg(encrypted_name, str_time);
+                            //https://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=&rsakt=mod&client=ssologin.js(v1.4.18)&_=1496379329844
+  QString str_url1 = QString("https://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=%1&rsakt=mod&checkpin=1&client=ssologin.js(v1.4.18)&_=%2").arg(encrypted_name,str_time);
   QUrl url1(str_url1);
 
-  //QString str_temp = QString("https://api.weibo.com/oauth2/authorize?client_id=%1&response_type=code&display=desktop&state=%2&redirect_uri=http://api.snssdk.com/auth/login_success/").arg(m_client_id, m_state);
   
   HttpParamList header_list;
   header_list.push_back(HttpParamItem("Connection","Keep-Alive"));
@@ -902,7 +902,7 @@ bool autobots_weibo_dianzan::PreLoginSina(const QString& name, SinaData& data, Q
   header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
   header_list.push_back(HttpParamItem("Referer",m_url));
 
-  QNetworkReply* reply = network.GetRequest(url1, header_list);
+  QNetworkReply* reply = network.GetRequest_ssl(url1, header_list);
 
   QTime _t;
   _t.start();
@@ -1127,14 +1127,7 @@ int autobots_weibo_dianzan::LoginSina(SinaData& sina_data,const QString& name,
   QString encrypted_name = encryptor->EncryptName(name);
   QString encrypted_pwd = encryptor->EncryptPassword(password, sina_data._servertime, sina_data._nonce, sina_data._pubkey);
 
-  //QString str_login_url = 
-  //  QString("http://login.sina.com.cn/sso/login.php?entry=weibo&gateway=1&from=&savestate=7&useticket=1&pagerefer=%1&pcid=%2&door=%3&vsnf=1&su=%4&service=miniblog&servertime=%5&nonce=%6&pwencode=rsa2&rsakv=%7&sp=%8&sr=1192*670&encoding=UTF-8&cdult=2&domain=weibo.com&prelt=141&returntype=TEXT&callback=sinaSSOController.loginCallBack&client=ssologin.js(v1.4.18)&_=%9").arg(
-  //  m_url,sina_data._pcid,vcode,encrypted_name, sina_data._servertime, sina_data._nonce, sina_data._rsakv,encrypted_pwd, GetTimeStr()); 
-  //http://login.sina.com.cn/sso/login.php?entry=weibo&gateway=1&from=&savestate=7
-  //&useticket=1&pagerefer=http%3A%2F%2Fvote.weibo.com%2Fpoll%2F137073782&pcid=gz-28d94a22b8d53cb17497ad0c2578d2d57078
-  //&door=bghqu&vsnf=1&su=dG9uZ3R1eWFxNTc3MSU0MDE2My5jb20%3D&service=miniblog&servertime=1452062908&nonce=9VFEYL
-  //&pwencode=rsa2&rsakv=1330428213&sp=&sr=1192*670&encoding=UTF-8&cdult=2&domain=weibo.com&prelt=141&returntype=TEXT&callback=sinaSSOController.loginCallBack&client=ssologin.js(v1.4.18)&_=1452062881739
-  
+ 
   QString str_login_url = QString("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)&_=%1").arg(GetTimeStr());
   QUrl url1(str_login_url);
 
