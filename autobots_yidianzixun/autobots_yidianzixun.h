@@ -107,6 +107,7 @@ private:
     bool m_code_online;
     bool m_bswitch_ip;
 private:
+	int m_interval;
     QString m_url;
     QString m_news_id;
 //    QString m_group_id;

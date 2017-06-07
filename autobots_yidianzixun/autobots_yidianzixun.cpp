@@ -171,7 +171,7 @@ void autobots_yidianzixun::onStart()
     DoSupport();
 
     t2.restart();
-    while(t2.elapsed()<1000 )  
+    while(t2.elapsed()< m_interval*1000 )  
       QCoreApplication::processEvents();
 
     Logout();
@@ -440,6 +440,7 @@ void autobots_yidianzixun::UpdateData()
 //  m_group_id = ui.lineEdit_comment_group->text();
   m_code_online = (ui.checkBox_code_online->checkState() == Qt::Checked) ;
   m_bswitch_ip = (ui.checkBox_auto_switch_ip->checkState() == Qt::Checked);
+  m_interval = ui.spinBox_interval->value();
   m_comment_list.clear();
   m_account_list.clear();
   m_comment_item_list.clear();
