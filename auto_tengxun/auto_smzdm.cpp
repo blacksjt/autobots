@@ -4,7 +4,7 @@
 #include "QMessageBox"
 
 auto_smzdm::auto_smzdm(QWidget *parent)
-    : control_status(true), QMainWindow(parent)
+    : control_status(true), QMainWindow(parent),network(NULL)
 {
     ui.setupUi(this);
 
@@ -66,9 +66,14 @@ void auto_smzdm::onPause()
 
 int auto_smzdm::smzdm_run()
 {
-  QNetworkCookieJar* cookie = new QNetworkCookieJar(this);
+	if(network != NULL)
+	{
+		network->deleteLater();
+		network = NULL;
+	}
+	network = new smzdm_network(this);
 
-  network.GetManager().setCookieJar(cookie);
+  //network.GetManager().setCookieJar(cookie);
 
   foreach(QString str, m_comment_list)
   {
@@ -82,21 +87,23 @@ int auto_smzdm::smzdm_run()
     header_list.push_back(HttpParamItem("Accept-Language","zh-CN"));
     header_list.push_back(HttpParamItem("Host", m_host));
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
-    QNetworkReply* reply = network.GetRequest(url1, header_list);
+    QNetworkReply* reply = network->GetRequest(url1, header_list);
 
-//     QTime _t;
-//     _t.start();
-// 
-//     bool _timeout = false;
-// 
-//     while (reply && !reply->isFinished())
-//     {
-//       QCoreApplication::processEvents();
-//       if (_t.elapsed() >= 10*1000) {
-//         _timeout = true;
-//         break;
-//       }
-//     }
+     QTime _t;
+     _t.start();
+ 
+     bool _timeout = false;
+ 
+     while (reply && !reply->isFinished())
+     {
+       QCoreApplication::processEvents();
+       if (_t.elapsed() >= 10*1000) {
+         _timeout = true;
+         break;
+       }
+     }
+	 QString ret = reply->readAll();
+	 ui.lineEdit_msg->setText(ret);
     reply->deleteLater();
   }
 
