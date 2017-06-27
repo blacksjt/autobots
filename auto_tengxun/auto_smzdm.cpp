@@ -89,22 +89,22 @@ int auto_smzdm::smzdm_run()
     header_list.push_back(HttpParamItem("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"));
     QNetworkReply* reply = network->GetRequest(url1, header_list);
 
-     QTime _t;
-     _t.start();
+     //QTime _t;
+     //_t.start();
  
-     bool _timeout = false;
+     //bool _timeout = false;
  
-     while (reply && !reply->isFinished())
-     {
-       QCoreApplication::processEvents();
-       if (_t.elapsed() >= 10*1000) {
-         _timeout = true;
-         break;
-       }
-     }
-	 QString ret = reply->readAll();
-	 ui.lineEdit_msg->setText(ret);
-    reply->deleteLater();
+     //while (reply && !reply->isFinished())
+     //{
+     //  QCoreApplication::processEvents();
+     //  if (_t.elapsed() >= 10*1000) {
+     //    _timeout = true;
+     //    break;
+     //  }
+     //}
+	 //QString ret = reply->readAll();
+	 //ui.lineEdit_msg->setText(ret);
+    //reply->deleteLater();
   }
 
   //cookie->deleteLater();
@@ -125,9 +125,8 @@ void smzdm_network::OnSsllErrors(QNetworkReply* reply, const QList<QSslError>& e
 void smzdm_network::ProcessReplyData(QNetworkReply* reply)
 {
   //TODO
-
-
-  //HttpBase::ProcessReplyData(reply);
+	QString ret = reply->readAll();
+    HttpBase::ProcessReplyData(reply);
 }
 
 smzdm_network::smzdm_network(QObject* parent /*= 0*/)
